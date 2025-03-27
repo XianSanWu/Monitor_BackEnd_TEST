@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Models.Dto.Requests;
 using Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utilities.Utilities;
+using static Models.Dto.Requests.AuthRequest;
 
 namespace Services.Implementations
 {
@@ -31,7 +26,7 @@ namespace Services.Implementations
             { "user", "dXNlcg==" }
         };
 
-        public async Task<bool> LoginVerify(LoginRequest LoginReq, IConfiguration _config, CancellationToken cancellationToken = default)
+        public async Task<bool> Login(LoginRequest LoginReq, IConfiguration _config, CancellationToken cancellationToken = default)
         {
             await Task.Delay(100, cancellationToken);
 

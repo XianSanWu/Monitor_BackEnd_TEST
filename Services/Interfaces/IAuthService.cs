@@ -1,10 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Models.Dto.Requests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static Models.Dto.Requests.AuthRequest;
 
 namespace Services.Interfaces
 {
@@ -17,7 +12,7 @@ namespace Services.Interfaces
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<bool> LoginVerify(LoginRequest LoginReq, IConfiguration _config, CancellationToken cancellationToken = default);
+        Task<bool> Login(LoginRequest LoginReq, IConfiguration _config, CancellationToken cancellationToken = default);
 
     }
 }

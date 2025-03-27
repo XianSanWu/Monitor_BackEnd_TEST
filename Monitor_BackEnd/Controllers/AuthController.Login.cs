@@ -3,21 +3,21 @@ using FluentValidation.Results;
 using WebAPi.Controllers;
 using Models.Dto.Responses;
 using Models.Dto.Requests;
-using System.Diagnostics;
+using static Models.Dto.Requests.AuthRequest;
 
 namespace WebApi.Controllers
 {
-    public partial class LoginController : BaseController
+    public partial class AuthController : BaseController
     {
         /// <summary>
-        /// 登入驗證
+        /// 登入
         /// </summary>
         /// <param name="loginReq">return bool</param>
         /// <param name="cancellationToken">取消非同步</param>   
         /// <returns></returns>
-        [Tags("Login")]  //分組(可多標籤)        
-        [HttpPost("Verify")]
-        public async Task<ResultResponse<bool>> Verify(LoginRequest loginReq, CancellationToken cancellationToken)
+        [Tags("Auth")]  //分組(可多標籤)        
+        [HttpPost("Login")]
+        public async Task<ResultResponse<bool>> Login(LoginRequest loginReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
             bool result = false;
@@ -45,7 +45,7 @@ namespace WebApi.Controllers
             }
             #endregion
 
-            result = await _authService.LoginVerify(loginReq, _config, cancellationToken).ConfigureAwait(false);
+            result = await _authService.Login(loginReq, _config, cancellationToken).ConfigureAwait(false);
 
             return result ? SuccessResult(result) : FailResult<bool>($"驗證失敗，請輸入正確帳號密碼");
         }

@@ -2,22 +2,23 @@ using AutoMapper;
 using Models.Dto.Requests.Validation;
 using Services.Interfaces;
 using WebAPi.Controllers;
+using static Models.Dto.Requests.Validation.AuthRequestValidator;
 
 namespace WebApi.Controllers
 {
-    public partial class LoginController(
+    public partial class AuthController(
         IConfiguration config,
         IMapper mapper,
-        ILogger<LoginController> logger,
+        ILogger<AuthController> logger,
         LoginRequestValidator loginRequestValidator,
         IAuthService authService
-           ) : BaseController(config, mapper)
+        )
+        : BaseController(config, mapper)
     {
         #region DI
-        private readonly ILogger<LoginController> _logger = logger;
+        private readonly ILogger<AuthController> _logger = logger;
         private readonly LoginRequestValidator _loginRequestValidator = loginRequestValidator;
         private readonly IAuthService _authService = authService;
         #endregion
-
     }
 }
