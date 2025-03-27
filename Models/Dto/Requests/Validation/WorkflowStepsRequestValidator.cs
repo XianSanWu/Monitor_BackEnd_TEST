@@ -1,13 +1,14 @@
 ﻿using FluentValidation;
 using Utilities.ValidatorsUtil;
+using static Models.Dto.Requests.WorkflowStepsRequest;
 
 namespace Models.Dto.Requests.Validation
 {
     public class WorkflowStepsRequestValidator
     {
-        public class WorkflowStepsSearchListRequest : AbstractValidator<AuthRequest>
+        public class WorkflowStepsSearchListRequestValidator : AbstractValidator<WorkflowStepsSearchListRequest>
         {
-            public WorkflowStepsSearchListRequest()
+            public WorkflowStepsSearchListRequestValidator()
             {
                // RuleFor(x => x.UserName).NotEmpty().WithMessage("LoginRequest：使用者名稱不可空白");
 
@@ -19,9 +20,9 @@ namespace Models.Dto.Requests.Validation
             }
         }
 
-        public class WorkflowStepsDetailRequest : AbstractValidator<AuthRequest>
+        public class WorkflowStepsDetailRequestValidator : AbstractValidator<AuthRequest>
         {
-            public WorkflowStepsDetailRequest()
+            public WorkflowStepsDetailRequestValidator()
             {
                 // RuleFor(x => x.UserName).NotEmpty().WithMessage("LoginRequest：使用者名稱不可空白");
 

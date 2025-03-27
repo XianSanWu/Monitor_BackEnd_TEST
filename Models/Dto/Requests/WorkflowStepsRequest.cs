@@ -1,4 +1,4 @@
-﻿using Models.Common;
+﻿using Models.Dto.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +10,8 @@ namespace Models.Dto.Requests
     public class WorkflowStepsRequest
     {
 
-        public class WorkflowStepsSearchListRequest : BaseSearchRequest
+        public class WorkflowStepsSearchListRequest : BaseSearchModel
         {
-            public int MyProperty { get; set; }
         }
 
     }

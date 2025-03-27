@@ -45,9 +45,11 @@ namespace WebApi.Controllers
             }
             #endregion
 
+            #region 流程
             result = await _authService.Login(loginReq, _config, cancellationToken).ConfigureAwait(false);
 
             return result ? SuccessResult(result) : FailResult<bool>($"驗證失敗，請輸入正確帳號密碼");
+            #endregion
         }
 
     }

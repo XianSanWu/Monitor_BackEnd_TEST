@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.Dto.Responses;
 using static Models.Dto.Requests.WorkflowStepsRequest;
@@ -13,43 +15,35 @@ namespace WebAPi.Controllers
         /// <param name="searchInfo">前端傳入的查詢條件</param>
         /// <param name="cancellationToken">取消非同步</param>
         /// <returns name="SearchListModel">查詢結果 </returns>
-        //[Tags("WorkflowSteps")]  //分組(可多標籤)        
-        //[HttpPost("SearchList")]
-        //public async Task<ResultResponse<WorkflowStepsResponse>> QuerySearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken)
-        //{
-            //#region 參數宣告
-            //var searchList = new WorkflowStepsSearchListRequest();
-            //ValidationResult searchRequestValidationResult;
-            //#endregion
+        [Tags("WorkflowSteps")]  //分組(可多標籤)        
+        [HttpPost("SearchList")]
+        public async Task<ResultResponse<WorkflowStepsResponse>> QuerySearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken)
+        {
+            #region 參數宣告
+            var result = new WorkflowStepsResponse();
+            ValidationResult searchRequestValidationResult;
+            #endregion
 
-            //#region 參數驗證
-            //searchRequestValidationResult = await _searchRequestValidator.ValidateAsync(searchInfo).ConfigureAwait(false);
+            #region 參數驗證
+            searchRequestValidationResult = await _searchListRequestValidator.ValidateAsync(searchReq, cancellationToken).ConfigureAwait(false);
 
-            //_logger.LogInformation("QuerySearchList 引數為 {ValidationResult}", searchRequestValidationResult);
+            _logger.LogInformation("WorkflowStepsSearchListRequest 參數：{@WorkflowStepsSearchListRequest}", searchReq);
+            _logger.LogInformation("WorkflowStepsSearchListRequest 驗證：{ValidationResult}", searchRequestValidationResult);
 
-            //if (!String.IsNullOrWhiteSpace(searchRequestValidationResult.ToString()))
-            //{
-            //    return FailResult<SearchListModel>($"引數檢核未通過：{searchRequestValidationResult}");
-            //}
-            //#endregion
+            if (!string.IsNullOrWhiteSpace(searchRequestValidationResult.ToString()))
+            {
+                return FailResult<WorkflowStepsResponse>($"參數檢核未通過：{searchRequestValidationResult}");
+            }
+            #endregion
 
-            //#region 流程
+            #region 流程
 
-            //// 檢查日誌記錄等級
-            //bool shouldLog = LogExtension.ShouldLog();
-            //// 判斷是否記錄
-            //if (shouldLog)
-            //{
-            //    _logger.LogInformation("Recording log: This is an information log.");
-            //}
+            result = await _workflowStepsService.QuerySearchList(searchReq, _config, cancellationToken).ConfigureAwait(false);
 
+            return SuccessResult(result);
 
-            //_searchList = await _demoService.QuerySearchList(searchInfo, _config, ct).ConfigureAwait(false);
+            #endregion
 
-            //return SuccessResult(_searchList);
-
-        //    #endregion
-
-        //}
+        }
     }
 }
