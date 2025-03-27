@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models.Common
+namespace Models.Dto.Common
 {
-    public class BaseSearchRequest
+    public class BaseSearchModel
     {
         #region Properties
         /// <summary> 分頁資訊 </summary>

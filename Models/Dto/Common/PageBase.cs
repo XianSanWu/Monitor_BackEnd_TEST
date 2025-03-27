@@ -1,5 +1,4 @@
-﻿
-namespace Models.Common
+﻿namespace Models.Dto.Common
 {
     public class PageBase
     {
@@ -32,7 +31,7 @@ namespace Models.Common
                     _pageSize = 1;
                 //無條件進位(double精確度不夠)
                 //return (int)Math.Ceiling((double)(_totalCount / _pageSize));
-                return (int)Math.Ceiling((_totalCount / (decimal)_pageSize));
+                return (int)Math.Ceiling(_totalCount / (decimal)_pageSize);
             }
         }
         #endregion

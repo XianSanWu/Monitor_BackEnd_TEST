@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models.Dto.Requests.Common
+namespace Models.Dto.Common
 {
-    public class BaseResponse
+    public class BaseModel
     {
     }
 }

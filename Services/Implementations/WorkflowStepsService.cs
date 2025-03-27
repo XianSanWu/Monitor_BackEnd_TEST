@@ -12,7 +12,7 @@ namespace Services.Implementations
 {
     public class WorkflowStepsService : IWorkflowStepsService
     {
-        public Task<WorkflowStepsResponse> WorkflowStepsSearchList(WorkflowStepsRequest.WorkflowStepsSearchListRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default)
+        public Task<WorkflowStepsResponse> QuerySearchList(WorkflowStepsRequest.WorkflowStepsSearchListRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
