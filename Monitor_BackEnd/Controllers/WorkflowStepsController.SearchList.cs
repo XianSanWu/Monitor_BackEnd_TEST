@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.Dto.Responses;
 using static Models.Dto.Requests.WorkflowStepsRequest;
+using static Models.Dto.Responses.WorkflowStepsResponse;
 
 namespace WebAPi.Controllers
 {
@@ -12,15 +13,15 @@ namespace WebAPi.Controllers
         /// <summary>
         /// 查詢結果集合(多筆)
         /// </summary>
-        /// <param name="searchInfo">前端傳入的查詢條件</param>
+        /// <param name="searchReq">前端傳入的查詢條件</param>
         /// <param name="cancellationToken">取消非同步</param>
-        /// <returns name="SearchListModel">查詢結果 </returns>
+        /// <returns name="result">查詢結果 </returns>
         [Tags("WorkflowSteps")]  //分組(可多標籤)        
         [HttpPost("SearchList")]
-        public async Task<ResultResponse<WorkflowStepsResponse>> QuerySearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<ResultResponse<WorkflowStepsSearchListResponse>> QuerySearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            var result = new WorkflowStepsResponse();
+            var result = new WorkflowStepsSearchListResponse();
             ValidationResult searchRequestValidationResult;
             #endregion
 
@@ -32,13 +33,13 @@ namespace WebAPi.Controllers
 
             if (!string.IsNullOrWhiteSpace(searchRequestValidationResult.ToString()))
             {
-                return FailResult<WorkflowStepsResponse>($"參數檢核未通過：{searchRequestValidationResult}");
+                return FailResult<WorkflowStepsSearchListResponse>($"參數檢核未通過：{searchRequestValidationResult}");
             }
             #endregion
 
             #region 流程
 
-            result = await _workflowStepsService.QuerySearchList(searchReq, _config, cancellationToken).ConfigureAwait(false);
+            result = await _workflowStepsService.QueryJourneySearchList(searchReq, _config, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
 

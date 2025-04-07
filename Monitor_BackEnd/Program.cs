@@ -13,6 +13,7 @@ using WebAPi.Filters;
 using static Utilities.Extensions.JsonExtension;
 using static WebAPi.Filters.ExceptionHandleActionFilters;
 using static Utilities.Monitor.HealthCheckHelper;
+using Repository.Interfaces;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -53,10 +54,11 @@ try
     */
     //https://code-maze.com/dotnet-dependency-injection-with-scrutor/
     // 假設所有的接口和實現都在同一個程序集或命名空間中
-    var servicesAssembly = typeof(IJourneyService).Assembly;
+    var servicesAssembly = typeof(IWorkflowStepsService).Assembly;
+    var repositoryAssembly = typeof(IUnitOfWork).Assembly;
 
     builder.Services.Scan(selector => selector
-        .FromAssemblies(servicesAssembly) // 掃描 Services 專案的 Assembly
+        .FromAssemblies(servicesAssembly, repositoryAssembly) // 掃描 Services 專案的 Assembly
         .AddClasses(
         //classes => classes
         //.Where(type => type != typeof(IUnitOfWork)

@@ -1,10 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Models.Enums;
-using Services.Interfaces;
+using Repository.Interfaces;
 using System.Data.Common;
 
-namespace Services.Implementations
+namespace Repository.Implementations
 {
     /// <summary>
     /// DB連線的共用類

@@ -1,7 +1,7 @@
-﻿using Services.Implementations;
+﻿using Repository.Implementations;
 using System.Data.Common;
 
-namespace Services.Interfaces
+namespace Repository.Interfaces
 {
     /// <summary>
     /// IDbHelper

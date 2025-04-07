@@ -8,13 +8,9 @@
     /// </summary>
     public enum DBConnectionEnum
     {
-        /// <summary>
-        /// 預設
-        /// </summary>
+        /// <summary> 預設 </summary>
         DefaultConnection,
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary> CDP </summary>
         Cdp,
     }
 }
