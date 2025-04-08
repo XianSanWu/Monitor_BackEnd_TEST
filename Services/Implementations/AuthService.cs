@@ -32,7 +32,7 @@ namespace Services.Implementations
 
             // 驗證帳號密碼
             return FakeUsers.TryGetValue(key: (LoginReq.UserName ?? ""), value: out var password) &&
-                LoginReq.Password == Base64Util.Decode(password);
+                Base64Util.Decode(LoginReq.Password) == Base64Util.Decode(password);
 
         }
     }

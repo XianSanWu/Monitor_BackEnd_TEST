@@ -12,6 +12,12 @@ namespace Models.Dto.Requests
 
         public class WorkflowStepsSearchListRequest : BaseSearchModel
         {
+            public WorkflowStepsSearchListFieldModelRequest? FieldModel { get; set; }
+        }
+
+        public class WorkflowStepsSearchListFieldModelRequest
+        {
+            public string? Channel { get; set; }
         }
 
     }

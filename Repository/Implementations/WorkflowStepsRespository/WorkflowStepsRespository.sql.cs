@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utilities.Utilities;
+using YamlDotNet.Core;
 using static Models.Dto.Requests.WorkflowStepsRequest;
 
 namespace Repository.Implementations.WorkflowStepsRespository
@@ -21,7 +22,21 @@ namespace Repository.Implementations.WorkflowStepsRespository
 
             _sqlParams = new DynamicParameters();
 
-            // 獲取模型的有效欄位（使用反射）
+            // 獲取模型的有效欄位（使用反射）//輸入框
+            var columnsWithValues = Reflection.GetValidColumnsWithValues(searchReq.FieldModel);
+
+            foreach (var column in columnsWithValues)
+            {
+                if (column.Value != null)
+                {
+                    _sqlStr.Append($" AND {column.Key} LIKE @{column.Key} ");
+                    _sqlParams.Add($"@{column.Key}", $"%{column.Value}%");
+                }
+                //Console.WriteLine($"Key: {column.Key}, Value: {column.Value}");
+            }
+
+
+            // 獲取模型的有效欄位（使用反射）//grid
             // 根據模型類型來查找有效欄位，只有模型中的屬性會被考慮，避免sql注入風險
             var validColumns = Reflection.GetValidColumns<WorkflowEntity>();
 

@@ -20,5 +20,22 @@ namespace Utilities.Utilities
 
             return validColumns;
         }
+
+        // 使用反射來獲取模型的有效欄位名稱及其對應的值
+        public static Dictionary<string, object?> GetValidColumnsWithValues<T>(T model)
+        {
+            var validColumns = new Dictionary<string, object?>();
+
+            // 獲取類型的所有屬性
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (var property in properties)
+            {
+                // 將屬性名稱和其對應的值（可能為 null）加入字典中
+                validColumns.Add(property.Name, property.GetValue(model));
+            }
+
+            return validColumns;
+        }
     }
 }

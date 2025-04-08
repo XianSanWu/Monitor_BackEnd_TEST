@@ -7,7 +7,7 @@ namespace Utilities.Utilities
         /// <summary>
         /// 將字串轉為 Base64 編碼
         /// </summary>
-        public static string Encode(string plainText)
+        public static string Encode(string? plainText)
         {
             if (string.IsNullOrEmpty(plainText))
                 return string.Empty;
@@ -19,7 +19,7 @@ namespace Utilities.Utilities
         /// <summary>
         /// 將 Base64 字串解碼回原本字串
         /// </summary>
-        public static string Decode(string base64Encoded)
+        public static string Decode(string? base64Encoded)
         {
             if (string.IsNullOrEmpty(base64Encoded))
                 return string.Empty;
