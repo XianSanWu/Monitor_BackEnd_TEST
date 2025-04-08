@@ -1,11 +1,13 @@
-﻿namespace WebAPi.Profile
+﻿using Models.Entities;
+using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsSearchListResponse;
+
+namespace WebAPi.Profile
 {
     public class MapperProfile : AutoMapper.Profile
     {
         public MapperProfile()
         {
-            //CreateMap<SearchListModel, SearchListModel>();
-            //CreateMap<SearchJourneyDetailDto, SearchJourneyDetailEntity>();
+            CreateMap<WorkflowEntity, WorkflowStepsSearchResponse>();
         }
     }
 }

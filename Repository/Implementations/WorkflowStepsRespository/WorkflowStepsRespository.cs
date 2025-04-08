@@ -1,5 +1,6 @@
-﻿using Dapper;
-using Models.Dto.Responses;
+﻿using AutoMapper;
+using Dapper;
+using Models.Entities;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,10 @@ using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsSearchListR
 
 namespace Repository.Implementations.WorkflowStepsRespository
 {
-    public partial class WorkflowStepsRespository(IUnitOfWork unitOfWork) : BaseRepository(unitOfWork), IWorkflowStepsRespository
+    public partial class WorkflowStepsRespository(IUnitOfWork unitOfWork, IMapper mapper)
+        : BaseRepository(unitOfWork, mapper), IWorkflowStepsRespository
     {
-        public async Task<WorkflowStepsSearchListResponse> QueryJourneySearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default)
+        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 
@@ -24,20 +26,18 @@ namespace Repository.Implementations.WorkflowStepsRespository
 
             #region 流程
             var sql = QueryWorkflowSql(searchReq);
+
             result.Page = searchReq.Page;
             result.SearchItem = new List<WorkflowStepsSearchResponse>();
 
             var _pagingSql = await GetPagingSql(searchReq.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
-            result.SearchItem = (await _unitOfWork.Connection.QueryAsync<WorkflowStepsSearchResponse>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
-            result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault();
+            var queryWorkflowEntity = (await _unitOfWork.Connection.QueryAsync<WorkflowEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
+            result.SearchItem = _mapper.Map<List<WorkflowStepsSearchResponse>>(queryWorkflowEntity);
+            result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
 
             return result;
 
             #endregion
-        }
-        public Task<WorkflowStepsSearchListResponse> QueryGroupSendSearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
         }
     }
 

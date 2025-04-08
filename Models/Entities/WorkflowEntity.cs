@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models.Entities
 {
-    public class Workflow
+    public class WorkflowEntity
     {
         /// <summary>主鍵</summary>
         public int SN { get; set; }

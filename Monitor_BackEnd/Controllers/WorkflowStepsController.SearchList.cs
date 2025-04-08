@@ -39,7 +39,7 @@ namespace WebAPi.Controllers
 
             #region 流程
 
-            result = await _workflowStepsService.QueryJourneySearchList(searchReq, _config, cancellationToken).ConfigureAwait(false);
+            result = await _workflowStepsService.QueryWorkflowStepsSearchList(searchReq, _config, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
 

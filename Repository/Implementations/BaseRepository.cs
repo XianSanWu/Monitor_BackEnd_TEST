@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using AutoMapper;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using Models.Dto.Common;
 using Repository.Interfaces;
@@ -10,24 +11,20 @@ using System.Threading.Tasks;
 
 namespace Repository.Implementations
 {
-    public class BaseRepository
+    public class BaseRepository(IUnitOfWork unitOfWork, IMapper mapper)
     {
 
         #region 屬性
-        private readonly string? _connectionString;
+        //private readonly string? _connectionString;
         protected StringBuilder? _sqlStr;
         protected string? _sqlOrderByStr;
         protected DynamicParameters? _sqlParams;
         protected List<DynamicParameters>? _sqlParamsList;
         //protected SqlConnection SQLConnection;
         //protected SqlTransaction SQLTransaction;
-        protected readonly IUnitOfWork _unitOfWork;
+        protected readonly IUnitOfWork _unitOfWork = unitOfWork;
+        protected readonly IMapper _mapper = mapper;
         #endregion
-
-        public BaseRepository(IUnitOfWork unitOfWork)
-        {
-            this._unitOfWork = unitOfWork;
-        }
 
         /// <summary>
         /// SQL語法(查詢+分頁)
@@ -54,10 +51,10 @@ namespace Repository.Implementations
             {
                 throw new Exception("未傳入SQL語法");
             }
-            //else if (string.IsNullOrWhiteSpace(_sqlOrderByStr))
-            //{
-            //    throw new Exception("未傳入SQL ORDER BY語法");
-            //}
+            else if (string.IsNullOrWhiteSpace(_sqlOrderByStr))
+            {
+                throw new Exception("未傳入SQL ORDER BY語法");
+            }
             else
             {
                 if (!string.IsNullOrWhiteSpace(_sqlOrderByStr) && !_sqlOrderByStr.Contains("ORDER BY", StringComparison.CurrentCultureIgnoreCase))
@@ -67,10 +64,7 @@ namespace Repository.Implementations
                 else
                 {
                     pageSqlStr.AppendLine(_sqlStr.ToString());
-                    if (!string.IsNullOrWhiteSpace(_sqlOrderByStr))
-                    {
-                        pageSqlStr.AppendLine(_sqlOrderByStr);
-                    }
+                    pageSqlStr.AppendLine(_sqlOrderByStr);
 
                     if (page != null)
                     {
@@ -87,11 +81,8 @@ namespace Repository.Implementations
 
                         page.PageIndex = await GetLastPageIndex(page.PageSize, page.PageIndex, unitOfWork, sqlParams).ConfigureAwait(false);
 
-                        if (!string.IsNullOrWhiteSpace(_sqlOrderByStr))
-                        {
-                            pageSqlStr.AppendLine(string.Format(" OFFSET {0} ROWS ", page.GetStartIndex()));
-                            pageSqlStr.AppendLine(string.Format(" FETCH FIRST {0} ROWS ONLY;", page.PageSize));
-                        }
+                        pageSqlStr.AppendLine(string.Format(" OFFSET {0} ROWS ", page.GetStartIndex()));
+                        pageSqlStr.AppendLine(string.Format(" FETCH FIRST {0} ROWS ONLY;", page.PageSize));
                     }
 
                 }
