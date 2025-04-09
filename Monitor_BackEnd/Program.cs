@@ -14,6 +14,8 @@ using static Utilities.Extensions.JsonExtension;
 using static WebAPi.Filters.ExceptionHandleActionFilters;
 using static Utilities.Monitor.HealthCheckHelper;
 using Repository.Interfaces;
+using FluentValidation.AspNetCore;
+using WebAPi.Middleware;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -122,17 +124,11 @@ try
     #endregion
 
     #region FluentValidation(驗證)
-    builder.Services.Configure<ApiBehaviorOptions>(options =>
-    {
-        //停用 Model State Invalid Filter
-        options.SuppressModelStateInvalidFilter = true;
-    });
+    builder.Services.AddFluentValidationAutoValidation();
+    builder.Services.AddFluentValidationClientsideAdapters();
 
-    //https://docs.fluentvalidation.net/en/latest/di.html
-    //builder.Services.AddFluentValidationAutoValidation();
-    //builder.Services.AddFluentValidationClientsideAdapters();
-    //builder.Services.AddValidatorsFromAssemblyContaining<Models.Dtos.Demo.DetailRequestModelValidator>(); //指定 Model
-    builder.Services.AddValidatorsFromAssembly(Assembly.Load("Models"));    //抓 Models Project dll
+    var modelAssembly = Assembly.Load("Models");
+    builder.Services.AddValidatorsFromAssembly(modelAssembly);
     #endregion
 
     #region 監控【HealthChecks】設定UI端點(Endpoint)分類
@@ -192,54 +188,70 @@ try
         app.UseSwaggerUI();
     }
 
+    // 註冊 RequestResponseLoggingMiddleware 來記錄請求/回傳
+    app.UseMiddleware<RequestResponseLoggingMiddleware>();
+
     // 在中介程序中全域處理例外
     app.UseExceptionHandleMiddleware();
 
     #region Serilog 紀錄每一個Request的請求及過濾器
-    //app.UseSerilogRequestLogging();
-    // Serilog(保哥) https://gist.github.com/doggy8088/32f7c179f06ab0616b2e32728f734c5b
+    // 使用 Serilog 來紀錄每個 Request
     app.UseSerilogRequestLogging(options =>
     {
-        // 如果要自訂訊息的範本格式，可以修改這裡，但修改後並不會影響結構化記錄的屬性
-        //options.MessageTemplate = "Handled {RequestPath}";
+        // 可以自訂訊息的範本格式
+        // options.MessageTemplate = "Handled {RequestPath}";
 
-        // 使用過濾器排除特定的 Controller
+        // 使用過濾器排除特定的 Controller 或路徑
         options.GetLevel = (httpContext, elapsed, ex) =>
         {
             var path = httpContext.Request.Path.Value ?? string.Empty;
 
-            #region 如果請求路徑包含 "xxxController"，則忽略日誌記錄 (測試沒成功)
-            //if (path.Contains("/HealthReportCollector", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    return Serilog.Events.LogEventLevel.Verbose; // 或者直接返回 `null`，表示不記錄
-            //}
-            //if (path.Contains("/_self", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    return Serilog.Events.LogEventLevel.; // 或者直接返回 `null`，表示不記錄
-            //}
-            //if (path.Contains("/_api", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    return Serilog.Events.LogEventLevel.Verbose; // 或者直接返回 `null`，表示不記錄
-            //}
-            //if (path.Contains("/_db", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    return Serilog.Events.LogEventLevel.Verbose; // 或者直接返回 `null`，表示不記錄
-            //}
-            #endregion
+            // 如果路徑包含特定的 Controller 或 API 路徑，則不記錄日誌
+            if (path.Contains("/HealthReportCollector", StringComparison.OrdinalIgnoreCase))
+            {
+                return LogEventLevel.Information; // 或返回 null 表示不記錄
+            }
+            if (path.Contains("/_self", StringComparison.OrdinalIgnoreCase))
+            {
+                return LogEventLevel.Information; // 或返回 null 表示不記錄
+            }
+            if (path.Contains("/_api", StringComparison.OrdinalIgnoreCase))
+            {
+                return LogEventLevel.Information; // 或返回 null 表示不記錄
+            }
+            if (path.Contains("/_db", StringComparison.OrdinalIgnoreCase))
+            {
+                return LogEventLevel.Information; // 或返回 null 表示不記錄
+            }
 
-            return Serilog.Events.LogEventLevel.Debug;
+            // 預設記錄 Debug 級別
+            return LogEventLevel.Debug;
         };
 
-        // 從 httpContext 取得 HttpContext 下所有可以取得的資訊！
+        // 從 httpContext 取得 HttpContext 下所有可以取得的資訊來豐富日誌
         options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
         {
-            diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
-            diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
-            diagnosticContext.Set("UserID", (httpContext.User.Identity?.Name ?? ""));
-        };
+            // 記錄更多請求資訊
+            diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value ?? "Unknown");
+            diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme ?? "Unknown");
+            diagnosticContext.Set("RequestPath", httpContext.Request.Path.Value ?? "Unknown");
+            diagnosticContext.Set("RequestMethod", httpContext.Request.Method ?? "Unknown");
 
+            // 記錄用戶身份 (如果存在)
+            diagnosticContext.Set("UserID", (httpContext.User.Identity?.Name ?? "Anonymous"));
+
+            // 記錄 IP 地址
+            diagnosticContext.Set("RequestIP", httpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown");
+
+            // 記錄請求的 Query String (如果存在)
+            diagnosticContext.Set("QueryString", httpContext.Request.QueryString.Value ?? "Unknown");
+
+            // 記錄請求的標頭 (例如: User-Agent)
+            diagnosticContext.Set("UserAgent", httpContext.Request.Headers["User-Agent"].ToString());
+        };
     });
     #endregion
+
 
     app.UseCors(AllowMyFrontEnd);
 

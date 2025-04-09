@@ -20,7 +20,7 @@ namespace WebApi.Controllers
         {
             #region 把计
             bool result = false;
-            ValidationResult loginValidationResult;
+            //ValidationResult loginValidationResult;
             #endregion
 
             #region Mock
@@ -34,14 +34,14 @@ namespace WebApi.Controllers
             #endregion
 
             #region 喷靡
-            loginValidationResult = await _loginRequestValidator.ValidateAsync(loginReq, cancellationToken).ConfigureAwait(false);
-            _logger.LogInformation("LoginRequest 把计{@LoginRequest}", loginReq);
-            _logger.LogInformation("LoginRequest 喷靡{ValidationResult}", loginValidationResult);
+            //loginValidationResult = await _loginRequestValidator.ValidateAsync(loginReq, cancellationToken).ConfigureAwait(false);
+            //_logger.LogInformation("LoginRequest 把计{@LoginRequest}", loginReq);
+            //_logger.LogInformation("LoginRequest 喷靡{ValidationResult}", loginValidationResult);
 
-            if (!string.IsNullOrWhiteSpace(loginValidationResult.ToString()))
-            {
-                return FailResult<bool>($"把计浪ゼ硄筁{loginValidationResult}");
-            }
+            //if (!string.IsNullOrWhiteSpace(loginValidationResult.ToString()))
+            //{
+            //    return FailResult<bool>($"把计浪ゼ硄筁{loginValidationResult}");
+            //}
             #endregion
 
             #region 瑈祘
