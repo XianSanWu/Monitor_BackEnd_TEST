@@ -13,7 +13,7 @@ namespace Models.Entities
         public string? NodeName { get; set; }
 
         /// <summary>所屬旅程的唯一識別碼</summary>
-        public string? JourneyId { get; set; }
+        public string? ActivityId { get; set; }
 
         /// <summary>通道類型</summary>
         public string? Channel { get; set; }

@@ -10,13 +10,12 @@ namespace Models.Dto.Requests.Validation
         {
             public WorkflowStepsSearchListRequestValidator()
             {
-               // RuleFor(x => x.UserName).NotEmpty().WithMessage("LoginRequest：使用者名稱不可空白");
+                RuleFor(x => x.FieldModel).NotNull().WithMessage("FieldModel 不可為 null");
 
-               // RuleFor(x => x.Password)
-               //.NotEmpty()
-               //.WithMessage("LoginRequest：密碼不可空白")
-               //.Must(value => RegExpUtil.IsMatch(RegExpUtil.RegexSymbolsEnglishNumbers, value))
-               //.WithMessage("請輸入由英文、數字或符號組成的密碼");
+#pragma warning disable CS8602 // 可能 null 參考的取值 (dereference)。
+                RuleFor(x => x.FieldModel.Channel).NotNull().NotEmpty().WithMessage("來源不可空白");
+#pragma warning restore CS8602 // 可能 null 參考的取值 (dereference)。
+
             }
         }
 

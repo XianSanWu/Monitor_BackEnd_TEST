@@ -1,16 +1,16 @@
 ﻿
 namespace Models.Entities
 {
-    public class JourneyStatus
+    public class ActivityStatus
     {
         /// <summary> 記錄的唯一識別碼（自增主鍵）</summary>
         public int Id { get; set; }
 
         /// <summary> 旅程的唯一識別碼 </summary>
-        public string? JourneyId { get; set; }
+        public string? ActivityId { get; set; }
 
         /// <summary> 旅程名稱（可為空） </summary>
-        public string? JourneyName { get; set; }
+        public string? ActivityName { get; set; }
 
         /// <summary> 旅程狀態 </summary>
         public string? Status { get; set; }

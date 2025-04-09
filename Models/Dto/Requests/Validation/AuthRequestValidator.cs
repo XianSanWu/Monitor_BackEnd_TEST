@@ -10,9 +10,10 @@ namespace Models.Dto.Requests.Validation
         {
             public LoginRequestValidator()
             {
-                RuleFor(x => x.UserName).NotEmpty().WithMessage("使用者名稱不可空白");
+                RuleFor(x => x.UserName).NotNull().NotEmpty().WithMessage("使用者名稱不可空白");
 
                 RuleFor(x => x.Password)
+               .NotNull()
                .NotEmpty()
                .WithMessage("密碼不可空白")
                .Must(value => RegExpUtil.IsMatch(RegExpUtil.RegexSymbolsEnglishNumbers, value))

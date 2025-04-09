@@ -22,19 +22,19 @@ namespace WebAPi.Controllers
         {
             #region 參數宣告
             var result = new WorkflowStepsSearchListResponse();
-            ValidationResult searchRequestValidationResult;
+            //ValidationResult searchRequestValidationResult;
             #endregion
 
             #region 參數驗證
-            searchRequestValidationResult = await _searchListRequestValidator.ValidateAsync(searchReq, cancellationToken).ConfigureAwait(false);
+            //searchRequestValidationResult = await _searchListRequestValidator.ValidateAsync(searchReq, cancellationToken).ConfigureAwait(false);
 
-            _logger.LogInformation("WorkflowStepsSearchListRequest 參數：{@WorkflowStepsSearchListRequest}", searchReq);
-            _logger.LogInformation("WorkflowStepsSearchListRequest 驗證：{ValidationResult}", searchRequestValidationResult);
+            //_logger.LogInformation("WorkflowStepsSearchListRequest 參數：{@WorkflowStepsSearchListRequest}", searchReq);
+            //_logger.LogInformation("WorkflowStepsSearchListRequest 驗證：{ValidationResult}", searchRequestValidationResult);
 
-            if (!string.IsNullOrWhiteSpace(searchRequestValidationResult.ToString()))
-            {
-                return FailResult<WorkflowStepsSearchListResponse>($"參數檢核未通過：{searchRequestValidationResult}");
-            }
+            //if (!string.IsNullOrWhiteSpace(searchRequestValidationResult.ToString()))
+            //{
+            //    return FailResult<WorkflowStepsSearchListResponse>($"參數檢核未通過：{searchRequestValidationResult}");
+            //}
             #endregion
 
             #region 流程

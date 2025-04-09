@@ -21,13 +21,13 @@ namespace Models.Entities
         public string? BatchId { get; set; }
 
         /// <summary>旅程 ID</summary>
-        public string? JourneyId { get; set; }
+        public string? ActivityId { get; set; }
 
         /// <summary>旅程名稱</summary>
-        public string? JourneyName { get; set; }
+        public string? ActivityName { get; set; }
 
         /// <summary>旅程狀態</summary>
-        public string? JourneyStatus { get; set; }
+        public string? ActivityStatus { get; set; }
 
         /// <summary>節點 ID</summary>
         public string? NodeId { get; set; }

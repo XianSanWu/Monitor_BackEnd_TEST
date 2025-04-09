@@ -7,10 +7,10 @@ namespace Models.Entities
         public int Id { get; set; }
 
         /// <summary> 旅程的唯一識別碼 </summary>
-        public string? JourneyId { get; set; }
+        public string? ActivityId { get; set; }
 
         /// <summary> 旅程名稱 </summary>
-        public string? JourneyName { get; set; }
+        public string? ActivityName { get; set; }
 
         /// <summary> 旅程狀態 </summary>
         public string? Status { get; set; }

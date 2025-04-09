@@ -184,5 +184,30 @@ namespace Repository.Implementations
             #endregion
         }
 
+        /// <summary>
+        /// 動態添加欄位條件篩選
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="validColumns"></param>
+        protected void AppendFilterCondition(string? key, object? value, HashSet<string>? validColumns)
+        {
+            if (string.IsNullOrWhiteSpace(key) || value == null || string.IsNullOrWhiteSpace(value.ToString()))
+                return;
+
+            if (validColumns != null && !validColumns.Contains(key, StringComparer.OrdinalIgnoreCase))
+                return;
+
+            if (key.EndsWith("At", StringComparison.OrdinalIgnoreCase))
+            {
+                _sqlStr?.Append($" AND CONVERT(VARCHAR, {key}, 121) LIKE @{key} ");
+            }
+            else
+            {
+                _sqlStr?.Append($" AND {key} LIKE @{key} ");
+            }
+            _sqlParams?.Add($"@{key}", $"%{value}%");
+        }
+
     }
 }
