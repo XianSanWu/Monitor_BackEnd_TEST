@@ -46,5 +46,25 @@ namespace WebAPi.Controllers
             #endregion
 
         }
+
+        /// <summary>
+        /// 取得卡夫卡工作量
+        /// </summary>
+        /// <param name="channel">來源(EDM/SMS/APP)</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [Tags("WorkflowSteps")]  //分組(可多標籤)        
+        [HttpPost("GetKafkaLag")]
+        public async Task<ResultResponse<WorkflowStepsKafkaResponse>> GetKafkaLag(WorkflowStepsKafkaRequest req, CancellationToken cancellationToken)
+        {
+            var result = new WorkflowStepsKafkaResponse();
+            #region 流程
+            result = await _workflowStepsService.GetKafkaLag(req, _config, cancellationToken).ConfigureAwait(false);
+            
+            return SuccessResult(result);
+            #endregion
+        }
+
+
     }
 }

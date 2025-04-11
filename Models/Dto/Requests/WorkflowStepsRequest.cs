@@ -20,5 +20,10 @@ namespace Models.Dto.Requests
             public string? Channel { get; set; }
         }
 
+        public class WorkflowStepsKafkaRequest
+        {
+            public string? Channel { get; set; }
+        }
+
     }
 }

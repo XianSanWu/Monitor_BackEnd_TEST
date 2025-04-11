@@ -16,6 +16,12 @@ namespace Services.Interfaces
         /// <returns></returns>
         Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default);
 
-       
+        /// <summary>
+        /// 取得卡夫卡工作量
+        /// </summary>
+        /// <param name="_config"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<WorkflowStepsKafkaResponse> GetKafkaLag(WorkflowStepsKafkaRequest req, IConfiguration _config, CancellationToken cancellationToken = default);
     }
 }

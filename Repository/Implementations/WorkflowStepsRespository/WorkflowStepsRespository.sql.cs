@@ -1,14 +1,8 @@
 ﻿using Dapper;
 using Models.Entities;
-using Repository.Implementations;
 using Repository.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Utilities.Utilities;
-using YamlDotNet.Core;
 using static Models.Dto.Requests.WorkflowStepsRequest;
 
 namespace Repository.Implementations.WorkflowStepsRespository
@@ -98,7 +92,7 @@ namespace Repository.Implementations.WorkflowStepsRespository
             //}
             #endregion
 
-            //設定SQL排序
+            #region  設定SQL排序
             if (searchReq.SortModel != null &&
                 !string.IsNullOrWhiteSpace(searchReq.SortModel.Key) &&
                 !string.IsNullOrWhiteSpace(searchReq.SortModel.Value) &&
@@ -111,7 +105,7 @@ namespace Repository.Implementations.WorkflowStepsRespository
             {
                 _sqlOrderByStr = $" ORDER BY CreateAt DESC ";
             }
-
+            #endregion
 
             return true;
         }

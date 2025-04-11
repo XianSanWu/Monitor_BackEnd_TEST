@@ -17,7 +17,20 @@ namespace Models.Dto.Requests.Validation
 #pragma warning restore CS8602 // 可能 null 參考的取值 (dereference)。
 
             }
+
         }
+
+        public class WorkflowStepsKafkaRequestValidator : AbstractValidator<WorkflowStepsKafkaRequest>
+        {
+            public WorkflowStepsKafkaRequestValidator()
+            {
+#pragma warning disable CS8602 // 可能 null 參考的取值 (dereference)。
+                RuleFor(x => x.Channel).NotNull().NotEmpty().WithMessage("來源不可空白");
+#pragma warning restore CS8602 // 可能 null 參考的取值 (dereference)。
+            }
+
+        }
+
 
 
     }

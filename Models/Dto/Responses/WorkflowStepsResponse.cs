@@ -18,7 +18,7 @@ namespace Models.Dto.Responses
             #endregion
 
             /// <summary> 查詢結果[欄位] </summary>
-            public class WorkflowStepsSearchResponse 
+            public class WorkflowStepsSearchResponse
             {
                 /// <summary>主鍵</summary>
                 public int SN { get; set; }
@@ -77,7 +77,26 @@ namespace Models.Dto.Responses
                 /// <summary>群發更新時間</summary>
                 public DateTime GroupSendUpdateAt { get; set; }
             }
-            #endregion
+
         }
+        #endregion
+
+
+        #region 卡夫卡資料回傳
+        public class WorkflowStepsKafkaResponse
+        {
+            public List<KafkaLagInfo> PartitionLags { get; set; } = [];
+            public long TotalLag { get; set; }
+
+            public class KafkaLagInfo
+            {
+                public int Partition { get; set; }
+                public long CommittedOffset { get; set; }
+                public long HighWatermark { get; set; }
+                public long Lag { get; set; }
+            }
+
+        }
+        #endregion
     }
 }
