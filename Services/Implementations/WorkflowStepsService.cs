@@ -35,7 +35,11 @@ namespace Services.Implementations
             #endregion
 
             #region 流程
-            using (IDbHelper dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection))
+            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+#if DEBUG
+            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+#endif
+            using (IDbHelper dbHelper = CDP_dbHelper)
             {
                 IWorkflowStepsRespository _wfsRp = new WorkflowStepsRespository(dbHelper.UnitOfWork, mapper);
                 result = await _wfsRp.QueryWorkflowStepsSearchList(searchReq, cancellationToken).ConfigureAwait(false);
