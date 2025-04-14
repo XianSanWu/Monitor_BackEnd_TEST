@@ -75,27 +75,6 @@ namespace Services.Implementations
                         HighWatermark = 2025,
                         Lag = 25
                     },
-                    new KafkaLagInfo
-                    {
-                        Partition = 1,
-                        CommittedOffset = 2000,
-                        HighWatermark = 2025,
-                        Lag = 25
-                    },
-                    new KafkaLagInfo
-                    {
-                        Partition = 1,
-                        CommittedOffset = 2000,
-                        HighWatermark = 2025,
-                        Lag = 25
-                    },
-                    new KafkaLagInfo
-                    {
-                        Partition = 1,
-                        CommittedOffset = 2000,
-                        HighWatermark = 2025,
-                        Lag = 25
-                    }
                 },
                 TotalLag = 33
             });
