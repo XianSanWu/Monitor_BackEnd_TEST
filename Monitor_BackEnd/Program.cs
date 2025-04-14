@@ -137,11 +137,18 @@ try
     #region 資料庫分類
     builder.Services.AddHealthChecks()
         .AddCheck(
-            "資料庫連線",
+            "預設資料庫連線",
             new SqlConnectionHealthCheck((builder.Configuration["ConnectionStrings:DefaultConnection"] ?? "")),
             HealthStatus.Unhealthy,
-            tags: ["db-check"]);
+            tags: ["db-check", "db-default"])
+
+        .AddCheck(
+            "CDP資料庫連線",
+            new SqlConnectionHealthCheck((builder.Configuration["ConnectionStrings:Cdp"] ?? "")),
+            HealthStatus.Unhealthy,
+            tags: ["db-check", "db-cdp"]);
     #endregion
+
     #region API分類
     builder.Services.AddHealthChecks()
         .AddCheck<SampleHealthCheck>(
