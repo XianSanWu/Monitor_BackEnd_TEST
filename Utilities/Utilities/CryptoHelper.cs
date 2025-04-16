@@ -46,10 +46,5 @@ namespace Utilities.Utilities
         }
     }
 
-    public class EncryptionSettings
-    {
-        public string? AESKey { get; set; }
-        public string? AESIV { get; set; }
-    }
 }
 
