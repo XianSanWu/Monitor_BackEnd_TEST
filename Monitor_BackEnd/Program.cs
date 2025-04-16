@@ -137,21 +137,8 @@ try
     #region 資料庫分類
     var key = builder.Configuration["EncryptionSettings:AESKey"] ?? "";
     var iv = builder.Configuration["EncryptionSettings:AESIV"] ?? "";
-    Log.Information("=================================================");
-    Log.Information(key);
-    Log.Information(iv);
-    Log.Information("=================================================");
     var db_default = CryptoHelper.Decrypt(Base64Util.Decode(builder.Configuration["ConnectionStrings:DefaultConnection"] ?? ""), key, iv);
     var db_cdp = CryptoHelper.Decrypt(Base64Util.Decode(builder.Configuration["ConnectionStrings:Cdp"] ?? ""), key, iv);
-    //Log.Information("=================================================");
-    //Log.Information(db_default);
-    //Log.Information(db_cdp);
-    //Log.Information("=================================================");
-
-    //Log.Information("=================================================");
-    //Log.Information((builder.Configuration["ConnectionStrings:DefaultConnection"] ?? ""));
-    //Log.Information((builder.Configuration["ConnectionStrings:Cdp"] ?? ""));
-    //Log.Information("=================================================");
 
     builder.Services.AddHealthChecks()
         .AddCheck(
