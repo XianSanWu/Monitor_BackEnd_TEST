@@ -89,10 +89,10 @@ namespace Services.Implementations
             {
                 var result = new WorkflowStepsKafkaResponse();
 
-                var _topic = _config.GetConnectionString("KafkaBootstrapServers");
-                var _bootstrapServers = _config.GetConnectionString("KafkaBootstrapServers");
-                var _maxPollIntervalMs = int.Parse(_config.GetConnectionString("MaxPollIntervalMs") ?? "0");
-                var _consumeTimeSpan = int.Parse(_config.GetConnectionString("ConsumeTimeSpan") ?? "0");
+                var _topic = _config.GetValue<string>("Kafka:Topic");
+                var _bootstrapServers = _config.GetValue<string>("Kafka:BootstrapServers");
+                var _maxPollIntervalMs = int.Parse(_config.GetValue<string>("Kafka:MaxPollIntervalMs") ?? "0");
+                var _consumeTimeSpan = int.Parse(_config.GetValue<string>("Kafka:ConsumeTimeSpan") ?? "0");
 
                 var consumerConfig = new ConsumerConfig
                 {

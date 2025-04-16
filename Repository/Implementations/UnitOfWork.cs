@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Models.Enums;
 using Repository.Interfaces;
 using System.Data.Common;
+using Utilities.Utilities;
 
 namespace Repository.Implementations
 {
@@ -35,8 +36,29 @@ namespace Repository.Implementations
                     break;
             }
 
+            var dbConnString = (_dbConnString ?? "");
+            var key = "";
+            var iv = "";
+            try
+            {
+                key = _config["EncryptionSettings:AESKey"]!;
+                iv = _config["EncryptionSettings:AESIV"]!;
+                //key = _config.GetValue<string>("EncryptionSettings:AESKey");
+                //iv = _config.GetValue<string>("EncryptionSettings:AESIV");
+
+                dbConnString = Base64Util.Decode(dbConnString);
+                dbConnString = CryptoHelper.Decrypt(dbConnString, key, iv);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(key);
+                Console.WriteLine(iv);
+                throw new InvalidOperationException("連線字串解密失敗，請檢查 Key/IV 或格式", ex);
+            }
+
             #region 建立和管理 SqlConnection 類別使用之連接字串的內容          
-            SqlConnectionStringBuilder SqlConnBuilder = new(_dbConnString)
+            SqlConnectionStringBuilder SqlConnBuilder = new(dbConnString)
             {
                 Pooling = true,
                 PoolBlockingPeriod = PoolBlockingPeriod.NeverBlock,

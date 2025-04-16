@@ -4,7 +4,6 @@ using Serilog.Events;
 using Services.Interfaces;
 using WebAPi.Profile;
 using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using HealthChecks.UI.Client;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -16,6 +15,7 @@ using static Utilities.Monitor.HealthCheckHelper;
 using Repository.Interfaces;
 using FluentValidation.AspNetCore;
 using WebAPi.Middleware;
+using Utilities.Utilities;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -135,16 +135,40 @@ try
 
     #region 檢康檢查邏輯
     #region 資料庫分類
+    var key = builder.Configuration["EncryptionSettings:AESKey"] ?? "";
+    var iv = builder.Configuration["EncryptionSettings:AESIV"] ?? "";
+    Log.Information("=================================================");
+    Log.Information(key);
+    Log.Information(iv);
+    Log.Information("=================================================");
+    var db_default = CryptoHelper.Decrypt(Base64Util.Decode(builder.Configuration["ConnectionStrings:DefaultConnection"] ?? ""), key, iv);
+    var db_cdp = CryptoHelper.Decrypt(Base64Util.Decode(builder.Configuration["ConnectionStrings:Cdp"] ?? ""), key, iv);
+    //Log.Information("=================================================");
+    //Log.Information(db_default);
+    //Log.Information(db_cdp);
+    //Log.Information("=================================================");
+
+    //Log.Information("=================================================");
+    //Log.Information((builder.Configuration["ConnectionStrings:DefaultConnection"] ?? ""));
+    //Log.Information((builder.Configuration["ConnectionStrings:Cdp"] ?? ""));
+    //Log.Information("=================================================");
+
     builder.Services.AddHealthChecks()
         .AddCheck(
             "預設資料庫連線",
-            new SqlConnectionHealthCheck((builder.Configuration["ConnectionStrings:DefaultConnection"] ?? "")),
+            new SqlConnectionHealthCheck(
+                db_default
+                //(builder.Configuration["ConnectionStrings:DefaultConnection"] ?? "")
+                ),
             HealthStatus.Unhealthy,
             tags: ["db-check", "db-default"])
 
         .AddCheck(
             "CDP資料庫連線",
-            new SqlConnectionHealthCheck((builder.Configuration["ConnectionStrings:Cdp"] ?? "")),
+            new SqlConnectionHealthCheck(
+                db_cdp
+                //(builder.Configuration["ConnectionStrings:Cdp"] ?? "")
+                ),
             HealthStatus.Unhealthy,
             tags: ["db-check", "db-cdp"]);
     #endregion
