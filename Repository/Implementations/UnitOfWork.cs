@@ -36,11 +36,10 @@ namespace Repository.Implementations
                     break;
             }
 
+            #region 建立和管理 SqlConnection 類別使用之連接字串的內容          
             var key = _config["EncryptionSettings:AESKey"]!;
             var iv = _config["EncryptionSettings:AESIV"]!;
             var dbConnString = CryptoHelper.Decrypt(Base64Util.Decode((_dbConnString ?? "")), key, iv);
-
-            #region 建立和管理 SqlConnection 類別使用之連接字串的內容          
             SqlConnectionStringBuilder SqlConnBuilder = new(dbConnString)
             {
                 Pooling = true,

@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Confluent.Kafka;
 using Services.Interfaces;
-using static Models.Dto.Requests.Validation.WorkflowStepsRequestValidator;
 
 namespace WebAPi.Controllers
 {

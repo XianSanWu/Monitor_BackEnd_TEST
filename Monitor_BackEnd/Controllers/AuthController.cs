@@ -1,5 +1,4 @@
 using AutoMapper;
-using Models.Dto.Requests.Validation;
 using Services.Interfaces;
 using WebAPi.Controllers;
 using static Models.Dto.Requests.Validation.AuthRequestValidator;

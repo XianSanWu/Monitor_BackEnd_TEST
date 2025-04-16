@@ -1,5 +1,4 @@
-﻿
-namespace Models.Entities
+﻿namespace Models.Entities
 {
     public class BatchSendHistory
     {

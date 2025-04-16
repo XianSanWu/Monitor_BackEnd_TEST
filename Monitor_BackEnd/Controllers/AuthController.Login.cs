@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using FluentValidation.Results;
 using WebAPi.Controllers;
 using Models.Dto.Responses;
 using static Models.Dto.Requests.AuthRequest;
