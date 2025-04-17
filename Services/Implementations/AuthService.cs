@@ -9,13 +9,11 @@ namespace Services.Implementations
 {
     public class AuthService(
         ILogger<AuthService> logger,
-        IMapper mapper,
-        IConfiguration configuration
+        IMapper mapper
             ) : IAuthService
     {
         private ILogger<AuthService> _logger = logger;
         private readonly IMapper _mapper = mapper;
-        private readonly IConfiguration _config = configuration;
 
         /// <summary>
         /// 設定兩個帳號
@@ -26,6 +24,13 @@ namespace Services.Implementations
             { "user", "dXNlcg==" }
         };
 
+        /// <summary>
+        /// 登入驗證
+        /// </summary>
+        /// <param name="LoginReq"></param>
+        /// <param name="_config"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<bool> Login(LoginRequest LoginReq, IConfiguration _config, CancellationToken cancellationToken = default)
         {
             await Task.Delay(100, cancellationToken);

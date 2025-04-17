@@ -54,7 +54,10 @@ namespace WebAPi.Controllers
         [HttpPost("GetKafkaLag")]
         public async Task<ResultResponse<WorkflowStepsKafkaResponse>> GetKafkaLag(WorkflowStepsKafkaRequest req, CancellationToken cancellationToken)
         {
+            #region 參數宣告
             var result = new WorkflowStepsKafkaResponse();
+            #endregion
+
             #region 流程
             result = await _workflowStepsService.GetKafkaLag(req, _config, cancellationToken).ConfigureAwait(false);
             

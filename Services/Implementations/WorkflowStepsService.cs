@@ -19,6 +19,13 @@ namespace Services.Implementations
     {
         private readonly ILogger<WorkflowStepsService> _logger = logger;
 
+        /// <summary>
+        /// 工作進度查詢
+        /// </summary>
+        /// <param name="searchReq"></param>
+        /// <param name="_config"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
@@ -41,6 +48,13 @@ namespace Services.Implementations
             #endregion
         }
 
+        /// <summary>
+        /// 取得卡夫卡工作量
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="_config"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<WorkflowStepsKafkaResponse> GetKafkaLag(WorkflowStepsKafkaRequest req, IConfiguration _config, CancellationToken cancellationToken = default)
         {
 
