@@ -83,8 +83,8 @@ namespace Services.Implementations
 
                 var _topic = _config.GetValue<string>("Kafka:Topic");
                 var _bootstrapServers = _config.GetValue<string>("Kafka:BootstrapServers");
-                var _maxPollIntervalMs = int.Parse(_config.GetValue<string>("Kafka:MaxPollIntervalMs") ?? "0");
-                var _consumeTimeSpan = int.Parse(_config.GetValue<string>("Kafka:ConsumeTimeSpan") ?? "0");
+                var _maxPollIntervalMs = _config.GetValue<int>("Kafka:MaxPollIntervalMs");
+                var _consumeTimeSpan = _config.GetValue<int>("Kafka:ConsumeTimeSpan");
 
                 var consumerConfig = new ConsumerConfig
                 {
