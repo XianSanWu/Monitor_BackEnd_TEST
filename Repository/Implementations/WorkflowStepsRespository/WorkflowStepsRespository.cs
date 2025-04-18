@@ -11,6 +11,12 @@ namespace Repository.Implementations.WorkflowStepsRespository
     public partial class WorkflowStepsRespository(IUnitOfWork unitOfWork, IMapper mapper)
         : BaseRepository(unitOfWork, mapper), IWorkflowStepsRespository
     {
+        /// <summary>
+        /// 工作進度查詢DB
+        /// </summary>
+        /// <param name="searchReq"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default)
         {
             #region 參數宣告

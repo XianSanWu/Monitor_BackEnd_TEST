@@ -13,10 +13,9 @@ namespace Repository.Interfaces
     public interface IWorkflowStepsRespository
     {
         /// <summary>
-        /// 工作進度查詢
+        /// 工作進度查詢DB
         /// </summary>
         /// <param name="searchReq"></param>
-        /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default);
