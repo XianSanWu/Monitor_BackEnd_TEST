@@ -33,7 +33,7 @@ namespace Services.Implementations
         /// <returns></returns>
         public async Task<bool> Login(LoginRequest LoginReq, IConfiguration _config, CancellationToken cancellationToken = default)
         {
-            await Task.Delay(100, cancellationToken);
+            await Task.Delay(100, cancellationToken).ConfigureAwait(false);
 
             // 驗證帳號密碼
             return FakeUsers.TryGetValue(key: (LoginReq.UserName ?? ""), value: out var password) &&

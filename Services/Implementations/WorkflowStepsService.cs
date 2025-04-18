@@ -140,7 +140,7 @@ namespace Services.Implementations
                 }
 
                 return result;
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
 
         }
 

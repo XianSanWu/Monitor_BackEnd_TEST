@@ -4,7 +4,11 @@ namespace Utilities.Utilities
 {
     public class Reflection
     {
-        // 使用反射來獲取模型的有效欄位名稱
+        /// <summary>
+        /// 使用反射來獲取模型的有效欄位名稱
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static HashSet<string> GetValidColumns<T>()
         {
             var validColumns = new HashSet<string>();
@@ -21,7 +25,12 @@ namespace Utilities.Utilities
             return validColumns;
         }
 
-        // 使用反射來獲取模型的有效欄位名稱及其對應的值
+        /// <summary>
+        /// 使用反射來獲取模型的有效欄位名稱及其對應的值
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public static Dictionary<string, object?> GetValidColumnsWithValues<T>(T model)
         {
             var validColumns = new Dictionary<string, object?>();
