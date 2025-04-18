@@ -14,7 +14,7 @@ namespace Repository.Implementations.WorkflowStepsRespository
         /// </summary>
         /// <param name="searchReq"></param>
         /// <returns></returns>
-        private bool QueryWorkflowSql(WorkflowStepsSearchListRequest searchReq)
+        private void QueryWorkflowSql(WorkflowStepsSearchListRequest searchReq)
         {
             _sqlStr = new StringBuilder();
             _sqlStr.Append(@" SELECT * FROM Workflow WITH (NOLOCK) WHERE 1=1 ");
@@ -112,7 +112,6 @@ namespace Repository.Implementations.WorkflowStepsRespository
             }
             #endregion
 
-            return true;
         }
 
     }
