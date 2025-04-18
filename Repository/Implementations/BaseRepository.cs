@@ -188,7 +188,7 @@ namespace Repository.Implementations
         /// <param name="validColumns"></param>
         protected void AppendFilterCondition(string? key, object? value, HashSet<string>? validColumns)
         {
-            if (string.IsNullOrWhiteSpace(key) || value == null || string.IsNullOrWhiteSpace(value.ToString()))
+            if (string.IsNullOrWhiteSpace(key) || value == null || string.IsNullOrWhiteSpace(value?.ToString()))
                 return;
 
             if (validColumns != null && !validColumns.Contains(key, StringComparer.OrdinalIgnoreCase))

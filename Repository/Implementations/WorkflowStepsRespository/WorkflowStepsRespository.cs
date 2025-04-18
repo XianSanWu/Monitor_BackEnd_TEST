@@ -26,6 +26,11 @@ namespace Repository.Implementations.WorkflowStepsRespository
             #endregion
 
             #region 流程
+
+            // 在執行前檢查是否有取消的需求
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // 先組合 SQL 語句
             QueryWorkflowSql(searchReq);
 
             result.Page = searchReq.Page;
