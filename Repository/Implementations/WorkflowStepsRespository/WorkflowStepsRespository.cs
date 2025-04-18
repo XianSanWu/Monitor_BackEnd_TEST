@@ -26,7 +26,7 @@ namespace Repository.Implementations.WorkflowStepsRespository
             #endregion
 
             #region 流程
-            var sql = QueryWorkflowSql(searchReq);
+            QueryWorkflowSql(searchReq);
 
             result.Page = searchReq.Page;
             result.SearchItem = new List<WorkflowStepsSearchResponse>();
