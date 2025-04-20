@@ -1,0 +1,36 @@
+DECLARE @i INT = 1
+
+WHILE @i <= 52
+BEGIN
+    INSERT INTO [dbo].[Workflow] (
+        [WorkflowUuid], [SendUuid], [BatchId], [CdpUuid], [ActivityId], [ActivityName],
+        [ActivityStatus], [NodeId], [NodeName], [Channel], [ChannelType],
+        [UploadFileName], [ProgressStatus], [CreateAt], [UpdateAt],
+        [JourneyCreateAt], [JourneyUpdateAt], [JourneyFinishAt],
+        [GroupSendCreateAt], [GroupSendUpdateAt]
+    )
+    VALUES (
+        NEWID(), -- WorkflowUuid
+        CONCAT(N'Send-', @i), -- SendUuid
+        CONCAT(N'Batch-', @i), -- BatchId
+        CONCAT(N'CDP-', @i), -- CdpUuid
+        CONCAT(N'Act-', @i), -- ActivityId
+        CONCAT(N'活動名稱-', @i), -- ActivityName
+        CASE WHEN @i % 3 = 0 THEN N'已完成' ELSE N'進行中' END, -- ActivityStatus
+        CONCAT(N'Node-', @i), -- NodeId
+        CASE WHEN @i % 2 = 0 THEN N'發送 Email' ELSE N'發送簡訊' END, -- NodeName
+        CASE WHEN @i % 2 = 0 THEN N'EDM' ELSE N'SMS' END, -- Channel
+        CASE WHEN @i % 2 = 0 THEN N'旅程' ELSE N'群發' END, -- ChannelType
+        CONCAT(N'upload_', @i, '.csv'), -- UploadFileName
+        CASE WHEN @i % 4 = 0 THEN N'CDP' ELSE N'MailHunter' END, -- ProgressStatus
+        GETDATE(), -- CreateAt
+        GETDATE(), -- UpdateAt
+        DATEADD(DAY, -@i, GETDATE()), -- JourneyCreateAt
+        DATEADD(DAY, -@i + 1, GETDATE()), -- JourneyUpdateAt
+        DATEADD(DAY, -@i + 2, GETDATE()), -- JourneyFinishAt
+        DATEADD(DAY, -@i, GETDATE()), -- GroupSendCreateAt
+        DATEADD(DAY, -@i + 1, GETDATE()) -- GroupSendUpdateAt
+    )
+
+    SET @i = @i + 1
+END

@@ -27,6 +27,9 @@ namespace Models.Dto.Responses
                 /// <summary>批次 ID</summary>
                 public string? BatchId { get; set; }
 
+                /// <summary>CDP 批次 ID</summary>
+                public string? CdpUuid { get; set; }
+
                 /// <summary>旅程 ID</summary>
                 public string? ActivityId { get; set; }
 
@@ -51,8 +54,8 @@ namespace Models.Dto.Responses
                 /// <summary>上傳檔名</summary>
                 public string? UploadFileName { get; set; }
 
-                /// <summary>狀態</summary>
-                public string? Status { get; set; }
+                /// <summary>進度狀態</summary>
+                public string? ProgressStatus { get; set; }
 
                 /// <summary>建立時間</summary>
                 public DateTime CreateAt { get; set; }
@@ -66,11 +69,15 @@ namespace Models.Dto.Responses
                 /// <summary>旅程更新時間</summary>
                 public DateTime JourneyUpdateAt { get; set; }
 
+                /// <summary>旅程完成時間</summary>
+                public DateTime JourneyFinishAt { get; set; }
+
                 /// <summary>群發建立時間</summary>
                 public DateTime GroupSendCreateAt { get; set; }
 
                 /// <summary>群發更新時間</summary>
                 public DateTime GroupSendUpdateAt { get; set; }
+
             }
 
         }

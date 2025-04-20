@@ -12,6 +12,7 @@ CREATE TABLE [dbo].[Workflow](
 	[WorkflowUuid] [nvarchar](50) NOT NULL DEFAULT NEWID(),
 	[SendUuid] [nvarchar](50) NULL,
 	[BatchId] [nvarchar](50) NULL,
+	[CdpUuid] [nvarchar](50) NULL,
 	[ActivityId] [nvarchar](20) NULL,
 	[ActivityName] [nvarchar](50) NULL,
 	[ActivityStatus] [nvarchar](50) NULL,
@@ -20,134 +21,147 @@ CREATE TABLE [dbo].[Workflow](
 	[Channel] [nvarchar](10) NULL,
 	[ChannelType] [nvarchar](50) NULL,
 	[UploadFileName] [nvarchar](50) NULL,
-	[Status] [nvarchar](50) NULL,
+	[ProgressStatus] [nvarchar](50) NULL,
 	[CreateAt] [datetime] NULL,
 	[UpdateAt] [datetime] NULL,
 	[JourneyCreateAt] [datetime] NULL,
 	[JourneyUpdateAt] [datetime] NULL,
+	[JourneyFinishAt] [datetime] NULL,
 	[GroupSendCreateAt] [datetime] NULL,
 	[GroupSendUpdateAt] [datetime] NULL,
 ) ON [PRIMARY]
 GO
 
--- ç‚ºè¡¨æ·»åŠ æè¿°
+-- ¬°ªí²K¥[´y­z
 EXEC sp_addextendedproperty 
     @name = N'MS_Description', 
-    @value = N'å„²å­˜è¡ŒéŠ·è‡ªå‹•åŒ–æµç¨‹çš„ç™¼é€è¨˜éŒ„ä¸»æª”', 
+    @value = N'Àx¦s¦æ¾P¦Û°Ê¤Æ¬yµ{ªºµo°e°O¿ı¥DÀÉ', 
     @level0type = N'SCHEMA', @level0name = N'dbo',
     @level1type = N'TABLE',  @level1name = N'Workflow'
 GO
 
--- ç‚ºæ¯å€‹æ¬„ä½æ·»åŠ è¨»è§£
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'æµæ°´è™Ÿï¼Œä¸»éµï¼Œè‡ªå‹•å¢é•·',
+-- ¬°¨C­ÓÄæ¦ì²K¥[µù¸Ñ
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'¬y¤ô¸¹¡A¥DÁä¡A¦Û°Ê¼Wªø',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'SN'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'å”¯ä¸€è­˜åˆ¥æ­¤å·¥ä½œæµç¨‹è¨˜éŒ„çš„ UUIDï¼Œé è¨­ç‚º GUID',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'°ß¤@ÃÑ§O¦¹¤u§@¬yµ{°O¿ıªº UUID¡A¹w³]¬° GUID',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'WorkflowUuid'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'ç™¼é€è­˜åˆ¥ç¢¼ï¼Œå”¯ä¸€æ¨™è­˜æ¯æ¬¡ç™¼é€',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'µo°eÃÑ§O½X¡A°ß¤@¼ĞÃÑ¨C¦¸µo°e',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'SendUuid'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'æ‰¹æ¬¡ IDï¼Œæ‰¹æ¬¡è­˜åˆ¥ç¢¼',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'§å¦¸ ID¡A§å¦¸ÃÑ§O½X',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'BatchId'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'æ—…ç¨‹/ç¾¤ç™¼ IDï¼Œæ—…ç¨‹/ç¾¤ç™¼è­˜åˆ¥ç¢¼',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'CDP§å¦¸ ID¡ACDP§å¦¸ÃÑ§O½X',
+    @level0type = N'SCHEMA', @level0name = N'dbo', 
+    @level1type = N'TABLE', @level1name = N'Workflow', 
+    @level2type = N'COLUMN', @level2name = N'CdpUuid'
+GO
+
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'®Èµ{/¸sµo ID¡A®Èµ{/¸sµoÃÑ§O½X',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'ActivityId'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'æ—…ç¨‹/ç¾¤ç™¼åç¨±',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'®Èµ{/¸sµo¦WºÙ',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'ActivityName'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'æ—…ç¨‹/ç¾¤ç™¼ç‹€æ…‹ï¼Œä¾‹å¦‚:é€²è¡Œä¸­ã€å·²å®Œæˆ',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'®Èµ{/¸sµoª¬ºA¡A¨Ò¦p:¶i¦æ¤¤¡B¤w§¹¦¨',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'ActivityStatus'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'ç¯€é»è­˜åˆ¥ç¢¼',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'¸`ÂIÃÑ§O½X',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'NodeId'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'ç¯€é»åç¨±ï¼Œä¾‹å¦‚:ç™¼é€ç°¡è¨Šã€ç™¼é€ Emailã€ç™¼é€APP Push',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'¸`ÂI¦WºÙ¡A¨Ò¦p:µo°eÂ²°T¡Bµo°e Email¡Bµo°eAPP Push',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'NodeName'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'ä¸»è¦é€šè·¯é¡å‹ï¼Œä¾‹å¦‚ SMS, Email,App Push',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'¥D­n³q¸ôÃş«¬¡A¨Ò¦p SMS, Email,App Push',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'Channel'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'è©³ç´°é€šè·¯é¡å‹ï¼Œä¾‹å¦‚ æ—…ç¨‹, ç¾¤ç™¼',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'¸Ô²Ó³q¸ôÃş«¬¡A¨Ò¦p ®Èµ{, ¸sµo',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'ChannelType'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'ä¸Šå‚³çš„æª”æ¡ˆåç¨±',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'¤W¶ÇªºÀÉ®×¦WºÙ',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'UploadFileName'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'ç‹€æ…‹ï¼Œä¾‹å¦‚ æˆåŠŸ, å¤±æ•—, æª”æ¡ˆä¸Šå‚³FTP, MailHunteræ¥æª”ç­‰',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'ª¬ºA¡A¨Ò¦p ¦aCDP,FTP, MailHunter µ¥',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
-    @level2type = N'COLUMN', @level2name = N'Status'
+    @level2type = N'COLUMN', @level2name = N'ProgressStatus'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'è¨˜éŒ„å»ºç«‹æ™‚é–“',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'°O¿ı«Ø¥ß®É¶¡',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'CreateAt'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'è¨˜éŒ„æœ€å¾Œæ›´æ–°æ™‚é–“',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'°O¿ı³Ì«á§ó·s®É¶¡',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'UpdateAt'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'æ—…ç¨‹å»ºç«‹æ™‚é–“',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'®Èµ{«Ø¥ß®É¶¡',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'JourneyCreateAt'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'æ—…ç¨‹æœ€å¾Œæ›´æ–°æ™‚é–“',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'®Èµ{³Ì«á§ó·s®É¶¡',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'JourneyUpdateAt'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'ç¾¤çµ„ç™¼é€å»ºç«‹æ™‚é–“',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'®Èµ{§¹¦¨®É¶¡',
+    @level0type = N'SCHEMA', @level0name = N'dbo', 
+    @level1type = N'TABLE', @level1name = N'Workflow', 
+    @level2type = N'COLUMN', @level2name = N'JourneyFinishAt'
+GO
+
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'¸s²Õµo°e«Ø¥ß®É¶¡',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'GroupSendCreateAt'
 GO
 
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'ç¾¤çµ„ç™¼é€æœ€å¾Œæ›´æ–°æ™‚é–“',
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'¸s²Õµo°e³Ì«á§ó·s®É¶¡',
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'GroupSendUpdateAt'
