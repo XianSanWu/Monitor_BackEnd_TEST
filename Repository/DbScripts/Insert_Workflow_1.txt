@@ -1,36 +1,54 @@
-DECLARE @i INT = 1
+USE [CDP]
+GO
 
-WHILE @i <= 52
+DECLARE @sendUuidIndex INT = 1
+DECLARE @perSendUuidCount INT = 1
+DECLARE @totalCount INT = 1
+
+-- 插入104筆假資料，共用 SendUuid
+WHILE @totalCount <= 104
 BEGIN
+    DECLARE @SendUuid NVARCHAR(50) = CONCAT(N'Send-', @sendUuidIndex)
+
     INSERT INTO [dbo].[Workflow] (
         [WorkflowUuid], [SendUuid], [BatchId], [CdpUuid], [ActivityId], [ActivityName],
         [ActivityStatus], [NodeId], [NodeName], [Channel], [ChannelType],
         [UploadFileName], [ProgressStatus], [CreateAt], [UpdateAt],
         [JourneyCreateAt], [JourneyUpdateAt], [JourneyFinishAt],
-        [GroupSendCreateAt], [GroupSendUpdateAt]
+        [GroupSendCreateAt], [GroupSendUpdateAt], [SendUuidSort]
     )
     VALUES (
         NEWID(), -- WorkflowUuid
-        CONCAT(N'Send-', @i), -- SendUuid
-        CONCAT(N'Batch-', @i), -- BatchId
-        CONCAT(N'CDP-', @i), -- CdpUuid
-        CONCAT(N'Act-', @i), -- ActivityId
-        CONCAT(N'活動名稱-', @i), -- ActivityName
-        CASE WHEN @i % 3 = 0 THEN N'已完成' ELSE N'進行中' END, -- ActivityStatus
-        CONCAT(N'Node-', @i), -- NodeId
-        CASE WHEN @i % 2 = 0 THEN N'發送 Email' ELSE N'發送簡訊' END, -- NodeName
-        CASE WHEN @i % 2 = 0 THEN N'EDM' ELSE N'SMS' END, -- Channel
-        CASE WHEN @i % 2 = 0 THEN N'旅程' ELSE N'群發' END, -- ChannelType
-        CONCAT(N'upload_', @i, '.csv'), -- UploadFileName
-        CASE WHEN @i % 4 = 0 THEN N'CDP' ELSE N'MailHunter' END, -- ProgressStatus
-        GETDATE(), -- CreateAt
+        @SendUuid, -- SendUuid (10 筆相同)
+        CONCAT(N'Batch-', @totalCount), -- BatchId
+        CONCAT(N'CDP-', @totalCount), -- CdpUuid
+        CONCAT(N'Act-', @totalCount), -- ActivityId
+        CONCAT(N'活動名稱-', @totalCount), -- ActivityName
+        CASE WHEN @totalCount % 3 = 0 THEN N'Completed' ELSE N'Progress' END, -- ActivityStatus
+        CONCAT(N'Node-', @totalCount), -- NodeId
+        CASE WHEN @totalCount % 2 = 0 THEN N'發送 Email' ELSE N'發送簡訊' END, -- NodeName
+        CASE WHEN @totalCount % 2 = 0 THEN N'EDM' ELSE N'SMS' END, -- Channel
+        CASE WHEN @totalCount % 4 = 0 THEN N'Journey' ELSE N'GroupSend' END, -- ChannelType
+        CONCAT(N'upload_', @totalCount, N'.csv'), -- UploadFileName
+        CASE WHEN @totalCount % 4 = 0 THEN N'CDP' ELSE N'MailHunter' END, -- ProgressStatus
+        DATEADD(SECOND, @perSendUuidCount, GETDATE()), -- 不同的 CreateAt
         GETDATE(), -- UpdateAt
-        DATEADD(DAY, -@i, GETDATE()), -- JourneyCreateAt
-        DATEADD(DAY, -@i + 1, GETDATE()), -- JourneyUpdateAt
-        DATEADD(DAY, -@i + 2, GETDATE()), -- JourneyFinishAt
-        DATEADD(DAY, -@i, GETDATE()), -- GroupSendCreateAt
-        DATEADD(DAY, -@i + 1, GETDATE()) -- GroupSendUpdateAt
+        DATEADD(DAY, -@totalCount, GETDATE()), -- JourneyCreateAt
+        DATEADD(DAY, -@totalCount + 1, GETDATE()), -- JourneyUpdateAt
+        DATEADD(DAY, -@totalCount + 2, GETDATE()), -- JourneyFinishAt
+        DATEADD(DAY, -@totalCount, GETDATE()), -- GroupSendCreateAt
+        DATEADD(DAY, -@totalCount + 1, GETDATE()), -- GroupSendUpdateAt
+        0 -- SendUuidSort 會由觸發器自動更新
     )
 
-    SET @i = @i + 1
+    -- 控制每個 SendUuid 插入幾筆
+    SET @perSendUuidCount += 1
+    IF @perSendUuidCount > 10
+    BEGIN
+        SET @perSendUuidCount = 1
+        SET @sendUuidIndex += 1
+    END
+
+    SET @totalCount += 1
 END
+GO

@@ -11,6 +11,9 @@
         /// <summary>發送 UUID</summary>
         public string? SendUuid { get; set; }
 
+        /// <summary>SendUuid 自動排序</summary>
+        public int? SendUuidSort { get; set; }
+
         /// <summary>批次 ID</summary>
         public string? BatchId { get; set; }
 
