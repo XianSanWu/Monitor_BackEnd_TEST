@@ -13,6 +13,7 @@ namespace Models.Dto.Requests
         public class WorkflowStepsSearchListFieldModelRequest
         {
             public string? Channel { get; set; }
+            public string? SendUuid { get; set; }
         }
 
         public class WorkflowStepsKafkaRequest
