@@ -191,18 +191,28 @@ namespace Repository.Implementations
             if (string.IsNullOrWhiteSpace(key) || value == null || string.IsNullOrWhiteSpace(value?.ToString()))
                 return;
 
-            if (validColumns != null && !validColumns.Contains(key, StringComparer.OrdinalIgnoreCase))
-                return;
+            if (validColumns != null)
+            {
+                var keyToCompare = key.Split('.').Last(); // 取最後一段
+                if (!validColumns.Contains(keyToCompare, StringComparer.OrdinalIgnoreCase))
+                {
+                    // 不存在於 validColumns 中
+                    return;
+                }
+            }
+
+            var queryKey = key.Replace(".", "_");
 
             if (key.EndsWith("At", StringComparison.OrdinalIgnoreCase))
             {
-                _sqlStr?.Append($" AND CONVERT(VARCHAR, {key}, 121) LIKE @{key} ");
+                _sqlStr?.Append($" AND CONVERT(VARCHAR, {key}, 121) LIKE @{queryKey} ");
             }
             else
             {
-                _sqlStr?.Append($" AND {key} LIKE @{key} ");
+                _sqlStr?.Append($" AND {key} LIKE @{queryKey} ");
             }
-            _sqlParams?.Add($"@{key}", $"%{value}%");
+
+            _sqlParams?.Add($"@{queryKey}", $"%{value}%");
         }
 
     }
