@@ -10,6 +10,67 @@ namespace Repository.Implementations.WorkflowStepsRespository
     public partial class WorkflowStepsRespository : BaseRepository, IWorkflowStepsRespository
     {
         /// <summary>
+        /// 工作進度查詢DB (最後一筆)
+        /// </summary>
+        /// <param name="searchReq"></param>
+        private void QueryWorkflowLastSql(WorkflowStepsSearchListRequest searchReq)
+        {
+            _sqlStr = new StringBuilder();
+            _sqlStr?.Append(@"
+SELECT wf.*
+FROM Workflow wf  WITH (NOLOCK)
+JOIN (
+    SELECT SendUuid, MAX(SendUuidSort) AS MaxSort
+    FROM Workflow  WITH (NOLOCK)
+    GROUP BY SendUuid
+) maxTable
+ ON wf.SendUuid = maxTable.SendUuid
+AND wf.SendUuidSort = maxTable.MaxSort 
+");
+
+            _sqlParams = new DynamicParameters();
+
+            #region  處理 FieldModel 輸入框 (模糊查詢)
+            var columnsWithValues = Reflection.GetValidColumnsWithValues(searchReq.FieldModel);
+
+            foreach (var column in columnsWithValues)
+            {
+                AppendFilterCondition(column.Key, column.Value, null); // 不需要驗證欄位是否有效，因為已從 model 取得
+            }
+            #endregion
+
+            #region  處理 FilterModel Grid (模糊查詢)
+            var validColumns = Reflection.GetValidColumns<WorkflowEntity>();
+
+            if (searchReq.FilterModel != null)
+            {
+                foreach (var filter in searchReq.FilterModel)
+                {
+                    AppendFilterCondition(filter.Key, filter.Value, validColumns);
+                }
+            }
+            #endregion
+
+
+            #region  設定SQL排序
+            if (searchReq.SortModel != null &&
+                !string.IsNullOrWhiteSpace(searchReq.SortModel.Key) &&
+                !string.IsNullOrWhiteSpace(searchReq.SortModel.Value) &&
+                validColumns.Contains(searchReq.SortModel.Key, StringComparer.OrdinalIgnoreCase)
+                )
+            {
+                _sqlOrderByStr = $" ORDER BY {searchReq.SortModel.Key} {searchReq.SortModel.Value} ";
+            }
+            else
+            {
+                _sqlOrderByStr = $" ORDER BY CreateAt DESC ";
+            }
+            #endregion
+
+        }
+
+
+        /// <summary>
         /// 工作進度查詢DB
         /// </summary>
         /// <param name="searchReq"></param>

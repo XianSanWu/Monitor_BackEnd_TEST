@@ -7,6 +7,15 @@ namespace Services.Interfaces
     public interface IWorkflowStepsService
     {
         /// <summary>
+        /// 工作進度查詢(最後一筆)
+        /// </summary>
+        /// <param name="searchReq"></param>
+        /// <param name="_config"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsSearchListRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// 工作進度查詢
         /// </summary>
         /// <param name="searchReq"></param>

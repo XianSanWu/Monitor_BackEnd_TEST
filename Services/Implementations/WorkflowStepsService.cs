@@ -20,6 +20,35 @@ namespace Services.Implementations
         private readonly ILogger<WorkflowStepsService> _logger = logger;
 
         /// <summary>
+        /// 工作進度查詢(最後一筆)
+        /// </summary>
+        /// <param name="searchReq"></param>
+        /// <param name="_config"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsSearchListRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default)
+        {
+            #region 參數宣告
+            var result = new WorkflowStepsSearchListResponse();
+            #endregion
+
+            #region 流程
+            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+#if DEBUG
+            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+#endif
+            using (IDbHelper dbHelper = CDP_dbHelper)
+            {
+                IWorkflowStepsRespository _wfsRp = new WorkflowStepsRespository(dbHelper.UnitOfWork, mapper);
+                result = await _wfsRp.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken).ConfigureAwait(false);
+            }
+
+            return result;
+            #endregion
+
+        }
+
+        /// <summary>
         /// 工作進度查詢
         /// </summary>
         /// <param name="searchReq"></param>
