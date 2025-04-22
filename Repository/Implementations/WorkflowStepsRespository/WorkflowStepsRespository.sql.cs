@@ -1,6 +1,8 @@
 ﻿using Dapper;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.Entities;
 using Repository.Interfaces;
+using System;
 using System.Text;
 using Utilities.Utilities;
 using static Models.Dto.Requests.WorkflowStepsRequest;
@@ -35,7 +37,13 @@ AND wf.SendUuidSort = maxTable.MaxSort
 
             foreach (var column in columnsWithValues)
             {
-                AppendFilterCondition(column.Key, column.Value, null); // 不需要驗證欄位是否有效，因為已從 model 取得
+                var column_key = column.Key;
+                if (new[] { "SendUuid", "SendUuidSort" }.Any(item => item.Equals(column.Key, StringComparison.OrdinalIgnoreCase)))
+                {
+                    column_key = $"wf.{column.Key}";
+                }
+
+                AppendFilterCondition(column_key, column.Value, null); // 不需要驗證欄位是否有效，因為已從 model 取得
             }
             #endregion
 
@@ -46,7 +54,12 @@ AND wf.SendUuidSort = maxTable.MaxSort
             {
                 foreach (var filter in searchReq.FilterModel)
                 {
-                    AppendFilterCondition(filter.Key, filter.Value, validColumns);
+                    var filter_key = filter.Key;
+                    if (new[] { "SendUuid", "SendUuidSort" }.Any(item => item.Equals(filter.Key, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        filter_key = $"wf.{filter.Key}";
+                    }
+                    AppendFilterCondition(filter_key, filter.Value, validColumns);
                 }
             }
             #endregion
