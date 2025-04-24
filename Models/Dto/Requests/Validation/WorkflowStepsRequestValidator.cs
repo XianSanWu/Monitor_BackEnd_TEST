@@ -13,6 +13,9 @@ namespace Models.Dto.Requests.Validation
 
 #pragma warning disable CS8602 // 可能 null 參考的取值 (dereference)。
                 RuleFor(x => x.FieldModel.Channel).NotNull().NotEmpty().WithMessage("來源不可空白");
+                RuleFor(x => x.FieldModel.SendUuid)
+                .Must(sendUuid => string.IsNullOrWhiteSpace(sendUuid) || sendUuid.Length >= 36)
+                .WithMessage("SendUuid 有值時，長度需大於等於 36");
 #pragma warning restore CS8602 // 可能 null 參考的取值 (dereference)。
 
             }
