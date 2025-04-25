@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.Entities;
 using Repository.Interfaces;
-using System;
 using System.Text;
 using Utilities.Utilities;
 using static Models.Dto.Requests.WorkflowStepsRequest;
@@ -11,6 +10,8 @@ namespace Repository.Implementations.WorkflowStepsRespository
 {
     public partial class WorkflowStepsRespository : BaseRepository, IWorkflowStepsRespository
     {
+        private static readonly string[] sourceArray = ["SendUuid", "SendUuidSort"];
+
         /// <summary>
         /// 工作進度查詢DB (最後一筆)
         /// </summary>
@@ -38,7 +39,7 @@ AND wf.SendUuidSort = maxTable.MaxSort
             foreach (var column in columnsWithValues)
             {
                 var column_key = column.Key;
-                if (new[] { "SendUuid", "SendUuidSort" }.Any(item => item.Equals(column.Key, StringComparison.OrdinalIgnoreCase)))
+                if (sourceArray.Any(item => item.Equals(column.Key, StringComparison.OrdinalIgnoreCase)))
                 {
                     column_key = $"wf.{column.Key}";
                 }
@@ -55,7 +56,7 @@ AND wf.SendUuidSort = maxTable.MaxSort
                 foreach (var filter in searchReq.FilterModel)
                 {
                     var filter_key = filter.Key;
-                    if (new[] { "SendUuid", "SendUuidSort" }.Any(item => item.Equals(filter.Key, StringComparison.OrdinalIgnoreCase)))
+                    if (sourceArray.Any(item => item.Equals(filter.Key, StringComparison.OrdinalIgnoreCase)))
                     {
                         filter_key = $"wf.{filter.Key}";
                     }
@@ -72,7 +73,13 @@ AND wf.SendUuidSort = maxTable.MaxSort
                 validColumns.Contains(searchReq.SortModel.Key, StringComparer.OrdinalIgnoreCase)
                 )
             {
-                _sqlOrderByStr = $" ORDER BY {searchReq.SortModel.Key} {searchReq.SortModel.Value} ";
+                var SortKey = searchReq.SortModel.Key;
+                if (sourceArray.Any(item => item.Equals(searchReq.SortModel.Key, StringComparison.OrdinalIgnoreCase)))
+                {
+                    SortKey = $"wf.{searchReq.SortModel.Key}";
+                }
+
+                _sqlOrderByStr = $" ORDER BY {SortKey} {searchReq.SortModel.Value} ";
             }
             else
             {

@@ -103,8 +103,15 @@ try
         //PascalCase 格式設定。
         j.JsonSerializerOptions.PropertyNamingPolicy = null;
 
+        var _Formats = new List<string>
+        {
+            "yyyy-MM-dd HH:mm:ss",
+            "yyyy/MM/dd tt hh:mm:ss",
+            "yyyy-MM-ddTHH:mm:ss",
+            "yyyy/MM/dd HH:mm:ss"
+        };
         //日期格式化處理 (Model 的 property 要 DateTime 型別)
-        j.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter("yyyy-MM-dd HH:mm:ss"));
+        j.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter(_Formats));
     });
     #endregion
 

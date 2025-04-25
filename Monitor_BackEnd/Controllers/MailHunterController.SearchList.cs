@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Models.Dto.Responses;
-using static Models.Dto.Requests.WorkflowStepsRequest;
-using static Models.Dto.Responses.WorkflowStepsResponse;
+using static Models.Dto.Requests.MailHunterRequest;
+using static Models.Dto.Responses.MailHunterResponse;
 
 namespace WebAPi.Controllers
 {
@@ -14,17 +13,17 @@ namespace WebAPi.Controllers
         /// <param name="searchReq">前端傳入的查詢條件</param>
         /// <param name="cancellationToken">取消非同步</param>
         /// <returns name="result">查詢結果 </returns>
-        [Tags("WorkflowSteps")]  //分組(可多標籤)        
-        [HttpPost("SearchLastList")]
-        public async Task<ResultResponse<WorkflowStepsSearchListResponse>> QuerySearchLastList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken)
+        [Tags("MailHunter")]  //分組(可多標籤)        
+        [HttpPost("ProjectMailCountSearchList")]
+        public async Task<ResultResponse<MailHunterSearchListResponse>> GetProjectMailCountList(MailHunterSearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            var result = new WorkflowStepsSearchListResponse();
+            var result = new MailHunterSearchListResponse();
             #endregion
 
             #region 流程
 
-            //result = await _mailHunterService.QueryWorkflowStepsSearchLastList(searchReq, _config, cancellationToken).ConfigureAwait(false);
+            result = await _mailHunterService.GetProjectMailCountList(searchReq, _config, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
 

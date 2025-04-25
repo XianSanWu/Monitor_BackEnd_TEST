@@ -12,6 +12,7 @@ namespace Repository.Implementations
 
         #region 屬性
         //private readonly string? _connectionString;
+        protected StringBuilder? _sqlWithStr;
         protected StringBuilder? _sqlStr;
         protected string? _sqlOrderByStr;
         protected DynamicParameters? _sqlParams;
@@ -59,6 +60,11 @@ namespace Repository.Implementations
                 }
                 else
                 {
+                    if (!string.IsNullOrWhiteSpace(_sqlWithStr?.ToString()))
+                    {
+                        pageSqlStr.AppendLine(_sqlWithStr.ToString());
+                    }
+
                     pageSqlStr.AppendLine(_sqlStr.ToString());
                     pageSqlStr.AppendLine(_sqlOrderByStr);
 
@@ -112,7 +118,7 @@ namespace Repository.Implementations
             }
             else
             {
-                pageSqlStr.AppendLine(string.Format("SELECT COUNT(*) FROM ({0}) AS CNT", _sqlStr));
+                pageSqlStr.AppendLine(string.Format("{0} SELECT COUNT(1) FROM ({1}) AS CNT", _sqlWithStr, _sqlStr));
             }
 
             return pageSqlStr.ToString();
@@ -144,7 +150,7 @@ namespace Repository.Implementations
             //var ConnString = UtilityClassLibrary.AES.DecryptInformation(ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString.ToString());
             using (SqlConnection conn = new(unitOfWork.Connection.ConnectionString))
             {
-                string SqlStr = string.Format("SELECT COUNT(1) as totalCount FROM ({0}) AS CNT", _sqlStr);
+                string SqlStr = string.Format("{0} SELECT COUNT(1) as totalCount FROM ({1}) AS CNT", _sqlWithStr, _sqlStr);
                 await conn.OpenAsync().ConfigureAwait(false);
                 using (SqlCommand cmd = new(SqlStr, conn))
                 {

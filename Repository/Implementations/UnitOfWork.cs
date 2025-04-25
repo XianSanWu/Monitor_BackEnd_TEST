@@ -29,6 +29,11 @@ namespace Repository.Implementations
                         _dbConnString = _config.GetConnectionString(DBConnectionEnum.Cdp.ToString());
                     }
                     break;
+                case DBConnectionEnum.Mail_hunter:
+                    {
+                        _dbConnString = _config.GetConnectionString(DBConnectionEnum.Mail_hunter.ToString());
+                    }
+                    break;
                 default:
                     {
                         _dbConnString = _config.GetConnectionString(DBConnectionEnum.DefaultConnection.ToString());

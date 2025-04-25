@@ -12,5 +12,7 @@
         DefaultConnection,
         /// <summary> CDP </summary>
         Cdp,
+        /// <summary> Mail_hunter </summary>
+        Mail_hunter,
     }
 }
