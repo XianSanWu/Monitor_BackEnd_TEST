@@ -1,20 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
-using Models.Dto.Requests;
-using Models.Dto.Responses;
 using Models.Enums;
-using Repository.Implementations.WorkflowStepsRespository;
 using Repository.Implementations;
 using Repository.Interfaces;
 using Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Models.Dto.Requests.MailHunterRequest;
 using static Models.Dto.Responses.MailHunterResponse;
-using static Models.Dto.Responses.WorkflowStepsResponse;
 using Repository.Implementations.MailHunterRespository;
 using Microsoft.Extensions.Logging;
 
@@ -22,9 +13,11 @@ namespace Services.Implementations
 {
     public class MailHunterService(
         ILogger<MailHunterService> logger,
+        IConfiguration config,
         IMapper mapper) : IMailHunterService
     {
         private readonly ILogger<MailHunterService> _logger = logger;
+        private readonly IConfiguration _config = config;
 
         /// <summary>
         /// 查詢專案發送數量
@@ -34,7 +27,7 @@ namespace Services.Implementations
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default)
+        public async Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListRequest searchReq, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
             //Task allTasks = null; 

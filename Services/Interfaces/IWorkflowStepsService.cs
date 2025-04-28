@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using static Models.Dto.Requests.WorkflowStepsRequest;
+﻿using static Models.Dto.Requests.WorkflowStepsRequest;
 using static Models.Dto.Responses.WorkflowStepsResponse;
 
 namespace Services.Interfaces
@@ -13,7 +12,7 @@ namespace Services.Interfaces
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsSearchListRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default);
+        Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 工作進度查詢
@@ -22,7 +21,7 @@ namespace Services.Interfaces
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default);
+        Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 取得卡夫卡工作量
@@ -30,6 +29,6 @@ namespace Services.Interfaces
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<WorkflowStepsKafkaResponse> GetKafkaLag(WorkflowStepsKafkaRequest req, IConfiguration _config, CancellationToken cancellationToken = default);
+        Task<WorkflowStepsKafkaResponse> GetKafkaLag(WorkflowStepsKafkaRequest req, CancellationToken cancellationToken = default);
     }
 }

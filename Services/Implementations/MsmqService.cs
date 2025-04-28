@@ -9,10 +9,12 @@ using Microsoft.Extensions.Logging;
 namespace Services.Implementations
 {
     public class MsmqService(
-        ILogger<MsmqService> logger
+        ILogger<MsmqService> logger,
+        IConfiguration config
         ) : IMsmqService
     {
-        private ILogger<MsmqService> _logger = logger;
+        private readonly ILogger<MsmqService> _logger = logger;
+        private readonly IConfiguration _config = config;
 
         /// <summary>
         /// 取得全部MSMQ佇列訊息
@@ -21,7 +23,7 @@ namespace Services.Implementations
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<MsmqQueueDetailsResponse> GetAllQueueInfo(MsmqQueueInfoRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default)
+        public async Task<MsmqQueueDetailsResponse> GetAllQueueInfo(MsmqQueueInfoRequest searchReq, CancellationToken cancellationToken = default)
         {
             var result = new MsmqQueueDetailsResponse();
 
@@ -101,8 +103,6 @@ $result | ConvertTo-Json -Depth 5
             result = queues ?? new MsmqQueueDetailsResponse();
             return result;
         }
-
-
 
     }
 }

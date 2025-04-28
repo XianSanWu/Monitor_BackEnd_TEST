@@ -9,11 +9,13 @@ namespace Services.Implementations
 {
     public class AuthService(
         ILogger<AuthService> logger,
+        IConfiguration configuration,
         IMapper mapper
             ) : IAuthService
     {
         private ILogger<AuthService> _logger = logger;
         private readonly IMapper _mapper = mapper;
+        private readonly IConfiguration _config = configuration;
 
         /// <summary>
         /// 設定兩個帳號
@@ -31,9 +33,9 @@ namespace Services.Implementations
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<bool> Login(LoginRequest LoginReq, IConfiguration _config, CancellationToken cancellationToken = default)
+        public async Task<bool> Login(LoginRequest LoginReq, CancellationToken cancellationToken = default)
         {
-            await Task.Delay(2000, cancellationToken).ConfigureAwait(false);
+            await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 
             // 驗證帳號密碼
             return FakeUsers.TryGetValue(key: (LoginReq.UserName ?? ""), value: out var password) &&

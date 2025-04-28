@@ -65,7 +65,7 @@ FROM (
     -- 全年總數（實際是區間內的總數）
     SELECT  
         YEAR(p.project_send_date) AS year,
-        N'區間總數' AS month,
+        N'整年區間總數' AS month,
         COUNT(p.project_id) AS ProjectCount,
         SUM(ISNULL(p.project_origin_total_user, 0)) AS ProjectOriginTotalUser,
         99 AS MonthSort
@@ -133,7 +133,7 @@ WHERE 1=1
             {
                 if ("month".Equals(searchReq.SortModel.Key, StringComparison.OrdinalIgnoreCase))
                 {
-                    searchReq.SortModel.Key = "monthSort";
+                    searchReq.SortModel.Key = "MonthSort";
                 }
 
                 _sqlOrderByStr = $" ORDER BY amp.{searchReq.SortModel.Key} {searchReq.SortModel.Value} ";

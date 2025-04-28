@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using static Models.Dto.Requests.AuthRequest;
+﻿using static Models.Dto.Requests.AuthRequest;
 
 namespace Services.Interfaces
 {
@@ -12,7 +11,7 @@ namespace Services.Interfaces
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<bool> Login(LoginRequest LoginReq, IConfiguration _config, CancellationToken cancellationToken = default);
+        Task<bool> Login(LoginRequest LoginReq, CancellationToken cancellationToken = default);
 
     }
 }

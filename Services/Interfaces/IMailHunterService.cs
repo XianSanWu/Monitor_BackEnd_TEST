@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using static Models.Dto.Requests.MailHunterRequest;
+﻿using static Models.Dto.Requests.MailHunterRequest;
 using static Models.Dto.Responses.MailHunterResponse;
 
 namespace Services.Interfaces
@@ -14,7 +13,7 @@ namespace Services.Interfaces
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default);
+        Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListRequest searchReq, CancellationToken cancellationToken = default);
 
     }
 }

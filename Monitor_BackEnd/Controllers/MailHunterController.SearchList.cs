@@ -23,7 +23,7 @@ namespace WebAPi.Controllers
 
             #region 流程
 
-            result = await _mailHunterService.GetProjectMailCountList(searchReq, _config, cancellationToken).ConfigureAwait(false);
+            result = await _mailHunterService.GetProjectMailCountList(searchReq, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
 

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿//using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Models.Dto.Responses;
 using Models.Enums;
@@ -8,12 +8,12 @@ namespace WebAPi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class BaseController(
-        IConfiguration configuration,
-        IMapper mapper
+        //IConfiguration configuration,
+        //IMapper mapper
             ) : ControllerBase
     {
-        public readonly IConfiguration _config = configuration;
-        public readonly IMapper _mapper = mapper;
+        //public readonly IConfiguration _config = configuration;
+        //public readonly IMapper _mapper = mapper;
 
         /// <summary>
         /// 成功狀態返回結果

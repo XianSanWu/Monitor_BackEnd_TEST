@@ -15,9 +15,11 @@ namespace Services.Implementations
 {
     public class WorkflowStepsService(
         ILogger<WorkflowStepsService> logger,
+        IConfiguration config,
         IMapper mapper) : IWorkflowStepsService
     {
         private readonly ILogger<WorkflowStepsService> _logger = logger;
+        private readonly IConfiguration _config = config;
 
         /// <summary>
         /// 工作進度查詢(最後一筆)
@@ -26,7 +28,7 @@ namespace Services.Implementations
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsSearchListRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default)
+        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
             var result = new WorkflowStepsSearchListResponse();
@@ -55,7 +57,7 @@ namespace Services.Implementations
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default)
+        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
             //Task allTasks = null; 
@@ -84,7 +86,7 @@ namespace Services.Implementations
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<WorkflowStepsKafkaResponse> GetKafkaLag(WorkflowStepsKafkaRequest req, IConfiguration _config, CancellationToken cancellationToken = default)
+        public async Task<WorkflowStepsKafkaResponse> GetKafkaLag(WorkflowStepsKafkaRequest req, CancellationToken cancellationToken = default)
         {
 
             #region 回傳範例

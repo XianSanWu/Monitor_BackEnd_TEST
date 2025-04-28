@@ -23,7 +23,7 @@ namespace WebAPi.Controllers
 
             #region 流程
 
-            result = await _msmqService.GetAllQueueInfo(searchReq, _config, cancellationToken).ConfigureAwait(false);
+            result = await _msmqService.GetAllQueueInfo(searchReq, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
 

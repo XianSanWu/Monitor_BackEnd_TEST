@@ -44,7 +44,7 @@ namespace WebApi.Controllers
             #endregion
 
             #region ¬yµ{
-            result = await _authService.Login(loginReq, _config, cancellationToken).ConfigureAwait(false);
+            result = await _authService.Login(loginReq, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
             #endregion

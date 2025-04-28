@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using static Models.Dto.Requests.MsmqQueueRequest;
+﻿using static Models.Dto.Requests.MsmqQueueRequest;
 using static Models.Dto.Responses.MsmqQueueResponse;
 
 namespace Services.Interfaces
@@ -13,7 +12,7 @@ namespace Services.Interfaces
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<MsmqQueueDetailsResponse> GetAllQueueInfo(MsmqQueueInfoRequest searchReq, IConfiguration _config, CancellationToken cancellationToken = default);
+        Task<MsmqQueueDetailsResponse> GetAllQueueInfo(MsmqQueueInfoRequest searchReq, CancellationToken cancellationToken = default);
 
     }
 }

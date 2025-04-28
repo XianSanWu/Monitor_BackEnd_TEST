@@ -23,7 +23,7 @@ namespace WebAPi.Controllers
 
             #region 流程
 
-            result = await _workflowStepsService.QueryWorkflowStepsSearchLastList(searchReq, _config, cancellationToken).ConfigureAwait(false);
+            result = await _workflowStepsService.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
 
@@ -61,7 +61,7 @@ namespace WebAPi.Controllers
 
             #region 流程
 
-            result = await _workflowStepsService.QueryWorkflowStepsSearchList(searchReq, _config, cancellationToken).ConfigureAwait(false);
+            result = await _workflowStepsService.QueryWorkflowStepsSearchList(searchReq, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
 
@@ -84,8 +84,8 @@ namespace WebAPi.Controllers
             #endregion
 
             #region 流程
-            result = await _workflowStepsService.GetKafkaLag(req, _config, cancellationToken).ConfigureAwait(false);
-            
+            result = await _workflowStepsService.GetKafkaLag(req, cancellationToken).ConfigureAwait(false);
+
             return SuccessResult(result);
             #endregion
         }
