@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35828.75
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPi", "Monitor_BackEnd\WebAPi.csproj", "{5D0BDB3C-931C-4008-BEC7-9BBE8620FC2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "Monitor_BackEnd\WebApi.csproj", "{5D0BDB3C-931C-4008-BEC7-9BBE8620FC2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{65AE8301-99AD-4270-8605-B67385EF55F3}"
 EndProject
