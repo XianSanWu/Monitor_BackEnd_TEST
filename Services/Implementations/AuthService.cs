@@ -38,7 +38,7 @@ namespace Services.Implementations
             await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 
             // 驗證帳號密碼
-            return FakeUsers.TryGetValue(key: (LoginReq.UserName ?? ""), value: out var password) &&
+            return FakeUsers.TryGetValue(key: (LoginReq.UserName ?? string.Empty), value: out var password) &&
                 Base64Util.Decode(LoginReq.Password) == Base64Util.Decode(password);
 
         }

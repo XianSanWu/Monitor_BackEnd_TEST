@@ -95,7 +95,7 @@ $result | ConvertTo-Json -Depth 5
             {
                 if (!string.IsNullOrWhiteSpace(searchReq.QueueName))
                 {
-                    queues.Value = [.. queues.Value.Select(s => s).Where(w => (w.QueueName).Contains(searchReq.QueueName ?? ""))];
+                    queues.Value = [.. queues.Value.Select(s => s).Where(w => (w.QueueName).Contains(searchReq.QueueName ?? string.Empty))];
                     queues.Count = queues.Value.Count();
                 }
             }

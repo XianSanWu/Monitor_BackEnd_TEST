@@ -124,7 +124,7 @@ try
             {
                 // policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader(); 
 
-                var allowCors = (builder.Configuration["AppConfig:Cors"] ?? "").Split(",");
+                var allowCors = (builder.Configuration["AppConfig:Cors"] ?? string.Empty).Split(",");
                 policy.WithOrigins(allowCors).AllowAnyMethod().AllowAnyHeader();
             });
     });
@@ -142,17 +142,17 @@ try
 
     #region 檢康檢查邏輯
     #region 資料庫分類
-    var key = builder.Configuration["EncryptionSettings:AESKey"] ?? "";
-    var iv = builder.Configuration["EncryptionSettings:AESIV"] ?? "";
-    var db_default = CryptoHelper.Decrypt(Base64Util.Decode(builder.Configuration["ConnectionStrings:DefaultConnection"] ?? ""), key, iv);
-    var db_cdp = CryptoHelper.Decrypt(Base64Util.Decode(builder.Configuration["ConnectionStrings:Cdp"] ?? ""), key, iv);
+    var key = builder.Configuration["EncryptionSettings:AESKey"] ?? string.Empty;
+    var iv = builder.Configuration["EncryptionSettings:AESIV"] ?? string.Empty;
+    var db_default = CryptoHelper.Decrypt(Base64Util.Decode(builder.Configuration["ConnectionStrings:DefaultConnection"] ?? string.Empty), key, iv);
+    var db_cdp = CryptoHelper.Decrypt(Base64Util.Decode(builder.Configuration["ConnectionStrings:Cdp"] ?? string.Empty), key, iv);
 
     builder.Services.AddHealthChecks()
         .AddCheck(
             "預設資料庫連線",
             new SqlConnectionHealthCheck(
                 db_default
-                //(builder.Configuration["ConnectionStrings:DefaultConnection"] ?? "")
+                //(builder.Configuration["ConnectionStrings:DefaultConnection"] ?? string.Empty)
                 ),
             HealthStatus.Unhealthy,
             tags: ["db-check", "db-default"])
@@ -161,7 +161,7 @@ try
             "CDP資料庫連線",
             new SqlConnectionHealthCheck(
                 db_cdp
-                //(builder.Configuration["ConnectionStrings:Cdp"] ?? "")
+                //(builder.Configuration["ConnectionStrings:Cdp"] ?? string.Empty)
                 ),
             HealthStatus.Unhealthy,
             tags: ["db-check", "db-cdp"]);
