@@ -36,7 +36,7 @@ namespace Services.Implementations
 
             #region 流程
             var MHU_dbHelper = new DbHelper(_config, DBConnectionEnum.Mail_hunter);
-#if DEBUG
+#if TEST
             MHU_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
 #endif
             using (IDbHelper dbHelper = MHU_dbHelper)

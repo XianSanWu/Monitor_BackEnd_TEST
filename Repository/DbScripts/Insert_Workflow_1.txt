@@ -14,7 +14,7 @@ BEGIN
         [ActivityStatus], [NodeId], [NodeName], [Channel], [ChannelType],
         [UploadFileName], [ProgressStatus], [CreateAt], [UpdateAt],
         [JourneyCreateAt], [JourneyUpdateAt], [JourneyFinishAt],
-        [GroupSendCreateAt], [GroupSendUpdateAt], [SendUuidSort]
+        [GroupSendCreateAt], [GroupSendUpdateAt], [SendUuidSort],[Message]
     )
     VALUES (
         NEWID(), -- WorkflowUuid
@@ -37,7 +37,8 @@ BEGIN
         DATEADD(DAY, -@totalCount + 2, GETDATE()),
         DATEADD(DAY, -@totalCount, GETDATE()),
         DATEADD(DAY, -@totalCount + 1, GETDATE()),
-        0
+        0,
+		NULL
     )
 
     -- 控制每個 SendUuid 插入 10 筆

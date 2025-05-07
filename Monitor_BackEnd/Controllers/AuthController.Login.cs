@@ -23,7 +23,7 @@ namespace WebApi.Controllers
             #endregion
 
             #region Mock
-#if DEBUG
+#if TEST
             //loginReq = new LoginRequest
             //{
             //    UserName = "admin",

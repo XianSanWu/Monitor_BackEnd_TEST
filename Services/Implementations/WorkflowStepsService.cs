@@ -36,7 +36,7 @@ namespace Services.Implementations
 
             #region 流程
             var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
-#if DEBUG
+#if TEST
             CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
 #endif
             using (IDbHelper dbHelper = CDP_dbHelper)
@@ -66,7 +66,7 @@ namespace Services.Implementations
 
             #region 流程
             var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
-#if DEBUG
+#if TEST
             CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
 #endif
             using (IDbHelper dbHelper = CDP_dbHelper)
@@ -90,7 +90,7 @@ namespace Services.Implementations
         {
 
             #region 回傳範例
-#if DEBUG
+#if TEST
             return await Task.FromResult(new WorkflowStepsKafkaResponse
             {
                 PartitionLags = new List<KafkaLagInfo>
