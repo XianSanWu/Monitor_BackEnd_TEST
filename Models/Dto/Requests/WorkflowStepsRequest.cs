@@ -14,6 +14,8 @@ namespace Models.Dto.Requests
         {
             public string? Channel { get; set; }
             public string? SendUuid { get; set; }
+            public string? BatchId { get; set; }
+            public string? SendUuidSort { get; set; }
         }
 
         public class WorkflowStepsKafkaRequest

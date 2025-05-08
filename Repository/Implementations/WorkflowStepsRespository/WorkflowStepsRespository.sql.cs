@@ -21,14 +21,14 @@ namespace Repository.Implementations.WorkflowStepsRespository
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@"
 SELECT wf.*
-FROM Workflow wf  WITH (NOLOCK)
+FROM Workflow wf WITH (NOLOCK)
 JOIN (
-    SELECT SendUuid, MAX(SendUuidSort) AS MaxSort
-    FROM Workflow  WITH (NOLOCK)
-    GROUP BY SendUuid
+    SELECT SendUuidSort, MAX(BatchIdSort) AS MaxBatchIdSort
+    FROM Workflow WITH (NOLOCK)
+    GROUP BY SendUuidSort
 ) maxTable
- ON wf.SendUuid = maxTable.SendUuid
-AND wf.SendUuidSort = maxTable.MaxSort 
+  ON wf.SendUuidSort = maxTable.SendUuidSort
+ AND wf.BatchIdSort = maxTable.MaxBatchIdSort
 ");
 
             _sqlParams = new DynamicParameters();
