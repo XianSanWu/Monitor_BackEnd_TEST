@@ -44,7 +44,7 @@ JOIN (
                     column_key = $"wf.{column.Key}";
                 }
 
-                AppendFilterCondition(column_key, column.Value, null); // 不需要驗證欄位是否有效，因為已從 model 取得
+                AppendFilterConditionEquals(column_key, column.Value, null); // 不需要驗證欄位是否有效，因為已從 model 取得
             }
             #endregion
 
@@ -106,7 +106,7 @@ JOIN (
 
             foreach (var column in columnsWithValues)
             {
-                AppendFilterCondition(column.Key, column.Value, null); // 不需要驗證欄位是否有效，因為已從 model 取得
+                AppendFilterConditionEquals(column.Key, column.Value, null); // 不需要驗證欄位是否有效，因為已從 model 取得
             }
             #endregion
 

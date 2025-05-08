@@ -187,6 +187,42 @@ namespace Repository.Implementations
         }
 
         /// <summary>
+        /// 動態添加欄位條件篩選(必須相等)
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="validColumns"></param>
+        protected void AppendFilterConditionEquals(string? key, object? value, HashSet<string>? validColumns)
+        {
+            if (string.IsNullOrWhiteSpace(key) || value == null || string.IsNullOrWhiteSpace(value?.ToString()))
+                return;
+
+            if (validColumns != null)
+            {
+                var keyToCompare = key.Split('.').Last(); // 取最後一段
+                if (!validColumns.Contains(keyToCompare, StringComparer.OrdinalIgnoreCase))
+                {
+                    // 不存在於 validColumns 中
+                    return;
+                }
+            }
+
+            var queryKey = key.Replace(".", "_");
+
+            if (key.EndsWith("At", StringComparison.OrdinalIgnoreCase))
+            {
+                _sqlStr?.Append($" AND CONVERT(VARCHAR, {key}, 121) LIKE @{queryKey} ");
+                _sqlParams?.Add($"@{queryKey}", $"%{value}%");
+            }
+            else
+            {
+                _sqlStr?.Append($" AND {key} = @{queryKey} ");
+                _sqlParams?.Add($"@{queryKey}", $"{value}");
+            }
+
+        }
+
+        /// <summary>
         /// 動態添加欄位條件篩選
         /// </summary>
         /// <param name="key"></param>
