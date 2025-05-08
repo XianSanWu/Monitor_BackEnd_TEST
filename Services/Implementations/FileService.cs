@@ -103,7 +103,7 @@ namespace Services.Implementations
             }
             catch(Exception ex)
             {
-                _logger.LogError($"GenerateCsvStreamsAsync：EX：{ex}，EX_MSG：{ex.Message}")
+                _logger.LogError($"GenerateCsvStreamsAsync：EX：{ex}，EX_MSG：{ex.Message}");
                 writer?.Dispose();
                 currentStream?.Dispose();
                 throw;
