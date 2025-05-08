@@ -1,0 +1,66 @@
+USE [CDP]
+GO
+
+DECLARE @perSendUuidCount INT = 1
+DECLARE @totalCount INT = 1
+DECLARE @groupCounter INT = 0
+DECLARE @BatchId NVARCHAR(50)
+
+-- 插入104筆假資料
+WHILE @totalCount <= 104
+BEGIN
+SET @groupCounter = (@totalCount - 1) / 10 + 1
+SET @BatchId = CONCAT(N'Batch-', @groupCounter)
+
+DECLARE @AccuCdpTotalCount INT = 0
+DECLARE @MailhunterSuccessCount INT = 0
+
+IF @totalCount % 10 = 9
+BEGIN
+    SET @AccuCdpTotalCount = 888
+    SET @MailhunterSuccessCount = 700
+END
+ELSE IF @totalCount % 10 = 0
+BEGIN
+    SET @AccuCdpTotalCount = 999
+    SET @MailhunterSuccessCount = 800
+END
+
+INSERT INTO [dbo].[Workflow] (
+    [SendUuid], [BatchId], [CdpUuid], [ActivityId], [ActivityName],
+    [ActivityStatus], [NodeId], [NodeName], [Channel], [ChannelType],
+    [UploadFileName], [ProgressStatus], [UpdateAt],
+    [JourneyCreateAt], [JourneyUpdateAt], [JourneyFinishAt],
+    [GroupSendCreateAt], [GroupSendUpdateAt],
+    [AccuCdpTotalCount],[MailhunterSuccessCount]
+)
+VALUES (
+    NEWID(),
+    @BatchId,
+    CONCAT(N'CDP-', @totalCount),
+    CONCAT(N'Act-', @totalCount),
+    CONCAT(N'活動名稱-', @totalCount),
+    CASE WHEN @totalCount % 3 = 0 THEN N'Completed' ELSE N'Progress' END,
+    CONCAT(N'Node-', @totalCount),
+    CASE WHEN @totalCount % 2 = 0 THEN N'發送 Email' ELSE N'發送簡訊' END,
+    CASE WHEN @totalCount % 2 = 0 THEN N'EDM' ELSE N'SMS' END,
+    CASE WHEN @totalCount % 4 = 0 THEN N'Journey' ELSE N'GroupSend' END,
+    CONCAT(N'3333-', @totalCount),
+    CASE 
+    WHEN @totalCount % 10 != 0 THEN 
+        CASE WHEN @totalCount % 4 = 0 THEN N'CDP' ELSE N'MailHunter' END
+    ELSE N'Finish'
+	END,
+    GETDATE(),
+    DATEADD(DAY, -@totalCount, GETDATE()),
+    DATEADD(DAY, -@totalCount + 1, GETDATE()),
+    DATEADD(DAY, -@totalCount + 2, GETDATE()),
+    DATEADD(DAY, -@totalCount, GETDATE()),
+    DATEADD(DAY, -@totalCount + 1, GETDATE()),
+    @AccuCdpTotalCount,
+    @MailhunterSuccessCount
+)
+
+SET @totalCount += 1
+
+END

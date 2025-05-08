@@ -11,8 +11,9 @@ CREATE TABLE [dbo].[Workflow](
 	[SN] [int] IDENTITY(1,1) NOT NULL,
 	[WorkflowUuid] [nvarchar](50) NOT NULL DEFAULT NEWID(),
 	[SendUuid] [nvarchar](50) NULL,
-	[SendUuidSort] INT NULL,
+	[SendUuidSort] INT NULL DEFAULT 0,
 	[BatchId] [nvarchar](50) NULL,
+	[BatchIdSort] INT NULL DEFAULT 0,
 	[CdpUuid] [nvarchar](50) NULL,
 	[ActivityId] [nvarchar](20) NULL,
 	[ActivityName] [nvarchar](50) NULL,
@@ -23,14 +24,16 @@ CREATE TABLE [dbo].[Workflow](
 	[ChannelType] [nvarchar](50) NULL,
 	[UploadFileName] [nvarchar](50) NULL,
 	[ProgressStatus] [nvarchar](50) NULL,
-	[CreateAt] [datetime] NULL,
+	[CreateAt] [datetime] NULL DEFAULT GETDATE(),
 	[UpdateAt] [datetime] NULL,
 	[JourneyCreateAt] [datetime] NULL,
 	[JourneyUpdateAt] [datetime] NULL,
 	[JourneyFinishAt] [datetime] NULL,
 	[GroupSendCreateAt] [datetime] NULL,
 	[GroupSendUpdateAt] [datetime] NULL,
-	[Message] [nvarchar](200) NULL,
+	[AccuCdpTotalCount] [int] NULL DEFAULT 0,
+	[MailhunterSuccessCount] [int] NULL DEFAULT 0,
+	[Message] [nvarchar](200) NULL DEFAULT N'',
 ) ON [PRIMARY]
 GO
 
@@ -71,6 +74,12 @@ EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'§å¦¸ ID¡A§å¦¸Ã
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'BatchId'
+GO
+
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'§å¦¸ ID ÃÑ§O½X±Æ§Ç¡A­«½ÆÃÑ§O½X¦Û°Ê¥[1',
+    @level0type = N'SCHEMA', @level0name = N'dbo', 
+    @level1type = N'TABLE', @level1name = N'Workflow', 
+    @level2type = N'COLUMN', @level2name = N'BatchIdSort'
 GO
 
 EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'CDP§å¦¸ ID¡ACDP§å¦¸ÃÑ§O½X',
@@ -173,6 +182,18 @@ EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'¸s²Õµo°e³Ì«á§ó
     @level0type = N'SCHEMA', @level0name = N'dbo', 
     @level1type = N'TABLE', @level1name = N'Workflow', 
     @level2type = N'COLUMN', @level2name = N'GroupSendUpdateAt'
+GO
+
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'·R»Å¶³ºÝÁ`¼Æ',
+    @level0type = N'SCHEMA', @level0name = N'dbo', 
+    @level1type = N'TABLE', @level1name = N'Workflow', 
+    @level2type = N'COLUMN', @level2name = N'AccuCdpTotalCount'
+GO
+
+EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'Mailhunter¦¨¥\Á`¼Æ',
+    @level0type = N'SCHEMA', @level0name = N'dbo', 
+    @level1type = N'TABLE', @level1name = N'Workflow', 
+    @level2type = N'COLUMN', @level2name = N'MailhunterSuccessCount'
 GO
 
 EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'°T®§',
