@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.Entities;
 using Repository.Interfaces;
 using System.Text;
