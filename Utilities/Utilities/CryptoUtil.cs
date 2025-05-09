@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Utilities.Utilities
 {
-    public static class CryptoHelper
+    public static class CryptoUtil
     {
         /// <summary>
         /// 將字串轉為 aes 編碼

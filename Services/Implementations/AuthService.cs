@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Services.Interfaces;
 using Utilities.Utilities;
 using static Models.Dto.Requests.AuthRequest;
@@ -13,18 +15,13 @@ namespace Services.Implementations
         IMapper mapper
             ) : IAuthService
     {
-        private ILogger<AuthService> _logger = logger;
+        private readonly ILogger<AuthService> _logger = logger;
         private readonly IMapper _mapper = mapper;
         private readonly IConfiguration _config = configuration;
 
-        /// <summary>
-        /// 設定兩個帳號
-        /// </summary>
-        private static readonly Dictionary<string, string> FakeUsers = new()
-        {
-            { "admin", "YWRtaW5faXQ=" },
-            { "user", "dXNlcg==" }
-        };
+        private Dictionary<string, string> Users => _config.GetSection("Users").Get<Dictionary<string, string>>() ?? [];
+        private string key => _config["EncryptionSettings:AESKey"] ?? string.Empty;
+        private string iv => _config["EncryptionSettings:AESIV"] ?? string.Empty;
 
         /// <summary>
         /// 登入驗證
@@ -38,8 +35,8 @@ namespace Services.Implementations
             await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 
             // 驗證帳號密碼
-            return FakeUsers.TryGetValue(key: (LoginReq.UserName ?? string.Empty), value: out var password) &&
-                Base64Util.Decode(LoginReq.Password) == Base64Util.Decode(password);
+            return Users.TryGetValue(key: (LoginReq.UserName ?? string.Empty), value: out var password) &&
+                CryptoUtil.Decrypt(Base64Util.Decode(LoginReq.Password), key, iv) == CryptoUtil.Decrypt(Base64Util.Decode(password), key, iv);
 
         }
     }

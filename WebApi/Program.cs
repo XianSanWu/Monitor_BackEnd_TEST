@@ -33,7 +33,7 @@ var builder = WebApplication.CreateBuilder(args);
 // try catch.. 是 Serilog 用的
 try
 {
-    Serilog.Log.Information("Starting web host");
+    Log.Information("Starting web host");
 
     #region Serilog
     //  Read Serilog config from appsettings.json (https://blog.miniasp.com/post/2021/11/29/How-to-use-Serilog-with-NET-6)
@@ -144,8 +144,8 @@ try
     #region 資料庫分類
     var key = builder.Configuration["EncryptionSettings:AESKey"] ?? string.Empty;
     var iv = builder.Configuration["EncryptionSettings:AESIV"] ?? string.Empty;
-    var db_default = CryptoHelper.Decrypt(Base64Util.Decode(builder.Configuration["ConnectionStrings:DefaultConnection"] ?? string.Empty), key, iv);
-    var db_cdp = CryptoHelper.Decrypt(Base64Util.Decode(builder.Configuration["ConnectionStrings:Cdp"] ?? string.Empty), key, iv);
+    var db_default = CryptoUtil.Decrypt(Base64Util.Decode(builder.Configuration["ConnectionStrings:DefaultConnection"] ?? string.Empty), key, iv);
+    var db_cdp = CryptoUtil.Decrypt(Base64Util.Decode(builder.Configuration["ConnectionStrings:Cdp"] ?? string.Empty), key, iv);
 
     builder.Services.AddHealthChecks()
         .AddCheck(
