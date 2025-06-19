@@ -35,6 +35,8 @@ try
 {
     Log.Information("Starting web host");
 
+    builder.Services.AddMemoryCache();
+
     #region Serilog
     //  Read Serilog config from appsettings.json (https://blog.miniasp.com/post/2021/11/29/How-to-use-Serilog-with-NET-6)
     Log.Logger = new LoggerConfiguration()

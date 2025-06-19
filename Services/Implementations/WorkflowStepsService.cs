@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Confluent.Kafka;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Models.Enums;
@@ -14,12 +15,18 @@ using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsKafkaRespon
 namespace Services.Implementations
 {
     public class WorkflowStepsService(
-        ILogger<WorkflowStepsService> logger,
-        IConfiguration config,
-        IMapper mapper) : IWorkflowStepsService
+     ILogger<WorkflowStepsService> logger,
+     IWorkflowStepsRespository wfsRepository,
+     IConfiguration config,
+     IMemoryCache cache,
+     IMapper mapper) : IWorkflowStepsService
     {
         private readonly ILogger<WorkflowStepsService> _logger = logger;
         private readonly IConfiguration _config = config;
+        private readonly IMemoryCache _cache = cache;
+        private readonly IWorkflowStepsRespository _wfsRepository = wfsRepository;
+
+        private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(10);
 
         /// <summary>
         /// 工作進度查詢(最後一筆)
@@ -35,19 +42,10 @@ namespace Services.Implementations
             #endregion
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
-#if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
-#endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                IWorkflowStepsRespository _wfsRp = new WorkflowStepsRespository(dbHelper.UnitOfWork, mapper);
-                result = await _wfsRp.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken).ConfigureAwait(false);
-            }
-
+            result = await _wfsRepository.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken).ConfigureAwait(false);
+            
             return result;
             #endregion
-
         }
 
         /// <summary>
@@ -85,8 +83,22 @@ namespace Services.Implementations
         /// <param name="req"></param>
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public async Task<WorkflowStepsKafkaResponse> GetKafkaLag(WorkflowStepsKafkaRequest req, CancellationToken cancellationToken = default)
+        {
+            string cacheKey = $"KafkaLag_{req.Channel}";
+
+            if (_cache.TryGetValue(cacheKey, out var value) && value is WorkflowStepsKafkaResponse cachedValue)
+            {
+                _logger.LogInformation("使用 Server 端 Cache 資料");
+                return cachedValue;
+            }
+
+            var result = await GetKafkaLagFromKafka(req, cancellationToken);
+            _cache.Set(cacheKey, result, _cacheDuration);
+            return result;
+        }
+
+        private async Task<WorkflowStepsKafkaResponse> GetKafkaLagFromKafka(WorkflowStepsKafkaRequest req, CancellationToken cancellationToken = default)
         {
 
             #region 回傳範例
@@ -125,7 +137,6 @@ namespace Services.Implementations
             return await Task.Run(() =>
             {
                 var result = new WorkflowStepsKafkaResponse();
-
                 var _topic = _config.GetValue<string>("Kafka:Topic");
                 var _bootstrapServers = _config.GetValue<string>("Kafka:BootstrapServers");
                 var _maxPollIntervalMs = _config.GetValue<int>("Kafka:MaxPollIntervalMs");
@@ -145,7 +156,6 @@ namespace Services.Implementations
                     .Build();
 
                 using var adminClient = new AdminClientBuilder(consumerConfig).Build();
-
                 var metadata = adminClient.GetMetadata(_topic, TimeSpan.FromSeconds(_consumeTimeSpan));
                 var topicMetadata = metadata.Topics.First(t => t.Topic == _topic);
 
@@ -172,9 +182,7 @@ namespace Services.Implementations
 
                 return result;
             }, cancellationToken).ConfigureAwait(false);
-
         }
-
 
         private void ErrorHandler_Kafka(IConsumer<Ignore, string> consumer, Error error)
         {
