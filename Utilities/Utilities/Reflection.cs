@@ -46,5 +46,25 @@ namespace Utilities.Utilities
 
             return validColumns;
         }
+
+        /// <summary>
+        /// 使用反射來獲取模型的有效欄位名稱及其對應的資料 型態 及 值 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static Dictionary<string, (Type PropertyType, object? Value)> GetModelPropertiesWithValues<T>(T model)
+        {
+            var validColumns = new Dictionary<string, (Type, object?)>();
+
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (var property in properties)
+            {
+                validColumns.Add(property.Name, (property.PropertyType, property.GetValue(model)));
+            }
+
+            return validColumns;
+        }
     }
 }

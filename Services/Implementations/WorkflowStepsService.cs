@@ -24,7 +24,7 @@ namespace Services.Implementations
         private readonly ILogger<WorkflowStepsService> _logger = logger;
         private readonly IConfiguration _config = config;
         private readonly IMemoryCache _cache = cache;
-        private readonly IWorkflowStepsRespository _wfsRepository = wfsRepository;
+        //private readonly IWorkflowStepsRespository _wfsRepository = wfsRepository;
 
         private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(10);
 
@@ -42,7 +42,15 @@ namespace Services.Implementations
             #endregion
 
             #region 流程
-            result = await _wfsRepository.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken).ConfigureAwait(false);
+            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+#if TEST
+            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+#endif
+            using (IDbHelper dbHelper = CDP_dbHelper)
+            {
+                IWorkflowStepsRespository _wfsRp = new WorkflowStepsRespository(dbHelper.UnitOfWork, mapper);
+                result = await _wfsRp.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken).ConfigureAwait(false);
+            }
             
             return result;
             #endregion

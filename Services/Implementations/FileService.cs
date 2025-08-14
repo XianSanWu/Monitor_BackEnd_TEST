@@ -9,7 +9,7 @@ namespace Services.Implementations
 {
     public class FileService(
         ILogger<FileService> logger,
-         IConfiguration config,
+        IConfiguration config,
         IMapper mapper
             ) : IFileService
     {
@@ -101,7 +101,7 @@ namespace Services.Implementations
                     streams.Add((currentStream, $"{fileName}_Export_{DateTime.UtcNow:yyyyMMddHHmmss}_{fileIndex}.csv"));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError($"GenerateCsvStreamsAsync：EX：{ex}，EX_MSG：{ex.Message}");
                 writer?.Dispose();

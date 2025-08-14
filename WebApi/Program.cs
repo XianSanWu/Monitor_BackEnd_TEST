@@ -16,6 +16,9 @@ using Repository.Interfaces;
 using FluentValidation.AspNetCore;
 using WebAPi.Middleware;
 using Utilities.Utilities;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -202,6 +205,36 @@ try
 
     #endregion
 
+    #region 讀取 JWT 設定
+    var jwtKeyEnCode = builder.Configuration["Jwt:Key"] ?? string.Empty;
+    var jwtKey = Encoding.UTF8.GetBytes(CryptoUtil.Decrypt(Base64Util.Decode(jwtKeyEnCode), key, iv));
+    var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? string.Empty;
+    var jwtAudience = builder.Configuration["Jwt:Audience"] ?? string.Empty;
+
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ClockSkew = TimeSpan.FromMinutes(1), // 避免時差問題
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(jwtKey)
+        };
+    });
+
+    // 授權
+    builder.Services.AddAuthorization();
+    #endregion
+
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
@@ -279,11 +312,11 @@ try
     });
     #endregion
 
-
     app.UseCors(AllowMyFrontEnd);
 
     app.UseHttpsRedirection();
 
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();
@@ -320,8 +353,7 @@ try
     });
     // HealthChecks UI 網址
     app.MapHealthChecksUI(options => options.UIPath = "/hc-ui");
-    #endregion   
-
+    #endregion
 
     app.Run();
 

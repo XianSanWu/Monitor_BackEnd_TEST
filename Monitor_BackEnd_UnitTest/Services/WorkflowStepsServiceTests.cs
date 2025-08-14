@@ -19,8 +19,8 @@ namespace Monitor_BackEnd_UnitTest.Services
         private readonly Mock<ILogger<WorkflowStepsService>> _mockLogger;
         private readonly Mock<IWorkflowStepsRespository> _mockRepository;
         private readonly Mock<IConfiguration> _mockConfig;
-        private readonly Mock<IMemoryCache> _mockCache;
         private readonly IMapper _mapper;
+        private readonly Mock<IMemoryCache> _mockCache;
 
         public WorkflowStepsServiceTests()
         {

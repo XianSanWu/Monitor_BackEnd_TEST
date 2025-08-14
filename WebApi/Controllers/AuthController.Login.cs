@@ -15,10 +15,10 @@ namespace WebApi.Controllers
         /// <returns></returns>
         [Tags("Auth")]  //分組(可多標籤)        
         [HttpPost("Login")]
-        public async Task<ResultResponse<bool>> Login(LoginRequest loginReq, CancellationToken cancellationToken)
+        public async Task<ResultResponse<AuthResponse>> Login(LoginRequest loginReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            bool result = false;
+            var result = new AuthResponse();
             //ValidationResult loginValidationResult;
             #endregion
 

@@ -1,0 +1,55 @@
+﻿using Models.Dto.Responses;
+using static Models.Dto.Requests.UserRequest;
+using static Models.Dto.Responses.PermissionResponse;
+using static Models.Dto.Responses.UserResponse;
+
+namespace Repository.Interfaces
+{
+    public interface IPermissionRespository
+    {
+        /// <summary>
+        /// 啟用/停用使用者
+        /// </summary>
+        /// <param name="updateReq"></param>
+        /// <param name="cancellationToken"></param>
+        Task<bool> IsUseUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// 取得所有使用者清單列表
+        /// </summary>
+        /// <param name="searchReq"></param>
+        /// <param name="cancellationToken"></param>
+       Task<UserResponse> GetUserListAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken);
+
+
+        // 權限資料存取介面定義
+
+        /// <summary>
+        /// 根據模組、功能與動作查詢 BitValue。
+        /// </summary>
+        Task<int?> GetBitValue(string module, string feature, string action, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action）
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<PermissionSearchListResponse> GetUserPermissionsAsync(string userId, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// 取得所有權限清單列表
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<List<PermissionSearchListResponse>> GetPermissionListAsync(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// 取得單一使用者主檔資訊
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<UserSearchListResponse> GetUserAsync(string userName, CancellationToken cancellationToken);
+    }
+}

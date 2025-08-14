@@ -1,4 +1,5 @@
-﻿using static Models.Dto.Requests.AuthRequest;
+﻿using Models.Dto.Responses;
+using static Models.Dto.Requests.AuthRequest;
 
 namespace Services.Interfaces
 {
@@ -11,7 +12,7 @@ namespace Services.Interfaces
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<bool> Login(LoginRequest LoginReq, CancellationToken cancellationToken = default);
+        Task<AuthResponse> Login(LoginRequest LoginReq, CancellationToken cancellationToken = default);
 
     }
 }

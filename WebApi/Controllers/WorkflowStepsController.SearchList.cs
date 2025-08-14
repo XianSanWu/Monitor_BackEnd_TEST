@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Models.Dto.Responses;
+using WebApi.Attributes;
 using static Models.Dto.Requests.WorkflowStepsRequest;
 using static Models.Dto.Responses.WorkflowStepsResponse;
 
@@ -15,6 +17,12 @@ namespace WebAPi.Controllers
         /// <returns name="result">查詢結果 </returns>
         [Tags("WorkflowSteps")]  //分組(可多標籤)        
         [HttpPost("SearchLastList")]
+        [Authorize]
+        [PermissionGroupFilter(
+            "Module=CDP;Feature=EDM_Main;Action=Read",
+            "Module=CDP;Feature=APP_PUSH_Main;Action=Read",
+            "Module=CDP;Feature=SMS_Main;Action=Read"
+        )]
         public async Task<ResultResponse<WorkflowStepsSearchListResponse>> QuerySearchLastList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
@@ -40,6 +48,13 @@ namespace WebAPi.Controllers
         /// <returns name="result">查詢結果 </returns>
         [Tags("WorkflowSteps")]  //分組(可多標籤)        
         [HttpPost("SearchList")]
+        [Authorize]
+        [PermissionGroupFilter(
+            "Module=CDP;Feature=EDM_Detail;Action=Read",
+            "Module=CDP;Feature=APP_PUSH_Detail;Action=Read",
+            "Module=CDP;Feature=SMS_Detail;Action=Read"
+        )]
+
         public async Task<ResultResponse<WorkflowStepsSearchListResponse>> QuerySearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
@@ -77,6 +92,12 @@ namespace WebAPi.Controllers
         /// <returns></returns>
         [Tags("WorkflowSteps")]  //分組(可多標籤)        
         [HttpPost("GetKafkaLag")]
+        [Authorize]
+        [PermissionGroupFilter(
+            "Module=CDP;Feature=EDM_Main;Action=Read",
+            "Module=CDP;Feature=APP_PUSH_Main;Action=Read",
+            "Module=CDP;Feature=SMS_Main;Action=Read"
+        )]
         public async Task<ResultResponse<WorkflowStepsKafkaResponse>> GetKafkaLag(WorkflowStepsKafkaRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
