@@ -117,14 +117,14 @@ namespace Services.Implementations
         /// <summary>
         /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action）
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<PermissionSearchListResponse> GetUserPermissionsAsync(string userId, CancellationToken cancellationToken)
+        public async Task<List<PermissionSearchListResponse>> GetUserPermissionsAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
             //Task allTasks = null; 
-            var result = new PermissionSearchListResponse();
+            var result = new List<PermissionSearchListResponse>();
             #endregion
 
             #region 流程
@@ -135,7 +135,7 @@ namespace Services.Implementations
             using (IDbHelper dbHelper = CDP_dbHelper)
             {
                 IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.GetUserPermissionsAsync(userId, cancellationToken).ConfigureAwait(false);
+                result = await _pRp.GetUserPermissionsAsync(searchReq, cancellationToken).ConfigureAwait(false);
             }
             return result;
             #endregion

@@ -334,26 +334,48 @@ namespace Repository.Implementations.PermissionRespository
             _sqlParams?.Add($"@Action", action);
         }
 
-        private void GetPermissions(string? userId = null)
+        private void GetPermissions()
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@"
             SELECT * FROM FeaturePermissions
                 WITH(NOLOCK)
-           
+            WHERE 1=1
+            AND IsUse = 1
+            ");
+        }
+
+        private void GetUserPermissions(string? userId = null, bool? isUse = true)
+        {
+            _sqlStr = new StringBuilder();
+            _sqlStr?.Append(@"
+            SELECT * FROM FeaturePermissions
+                WITH(NOLOCK)
+            WHERE 1=1
+            AND IsUse = 1
             ");
 
+            var custSql = string.Empty;
+            _sqlParams = new DynamicParameters();
             if (!string.IsNullOrWhiteSpace(userId))
             {
-                _sqlStr?.Append(@"
-                WHERE BitValue & (
-                    SELECT FeatureMask FROM Users WHERE Uuid = @UserId
-                ) > 0
-                ");
+                custSql = " AND Uuid = @Uuid ";
+                _sqlParams?.Add($"@Uuid", userId);
             }
 
-            _sqlParams = new DynamicParameters();
-            _sqlParams?.Add($"@UserId", userId);
+            custSql += " AND IsUse = @IsUse ";
+            _sqlParams?.Add($"@IsUse", isUse);
+
+            _sqlStr?.Append(@$"
+                AND BitValue & (
+                    SELECT FeatureMask FROM Users
+                        WITH(NOLOCK)
+                    WHERE 1=1
+                    {custSql}
+                ) > 0
+                ");
+
+
         }
 
         public void GetUser(string userName)

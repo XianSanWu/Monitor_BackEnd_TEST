@@ -59,18 +59,16 @@ namespace WebApi.Controllers
         /// <returns></returns>
         [Tags("Permission")]  //分組(可多標籤)        
         [HttpPost("GetUserPermissionsAsync")]
-        public async Task<ResultResponse<PermissionSearchListResponse>> GetUserPermissionsAsync(CancellationToken cancellationToken)
+        public async Task<ResultResponse<List<PermissionSearchListResponse>>> GetUserPermissionsAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
         {
 
             #region 參數宣告
-            var result = new PermissionSearchListResponse();
+            var result = new List<PermissionSearchListResponse>();
             #endregion
 
             #region 流程
 
-            var userId = User.FindFirst("UserId")?.Value?.ToString() ?? string.Empty;
-
-            result = await _permissionService.GetUserPermissionsAsync(userId, cancellationToken);
+            result = await _permissionService.GetUserPermissionsAsync(searchReq, cancellationToken);
 
             return SuccessResult(result);
             #endregion

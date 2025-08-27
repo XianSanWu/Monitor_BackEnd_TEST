@@ -12,6 +12,7 @@ namespace Models.Dto.Requests
         }
         public class UserSearchListFieldModelRequest
         {
+            public string? Uuid { get; set; }
             public string? UserName { get; set; }
             public bool? IsUse { get; set; }
         }

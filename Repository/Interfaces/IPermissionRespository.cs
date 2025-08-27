@@ -32,10 +32,10 @@ namespace Repository.Interfaces
         /// <summary>
         /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action）
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<PermissionSearchListResponse> GetUserPermissionsAsync(string userId, CancellationToken cancellationToken);
+        Task<List<PermissionSearchListResponse>> GetUserPermissionsAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken);
 
         /// <summary>
         /// 取得所有權限清單列表
