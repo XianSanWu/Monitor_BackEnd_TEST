@@ -8,6 +8,20 @@ namespace Repository.Interfaces
     public interface IPermissionRespository
     {
         /// <summary>
+        /// 檢查需更新使用者是否存在
+        /// </summary>
+        /// <param name="updateReq"></param>
+        /// <param name="cancellationToken"></param>
+        Task<bool> CheckUpdateUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// 儲存使用者
+        /// </summary>
+        /// <param name="updateReq"></param>
+        /// <param name="cancellationToken"></param>
+        Task<bool> SaveUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken);
+
+        /// <summary>
         /// 啟用/停用使用者
         /// </summary>
         /// <param name="updateReq"></param>

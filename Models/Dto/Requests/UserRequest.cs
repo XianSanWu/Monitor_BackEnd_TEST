@@ -15,6 +15,7 @@ namespace Models.Dto.Requests
             public string? Uuid { get; set; }
             public string? UserName { get; set; }
             public bool? IsUse { get; set; }
+
         }
         #endregion
 
@@ -33,6 +34,7 @@ namespace Models.Dto.Requests
         {
             public string? UserName { get; set; }
             public bool? IsUse { get; set; }
+            public int?  FeatureMask { get; set; }
             public DateTime? UpdateAt { get; set; }
         }
         #endregion
@@ -41,7 +43,8 @@ namespace Models.Dto.Requests
         /// <summary>User更新[條件]</summary>
         public class UserUpdateConditionRequest : BaseConditionModel
         {
-            public FieldWithMetadataModel UserName { get; set; } = new();
+            public FieldWithMetadataModel? UserName { get; set; } = new();
+            public FieldWithMetadataModel? Uuid { get; set; } = new();
         }
         #endregion
     }

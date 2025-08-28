@@ -32,6 +32,65 @@ namespace Services.Implementations
         private readonly IPermissionRespository _permissionRespository = permissionRespository;
 
         /// <summary>
+        /// 檢查需更新使用者是否存在
+        /// </summary>
+        /// <param name="updateReq"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task<bool> CheckUpdateUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken)
+        {
+            #region 參數宣告
+
+            var result = false;
+            #endregion
+
+            #region 流程
+            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+#if TEST
+            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+#endif
+            using (IDbHelper dbHelper = CDP_dbHelper)
+            {
+                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
+                result = await _pRp.CheckUpdateUserAsync(updateReq, cancellationToken).ConfigureAwait(false);
+            }
+
+            return result;
+            #endregion
+        }
+
+        /// <summary>
+        /// 儲存使用者
+        /// </summary>
+        /// <param name="updateReq"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task<bool> SaveUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken)
+        {
+            #region 參數宣告
+            
+            var result = false;
+            #endregion
+
+            if (updateReq.FieldRequest != null)
+            {
+                updateReq.FieldRequest.UpdateAt = DateTime.Now;
+            }
+
+            #region 流程
+            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+#if TEST
+            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+#endif
+            using (IDbHelper dbHelper = CDP_dbHelper)
+            {
+                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
+                result = await _pRp.SaveUserAsync(updateReq, cancellationToken).ConfigureAwait(false);
+            }
+
+            return result;
+            #endregion
+        }
+
+        /// <summary>
         /// 啟用/停用使用者
         /// </summary>
         /// <param name="updateReq"></param>
@@ -39,9 +98,10 @@ namespace Services.Implementations
         public async Task<bool> IsUseUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            //Task allTasks = null; 
+            
             var result = false;
             #endregion
+
             if (updateReq.FieldRequest != null)
             {
                 updateReq.FieldRequest.UpdateAt = DateTime.Now;
@@ -70,7 +130,7 @@ namespace Services.Implementations
         public async Task<UserResponse> GetUserListAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            //Task allTasks = null; 
+            
             var result = new UserResponse();
             #endregion
 
@@ -95,7 +155,7 @@ namespace Services.Implementations
         public async Task<int?> GetBitValue(string module, string feature, string action, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
-            //Task allTasks = null; 
+            
             var result = (int?)null;
             #endregion
 
@@ -123,7 +183,7 @@ namespace Services.Implementations
         public async Task<List<PermissionSearchListResponse>> GetUserPermissionsAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            //Task allTasks = null; 
+            
             var result = new List<PermissionSearchListResponse>();
             #endregion
 
@@ -149,7 +209,7 @@ namespace Services.Implementations
         public async Task<List<PermissionSearchListResponse>> GetPermissionListAsync(CancellationToken cancellationToken)
         {
             #region 參數宣告
-            //Task allTasks = null; 
+            
             var result = new List<PermissionSearchListResponse>();
             #endregion
 
@@ -176,7 +236,7 @@ namespace Services.Implementations
         public async Task<UserSearchListResponse> GetUserAsync(string userName, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            //Task allTasks = null; 
+            
             var result = new UserSearchListResponse();
             #endregion
 

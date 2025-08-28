@@ -5,12 +5,151 @@ using Models.Enums;
 using Repository.Interfaces;
 using System.Text;
 using Utilities.Utilities;
+using YamlDotNet.Core.Tokens;
 using static Models.Dto.Requests.UserRequest;
 
 namespace Repository.Implementations.PermissionRespository
 {
     public partial class PermissionRespository : BaseRepository, IPermissionRespository
     {
+        private void CheckUpdateUser(UserUpdateRequest updateReq)
+        {
+            _sqlStr = new StringBuilder();
+            _sqlStr.AppendLine(" SELECT * FROM Users WITH(NOLOCK) WHERE 1=1 AND UserName = @UserName ");
+
+            _sqlParams = new DynamicParameters();
+            if (updateReq.FieldRequest == null)
+                throw new InvalidOperationException("沒有任何欄位可更新");
+
+            _sqlParams.Add("@UserName", updateReq.FieldRequest.UserName);
+        }
+
+        private void SaveUser(UserUpdateRequest updateReq)
+        {
+            _sqlStr = new StringBuilder();
+            _sqlParams = new DynamicParameters();
+
+            // 先組成 UPDATE SET 部分
+            var setClauses = new List<string>();
+            var paramNamesForInsert = new List<string>(); // 保持 INSERT VALUES 的順序
+
+            var fieldProps = Reflection.GetModelPropertiesWithValues(updateReq.FieldRequest);
+            foreach (var prop in fieldProps)
+            {
+                var columnName = prop.Key;
+                var (type, value) = prop.Value;
+
+                var paramKey = $"@{columnName}";
+                setClauses.Add($"{columnName} = {paramKey}");
+                paramNamesForInsert.Add(paramKey);
+
+                _sqlParams.Add(paramKey, value);
+            }
+
+            if (!setClauses.Any())
+                throw new InvalidOperationException("沒有任何欄位可更新");
+
+            // 組成條件部分 (使用原本 ConditionRequest 群組邏輯)
+            var whereGroups = new List<string>();
+            if (updateReq.ConditionRequest != null && updateReq.ConditionRequest.Any())
+            {
+                int groupIndex = 0;
+                foreach (var group in updateReq.ConditionRequest)
+                {
+                    var groupConditions = new List<string>();
+                    var props = Reflection.GetModelPropertiesWithValues(group);
+
+                    foreach (var prop in props)
+                    {
+                        var columnName = prop.Key;
+                        var (type, value) = prop.Value;
+
+                        if (value is not FieldWithMetadataModel meta ||
+                            string.IsNullOrWhiteSpace(meta.MathSymbol?.ToString()) ||
+                            meta.Value == null ||
+                            string.IsNullOrWhiteSpace(meta.Value?.ToString()))
+                            continue;
+
+                        switch (meta.MathSymbol.ToUpper())
+                        {
+                            case "IN":
+                                if (meta.Value is IEnumerable<object> list && meta.Value is not string)
+                                {
+                                    var placeholders = new List<string>();
+                                    int index = 0;
+                                    foreach (var item in list)
+                                    {
+                                        var paramName = $"@cond_{groupIndex}_{columnName}_{index++}";
+                                        placeholders.Add(paramName);
+                                        _sqlParams.Add(paramName, item);
+                                    }
+                                    if (placeholders.Count > 0)
+                                        groupConditions.Add($"{columnName} IN ({string.Join(", ", placeholders)})");
+                                }
+                                break;
+
+                            case "LIKE":
+                                var likeParam = $"@cond_{groupIndex}_{columnName}";
+                                groupConditions.Add($"{columnName} LIKE {likeParam}");
+                                _sqlParams.Add(likeParam, $"%{meta.Value}%");
+                                break;
+
+                            default:
+                                var paramKey = $"@cond_{groupIndex}_{columnName}";
+                                groupConditions.Add($"{columnName} {MathSymbolEnum.FromName(meta.MathSymbol)?.Symbol} {paramKey}");
+                                _sqlParams.Add(paramKey, meta.Value);
+                                break;
+                        }
+                    }
+
+                    if (groupConditions.Count > 0)
+                    {
+                        string insideLogicOperator = group.InsideLogicOperator == LogicOperatorEnum.None
+                            ? "AND"
+                            : group.InsideLogicOperator.ToString();
+
+                        whereGroups.Add("(" + string.Join($" {insideLogicOperator} ", groupConditions) + ")");
+
+                        if (group.GroupLogicOperator != LogicOperatorEnum.None)
+                            whereGroups.Add(group.GroupLogicOperator.ToString());
+                    }
+
+                    groupIndex++;
+                }
+
+                // 移除最後一個多餘的 AND / OR
+                if (whereGroups.Count > 0)
+                {
+                    var last = whereGroups[^1].Trim().ToUpper();
+                    if (last == "AND" || last == "OR")
+                        whereGroups.RemoveAt(whereGroups.Count - 1);
+                }
+            }
+
+            // 如果 ConditionRequest 是空的 → 直接新增
+            if (!whereGroups.Any())
+            {
+                _sqlStr.AppendLine(@$"
+INSERT INTO Users ({string.Join(",", fieldProps.Keys)})
+VALUES ({string.Join(",", paramNamesForInsert)})
+");
+            }
+            else
+            {
+                // 有條件 → 用 MERGE 做 Upsert
+                _sqlStr.AppendLine(@$"
+MERGE INTO Users AS target
+USING (SELECT 1 AS dummy) AS source
+    ON {string.Join(" ", whereGroups)}
+WHEN MATCHED THEN
+    UPDATE SET {string.Join(",", setClauses)}
+WHEN NOT MATCHED THEN
+    INSERT ({string.Join(",", fieldProps.Keys)})
+    VALUES ({string.Join(",", paramNamesForInsert)})
+;");
+            }
+        }
+
 
         private void IsUseUser(UserUpdateRequest updateReq)
         {
@@ -207,6 +346,7 @@ namespace Repository.Implementations.PermissionRespository
             #endregion
 
         }
+
         private void GetUserList(UserSearchListRequest searchReq)
         {
             _sqlStr = new StringBuilder();

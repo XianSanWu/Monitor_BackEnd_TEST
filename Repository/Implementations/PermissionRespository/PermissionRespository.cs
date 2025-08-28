@@ -13,6 +13,68 @@ namespace Repository.Implementations.PermissionRespository
         : BaseRepository(unitOfWork, mapper), IPermissionRespository
     {
         /// <summary>
+        /// 檢查需更新使用者是否存在
+        /// </summary>
+        /// <param name="updateReq"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task<bool> CheckUpdateUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken)
+        {
+            #region 參數宣告
+
+            var result = false;
+
+            #endregion
+
+            #region 流程
+
+            // 在執行前檢查是否有取消的需求
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // 先組合 SQL 語句
+            CheckUpdateUser(updateReq);
+
+            // 使用 QueryAsync 來執行 SQL 更新，並傳入 cancellationToken
+            var affectedRows = await _unitOfWork.Connection.QueryAsync(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
+
+            // 判斷是否有資料
+            result = !(affectedRows.Count() <= 0);
+
+            return result;
+            #endregion
+        }
+
+        /// <summary>
+        /// 儲存使用者
+        /// </summary>
+        /// <param name="updateReq"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task<bool> SaveUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken)
+        {
+            #region 參數宣告
+
+            var result = false;
+
+            #endregion
+
+            #region 流程
+
+            // 在執行前檢查是否有取消的需求
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // 先組合 SQL 語句
+            SaveUser(updateReq);
+
+            // 使用 ExecuteAsync 來執行 SQL 更新，並傳入 cancellationToken
+            var affectedRows = await _unitOfWork.Connection.ExecuteAsync(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
+
+            // 判斷是否有資料被更新
+            result = affectedRows > 0;
+
+            return result;
+            #endregion
+        }
+
+        /// <summary>
         /// 啟用/停用使用者
         /// </summary>
         /// <param name="updateReq"></param>
