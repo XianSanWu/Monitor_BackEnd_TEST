@@ -5,13 +5,98 @@ using Models.Enums;
 using Repository.Interfaces;
 using System.Text;
 using Utilities.Utilities;
-using YamlDotNet.Core.Tokens;
+using static Models.Dto.Requests.PermissionRequest;
 using static Models.Dto.Requests.UserRequest;
 
 namespace Repository.Implementations.PermissionRespository
 {
     public partial class PermissionRespository : BaseRepository, IPermissionRespository
     {
+        private void SaveFeaturePermissions(PermissionUpdateRequest updateReq)
+        {
+            if (updateReq?.FieldRequest == null || !updateReq.FieldRequest.Any())
+                throw new ArgumentException("FieldRequest 不得為空");
+
+            _sqlParams = new DynamicParameters();
+
+            // 把 FieldRequest 轉成 inline table (UNION ALL SELECT)
+            var srcSql = string.Join("\nUNION ALL\n",
+                updateReq.FieldRequest.Select((f, i) =>
+                {
+                    _sqlParams.Add($"@Uuid_{i}", f.Uuid);
+                    _sqlParams.Add($"@ParentUuid_{i}", f.ParentUuid);
+                    _sqlParams.Add($"@Icon_{i}", f.Icon);
+                    _sqlParams.Add($"@ModuleName_{i}", f.ModuleName);
+                    _sqlParams.Add($"@FeatureName_{i}", f.FeatureName);
+                    _sqlParams.Add($"@Title_{i}", f.Title);
+                    _sqlParams.Add($"@Action_{i}", f.Action);
+                    _sqlParams.Add($"@Link_{i}", f.Link);
+                    _sqlParams.Add($"@BitValue_{i}", f.BitValue);
+                    _sqlParams.Add($"@Sort_{i}", f.Sort);
+                    _sqlParams.Add($"@IsUse_{i}", f.IsUse);
+                    _sqlParams.Add($"@IsVisible_{i}", f.IsVisible);
+                    _sqlParams.Add($"@UpdateAt_{i}", f.UpdateAt ?? DateTime.Now);
+
+                    return $@"SELECT 
+                @Uuid_{i} Uuid,
+                @ParentUuid_{i} ParentUuid,
+                @Icon_{i} Icon,
+                @ModuleName_{i} ModuleName,
+                @FeatureName_{i} FeatureName,
+                @Title_{i} Title,
+                @Action_{i} Action,
+                @Link_{i} Link,
+                @BitValue_{i} BitValue,
+                @Sort_{i} Sort,
+                @IsUse_{i} IsUse,
+                @IsVisible_{i} IsVisible,
+                @UpdateAt_{i} UpdateAt";
+                })
+            );
+
+            // MERGE SQL → 用 Uuid 判斷新增或更新
+            _sqlStr = new StringBuilder($@"
+MERGE FeaturePermissions AS target
+USING (
+    {srcSql}
+) AS src
+ON target.Uuid = src.Uuid
+WHEN MATCHED 
+    AND (
+        ISNULL(target.ParentUuid,'') <> ISNULL(src.ParentUuid,'') OR
+        ISNULL(target.Icon,'') <> ISNULL(src.Icon,'') OR
+        ISNULL(target.ModuleName,'') <> ISNULL(src.ModuleName,'') OR
+        ISNULL(target.FeatureName,'') <> ISNULL(src.FeatureName,'') OR
+        ISNULL(target.Title,'') <> ISNULL(src.Title,'') OR
+        ISNULL(target.Action,'') <> ISNULL(src.Action,'') OR
+        ISNULL(target.Link,'') <> ISNULL(src.Link,'') OR
+        target.BitValue <> src.BitValue OR
+        ISNULL(target.Sort,0) <> ISNULL(src.Sort,0) OR
+        ISNULL(target.IsUse,0) <> ISNULL(src.IsUse,0) OR
+        ISNULL(target.IsVisible,0) <> ISNULL(src.IsVisible,0)
+    )
+THEN
+    UPDATE SET 
+        ParentUuid = src.ParentUuid,
+        Icon = src.Icon,
+        ModuleName = src.ModuleName,
+        FeatureName = src.FeatureName,
+        Title = src.Title,
+        Action = src.Action,
+        Link = src.Link,
+        BitValue = src.BitValue,
+        Sort = src.Sort,
+        IsUse = src.IsUse,
+        IsVisible = src.IsVisible,
+        UpdateAt = src.UpdateAt
+WHEN NOT MATCHED BY TARGET THEN
+    INSERT (Uuid, ParentUuid, Icon, ModuleName, FeatureName, Title, Action, Link, BitValue, Sort, IsUse, IsVisible, UpdateAt)
+    VALUES (src.Uuid, src.ParentUuid, src.Icon, src.ModuleName, src.FeatureName, src.Title, src.Action, src.Link, src.BitValue, src.Sort, src.IsUse, src.IsVisible, src.UpdateAt);
+");
+
+        }
+
+
         private void CheckUpdateUser(UserUpdateRequest updateReq)
         {
             _sqlStr = new StringBuilder();
@@ -474,15 +559,71 @@ WHEN NOT MATCHED THEN
             _sqlParams?.Add($"@Action", action);
         }
 
-        private void GetPermissions()
+        private void GetPermissions(PermissionSearchListRequest searchReq)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@"
             SELECT * FROM FeaturePermissions
                 WITH(NOLOCK)
             WHERE 1=1
-            AND IsUse = 1
             ");
+
+            _sqlParams = new DynamicParameters();
+
+            #region  處理 FieldModel 輸入框 (模糊查詢)
+            if (searchReq.FieldModel != null)
+            {
+                var columnsWithValues = Reflection.GetValidColumnsWithValues(searchReq.FieldModel);
+
+                foreach (var column in columnsWithValues)
+                {
+                    var column_key = column.Key;
+                    var column_Value = column.Value;
+                    if (column_Value is null)
+                    {
+                        continue;
+                    }
+
+                    if (string.Equals("IsUse", column_key, StringComparison.OrdinalIgnoreCase) && column.Value is not null)
+                    {
+                        column_Value = ((bool)column.Value) ? 1 : 0;
+                    }
+
+                    AppendFilterConditionEquals(column_key, column_Value, null); // 不需要驗證欄位是否有效，因為已從 model 取得
+                }
+            }
+            #endregion
+
+            #region  處理 FilterModel Grid (模糊查詢)
+            var validColumns = Reflection.GetValidColumns<FeaturePermissionEntity>();
+
+            if (searchReq.FilterModel != null)
+            {
+                foreach (var filter in searchReq.FilterModel)
+                {
+                    var filter_key = filter.Key;
+
+                    AppendFilterCondition(filter_key, filter.Value, validColumns);
+                }
+            }
+            #endregion
+
+            #region  設定SQL排序
+            if (searchReq.SortModel != null &&
+                !string.IsNullOrWhiteSpace(searchReq.SortModel.Key) &&
+                !string.IsNullOrWhiteSpace(searchReq.SortModel.Value) &&
+                validColumns.Contains(searchReq.SortModel.Key, StringComparer.OrdinalIgnoreCase)
+                )
+            {
+                var SortKey = searchReq.SortModel.Key;
+
+                _sqlOrderByStr = $" ORDER BY {SortKey} {searchReq.SortModel.Value} ";
+            }
+            else
+            {
+                _sqlOrderByStr = $" ORDER BY BitValue,Sort,ModuleName ";
+            }
+            #endregion
         }
 
         private void GetUserPermissions(string? userId = null, bool? isUse = true)

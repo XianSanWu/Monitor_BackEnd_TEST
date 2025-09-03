@@ -3,6 +3,7 @@ using Dapper;
 using Models.Dto.Responses;
 using Models.Entities;
 using Repository.Interfaces;
+using static Models.Dto.Requests.PermissionRequest;
 using static Models.Dto.Requests.UserRequest;
 using static Models.Dto.Responses.PermissionResponse;
 using static Models.Dto.Responses.UserResponse;
@@ -12,6 +13,39 @@ namespace Repository.Implementations.PermissionRespository
     public partial class PermissionRespository(IUnitOfWork unitOfWork, IMapper mapper)
         : BaseRepository(unitOfWork, mapper), IPermissionRespository
     {
+
+        /// <summary>
+        /// 儲存全部權限
+        /// </summary>
+        /// <param name="updateReq"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<bool> SaveFeaturePermissionsAsync(PermissionUpdateRequest updateReq, CancellationToken cancellationToken)
+        {
+            #region 參數宣告
+
+            var result = false;
+
+            #endregion
+
+            #region 流程
+
+            // 在執行前檢查是否有取消的需求
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // 先組合 SQL 語句
+            SaveFeaturePermissions(updateReq);
+
+            // 使用 ExecuteAsync 來執行 SQL 更新，並傳入 cancellationToken
+            var affectedRows = await _unitOfWork.Connection.ExecuteAsync(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
+
+            // 判斷是否有資料被更新
+            result = affectedRows > 0;
+
+            return result;
+            #endregion
+        }
+
         /// <summary>
         /// 檢查需更新使用者是否存在
         /// </summary>
@@ -201,7 +235,7 @@ namespace Repository.Implementations.PermissionRespository
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<PermissionSearchListResponse>> GetPermissionListAsync(CancellationToken cancellationToken)
+        public async Task<List<PermissionSearchListResponse>> GetPermissionListAsync(PermissionSearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -215,7 +249,7 @@ namespace Repository.Implementations.PermissionRespository
             cancellationToken.ThrowIfCancellationRequested();
 
             // 先組合 SQL 語句
-            GetPermissions();
+            GetPermissions(searchReq);
 
             var queryEntity = await _unitOfWork.Connection.QueryAsync<FeaturePermissionEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
             result = _mapper.Map<List<PermissionSearchListResponse>>(queryEntity);

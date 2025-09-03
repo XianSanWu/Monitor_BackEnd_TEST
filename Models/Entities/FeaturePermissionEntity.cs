@@ -70,6 +70,16 @@ namespace Models.Entities
         /// 是否可見
         /// </summary>
         public bool IsVisible { get; set; } = true;
+
+        /// <summary>
+        /// 建立時間
+        /// </summary>
+        public DateTime CreateAt { get; set; }
+
+        /// <summary>
+        /// 更新時間
+        /// </summary>
+        public DateTime UpdateAt { get; set; }
     }
 
 }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Models.Dto.Responses;
 using WebAPi.Controllers;
+using static Models.Dto.Requests.PermissionRequest;
 using static Models.Dto.Requests.UserRequest;
 using static Models.Dto.Responses.PermissionResponse;
 
@@ -38,7 +39,7 @@ namespace WebApi.Controllers
         /// <returns></returns>
         [Tags("Permission.SearchList")]   //分組(可多標籤)        
         [HttpPost("GetPermissionListAsync")]
-        public async Task<ResultResponse<List<PermissionSearchListResponse>>> GetPermissionListAsync(CancellationToken cancellationToken)
+        public async Task<ResultResponse<List<PermissionSearchListResponse>>> GetPermissionListAsync(PermissionSearchListRequest searchReq, CancellationToken cancellationToken)
         {
 
             #region 參數宣告
@@ -46,7 +47,7 @@ namespace WebApi.Controllers
             #endregion
 
             #region 流程
-            result = await _permissionService.GetPermissionListAsync(cancellationToken).ConfigureAwait(false);
+            result = await _permissionService.GetPermissionListAsync(searchReq, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
             #endregion

@@ -1,0 +1,188 @@
+USE CDP
+
+-- ======= Drop existing tables =======
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS FeaturePermissions;
+DROP TABLE IF EXISTS UserTokens;
+
+
+-- 使用者表
+CREATE TABLE Users (
+    Id INT IDENTITY PRIMARY KEY,
+	Uuid NVARCHAR(50) NOT NULL  DEFAULT (newid()),
+    UserName NVARCHAR(100) NOT NULL UNIQUE,
+    FeatureMask INT NOT NULL DEFAULT 0,
+	IsUse BIT NOT NULL DEFAULT 1,
+	CreateAt DATETIME NOT NULL DEFAULT getdate(), -- 建立時間
+    UpdateAt DATETIME NOT NULL DEFAULT getdate()  -- 更新時間
+);
+
+-- ------------------------
+-- Users 資料表註解與欄位註解
+-- ------------------------
+EXEC sp_addextendedproperty 'MS_Description', N'使用者資料表，記錄帳號與功能權限', 'SCHEMA', 'dbo', 'TABLE', 'Users', NULL, NULL;
+EXEC sp_addextendedproperty 'MS_Description', N'使用者唯一識別碼', 'SCHEMA', 'dbo', 'TABLE', 'Users', 'COLUMN', 'Id';
+EXEC sp_addextendedproperty 'MS_Description', N'使用者唯一識別碼Uuid', 'SCHEMA', 'dbo', 'TABLE', 'Users', 'COLUMN', 'Uuid';
+EXEC sp_addextendedproperty 'MS_Description', N'使用者帳號（唯一）', 'SCHEMA', 'dbo', 'TABLE', 'Users', 'COLUMN', 'UserName';
+EXEC sp_addextendedproperty 'MS_Description', N'使用者的位元功能權限（BitMask）', 'SCHEMA', 'dbo', 'TABLE', 'Users', 'COLUMN', 'FeatureMask';
+EXEC sp_addextendedproperty 'MS_Description', N'使用者是否啟用', 'SCHEMA', 'dbo', 'TABLE', 'Users', 'COLUMN', 'IsUse';
+EXEC sp_addextendedproperty 'MS_Description', N'建立時間', 'SCHEMA', 'dbo', 'TABLE', 'Users', 'COLUMN', 'CreateAt';
+EXEC sp_addextendedproperty 'MS_Description', N'更新時間', 'SCHEMA', 'dbo', 'TABLE', 'Users', 'COLUMN', 'UpdateAt';
+
+
+-- 功能權限定義表
+CREATE TABLE dbo.FeaturePermissions (
+    Id INT IDENTITY PRIMARY KEY,							-- 主鍵
+    Uuid NVARCHAR(50) NOT NULL  DEFAULT (newid()),          -- ID（本表 Id）
+	ParentUuid NVARCHAR(50),	 							-- 父功能 ID（對應本表 Id，NULL 表示最上層）
+    Icon NVARCHAR(50),										-- 本層圖示
+    ModuleName NVARCHAR(50),								-- 所屬模組（分類用途）
+    FeatureName NVARCHAR(100),								-- 功能代號
+    Title NVARCHAR(100),									-- 顯示名稱（例如選單名稱）
+    Action NVARCHAR(50),									-- 操作類型（Read, Create, Update...）
+    Link NVARCHAR(200),										-- 對應路由
+    BitValue INT DEFAULT 0,									-- 權限位值
+    Sort INT DEFAULT 1,										-- 排序
+    IsUse BIT DEFAULT 1,									-- 是否啟用
+    IsVisible BIT DEFAULT 1	,								-- 是否可見
+	CreateAt DATETIME NOT NULL DEFAULT getdate(),			-- 建立時間
+    UpdateAt DATETIME NOT NULL DEFAULT getdate()			-- 更新時間
+);
+
+-- ------------------------
+-- FeaturePermissions 資料表註解與欄位註解
+-- ------------------------
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'功能權限表，記錄模組及其功能的權限設定',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'功能權限表主鍵，自動遞增',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = Id;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'本表Id',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = Uuid;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'父功能ID，對應本表Id，NULL表示最上層功能',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = ParentUuid;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'本層圖示',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = Icon;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'所屬模組名稱，用於功能分類',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = ModuleName;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'功能代號，用於唯一識別功能',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = FeatureName;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'功能顯示名稱，通常用於選單顯示',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = Title;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'操作類型，如 Read, Create, Update, Delete',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = Action;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'前端路由對應的連結',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = Link;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'權限對應的二進位位元值（BitValue），用於權限判斷',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = BitValue;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'排序用數值，決定顯示順序',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = Sort;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'功能是否啟用，0=停用，1=啟用',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = IsUse;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'功能是否可見，0=停用，1=啟用',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = IsVisible;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'建立時間',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = CreateAt;
+
+EXEC sys.sp_addextendedproperty 
+  @name = N'MS_Description', @value = N'更新時間',
+  @level0type = N'SCHEMA', @level0name = dbo,
+  @level1type = N'TABLE',  @level1name = FeaturePermissions,
+  @level2type = N'COLUMN', @level2name = UpdateAt;
+  
+
+-- 使用者額外功能權限表
+--CREATE TABLE UserFeaturePermissions (
+--    Id INT IDENTITY PRIMARY KEY,
+--    UserId INT NOT NULL,
+--    ModuleName NVARCHAR(50),
+--    FeatureName NVARCHAR(50),
+--    Action NVARCHAR(20)
+--);
+
+-- ------------------------
+-- UserFeaturePermissions 資料表註解與欄位註解
+-- ------------------------
+--EXEC sp_addextendedproperty 'MS_Description', N'使用者額外功能權限表，補充 FeatureMask 權限不足處', 'SCHEMA', 'dbo', 'TABLE', 'UserFeaturePermissions', NULL, NULL;
+--EXEC sp_addextendedproperty 'MS_Description', N'唯一識別碼', 'SCHEMA', 'dbo', 'TABLE', 'UserFeaturePermissions', 'COLUMN', 'Id';
+--EXEC sp_addextendedproperty 'MS_Description', N'對應的使用者 ID', 'SCHEMA', 'dbo', 'TABLE', 'UserFeaturePermissions', 'COLUMN', 'UserId';
+--EXEC sp_addextendedproperty 'MS_Description', N'模組名稱', 'SCHEMA', 'dbo', 'TABLE', 'UserFeaturePermissions', 'COLUMN', 'ModuleName';
+--EXEC sp_addextendedproperty 'MS_Description', N'功能名稱', 'SCHEMA', 'dbo', 'TABLE', 'UserFeaturePermissions', 'COLUMN', 'FeatureName';
+--EXEC sp_addextendedproperty 'MS_Description', N'動作名稱（此使用者額外擁有）', 'SCHEMA', 'dbo', 'TABLE', 'UserFeaturePermissions', 'COLUMN', 'Action';
+
+
+-- JWT Token 儲存
+CREATE TABLE UserTokens (
+    Id INT IDENTITY PRIMARY KEY,
+    UserId NVARCHAR(50) NOT NULL,
+	Uuid NVARCHAR(50) NOT NULL,
+    AccessToken NVARCHAR(MAX),
+    ExpiresAt DATETIME
+);
+
+-- ------------------------
+-- UserTokens 資料表註解與欄位註解
+-- ------------------------
+EXEC sp_addextendedproperty 'MS_Description', N'記錄使用者 JWT 存取權杖與過期時間', 'SCHEMA', 'dbo', 'TABLE', 'UserTokens', NULL, NULL;
+EXEC sp_addextendedproperty 'MS_Description', N'唯一識別碼', 'SCHEMA', 'dbo', 'TABLE', 'UserTokens', 'COLUMN', 'Id';
+EXEC sp_addextendedproperty 'MS_Description', N'使用者 ID', 'SCHEMA', 'dbo', 'TABLE', 'UserTokens', 'COLUMN', 'UserId';
+EXEC sp_addextendedproperty 'MS_Description', N'使用者唯一識別碼Uuid', 'SCHEMA', 'dbo', 'TABLE', 'UserTokens', 'COLUMN', 'Uuid';
+EXEC sp_addextendedproperty 'MS_Description', N'JWT 存取權杖', 'SCHEMA', 'dbo', 'TABLE', 'UserTokens', 'COLUMN', 'AccessToken';
+EXEC sp_addextendedproperty 'MS_Description', N'權杖過期時間', 'SCHEMA', 'dbo', 'TABLE', 'UserTokens', 'COLUMN', 'ExpiresAt';

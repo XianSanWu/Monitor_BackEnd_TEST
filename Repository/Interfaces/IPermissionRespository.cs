@@ -1,4 +1,5 @@
 ﻿using Models.Dto.Responses;
+using static Models.Dto.Requests.PermissionRequest;
 using static Models.Dto.Requests.UserRequest;
 using static Models.Dto.Responses.PermissionResponse;
 using static Models.Dto.Responses.UserResponse;
@@ -7,6 +8,14 @@ namespace Repository.Interfaces
 {
     public interface IPermissionRespository
     {
+        /// <summary>
+        /// 儲存全部權限
+        /// </summary>
+        /// <param name="updateReq"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<bool> SaveFeaturePermissionsAsync(PermissionUpdateRequest updateReq, CancellationToken cancellationToken);
+
         /// <summary>
         /// 檢查需更新使用者是否存在
         /// </summary>
@@ -56,7 +65,7 @@ namespace Repository.Interfaces
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<PermissionSearchListResponse>> GetPermissionListAsync(CancellationToken cancellationToken);
+        Task<List<PermissionSearchListResponse>> GetPermissionListAsync(PermissionSearchListRequest searchReq, CancellationToken cancellationToken);
 
         /// <summary>
         /// 取得單一使用者主檔資訊

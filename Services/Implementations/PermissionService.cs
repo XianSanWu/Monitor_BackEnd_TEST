@@ -32,6 +32,34 @@ namespace Services.Implementations
         private readonly IPermissionRespository _permissionRespository = permissionRespository;
 
         /// <summary>
+        /// 儲存全部權限
+        /// </summary>
+        /// <param name="updateReq"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<bool> SaveFeaturePermissionsAsync(PermissionUpdateRequest updateReq, CancellationToken cancellationToken)
+        {
+            #region 參數宣告
+
+            var result = false;
+            #endregion
+
+            #region 流程
+            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+#if TEST
+            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+#endif
+            using (IDbHelper dbHelper = CDP_dbHelper)
+            {
+                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
+                result = await _pRp.SaveFeaturePermissionsAsync(updateReq, cancellationToken).ConfigureAwait(false);
+            }
+
+            return result;
+            #endregion
+        }
+
+        /// <summary>
         /// 檢查需更新使用者是否存在
         /// </summary>
         /// <param name="updateReq"></param>
@@ -206,7 +234,7 @@ namespace Services.Implementations
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<PermissionSearchListResponse>> GetPermissionListAsync(CancellationToken cancellationToken)
+        public async Task<List<PermissionSearchListResponse>> GetPermissionListAsync(PermissionSearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
             
@@ -221,7 +249,7 @@ namespace Services.Implementations
             using (IDbHelper dbHelper = CDP_dbHelper)
             {
                 IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.GetPermissionListAsync(cancellationToken).ConfigureAwait(false);
+                result = await _pRp.GetPermissionListAsync(searchReq, cancellationToken).ConfigureAwait(false);
             }
             return result;
             #endregion

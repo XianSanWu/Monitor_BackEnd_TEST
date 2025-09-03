@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Models.Dto.Responses;
 using WebAPi.Controllers;
+using static Models.Dto.Requests.PermissionRequest;
 using static Models.Dto.Requests.UserRequest;
 using static Models.Dto.Responses.PermissionResponse;
 
@@ -81,6 +82,29 @@ namespace WebApi.Controllers
             #endregion
         }
 
+
+        /// <summary>
+        /// 儲存全部權限
+        /// </summary>
+        /// <param name="updateReq"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [Tags("Permission.Action")]  //分組(可多標籤)        
+        [HttpPost("SaveFeaturePermissionsAsync")]
+        public async Task<ResultResponse<bool>> SaveFeaturePermissionsAsync(PermissionUpdateRequest updateReq, CancellationToken cancellationToken)
+        {
+
+            #region 參數宣告
+            var result = false;
+            #endregion
+
+            #region 流程
+
+            result = await _permissionService.SaveFeaturePermissionsAsync(updateReq, cancellationToken).ConfigureAwait(false);
+
+            return SuccessResult(result);
+            #endregion
+        }
 
     }
 }
