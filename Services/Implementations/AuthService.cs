@@ -5,6 +5,7 @@ using Models.Dto.Responses;
 using Services.Interfaces;
 using Utilities.Utilities;
 using static Models.Dto.Requests.AuthRequest;
+using static Models.Dto.Requests.UserRequest;
 
 namespace Services.Implementations
 {
@@ -46,9 +47,12 @@ namespace Services.Implementations
             if (isLogined)
             {
                 var user = await _permissionService.GetUserAsync(LoginReq.UserName ?? string.Empty, cancellationToken).ConfigureAwait(false);
-                var token = _tokenService.GenerateToken(user.Uuid, user.FeatureMask);
+                var token = await _tokenService.GenerateTokenAsync(user.Uuid, user.FeatureMask).ConfigureAwait(false);
+                var tokenUuid = await _tokenService.InsertUserTokenAsync(user.Uuid, token, cancellationToken).ConfigureAwait(false);
                 result.IsLogin = true;
                 result.Token = token;
+                result.TokenUuid = tokenUuid;
+
                 return result;
             }
 

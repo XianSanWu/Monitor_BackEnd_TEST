@@ -1,4 +1,6 @@
 ﻿using Dapper;
+using k8s.KubeConfigModels;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.Dto.Common;
 using Models.Entities;
 using Models.Enums;
@@ -626,14 +628,14 @@ WHEN NOT MATCHED THEN
             #endregion
         }
 
-        private void GetUserPermissions(string? userId = null, bool? isUse = true)
+        private void GetUserPermissions(string? userId = null, string? userName = null, bool? isUse = true)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@"
             SELECT * FROM FeaturePermissions
                 WITH(NOLOCK)
             WHERE 1=1
-            AND IsUse = 1
+            AND IsUse = 1 --此為功能啟用(誤刪)
             ");
 
             var custSql = string.Empty;
@@ -644,8 +646,13 @@ WHEN NOT MATCHED THEN
                 _sqlParams?.Add($"@Uuid", userId);
             }
 
+            if (!string.IsNullOrWhiteSpace(userName))
+            {
+                custSql += " AND UserName = @UserName ";
+                _sqlParams?.Add($"@UserName", userName);
+            }
             custSql += " AND IsUse = @IsUse ";
-            _sqlParams?.Add($"@IsUse", isUse);
+            _sqlParams?.Add($"@IsUse", ((bool)(isUse ?? true)) ? 1 : 0);
 
             _sqlStr?.Append(@$"
                 AND BitValue & (
@@ -656,7 +663,35 @@ WHEN NOT MATCHED THEN
                 ) > 0
                 ");
 
+        }
 
+        private void GetUserPermissionsMenu(string? tokenUuid = "")
+        {
+            if (string.IsNullOrWhiteSpace(tokenUuid))
+            {
+                throw new InvalidOperationException("沒有欄位參數TokenUuid");
+            }
+
+            _sqlStr = new StringBuilder();
+            _sqlStr?.Append(@"
+SELECT *
+FROM FeaturePermissions fp WITH(NOLOCK)
+WHERE fp.IsUse = 1  -- 功能啟用
+AND fp.BitValue & (
+    SELECT TOP 1 u.FeatureMask
+    FROM Users u WITH(NOLOCK)
+    WHERE u.IsUse = 1
+      AND u.Uuid = (
+          SELECT TOP 1 ut.UserId
+          FROM UserTokens ut WITH(NOLOCK)
+          WHERE ut.Uuid = @TokenUuid
+      )
+) >= 0;
+            ");
+
+            var custSql = string.Empty;
+            _sqlParams = new DynamicParameters();
+            _sqlParams?.Add($"@TokenUuid", tokenUuid);
         }
 
         public void GetUser(string userName)

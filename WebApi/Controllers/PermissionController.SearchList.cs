@@ -75,5 +75,27 @@ namespace WebApi.Controllers
             #endregion
         }
 
+        /// <summary>
+        /// 取得個人所有權限清單 Menu
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [Tags("Permission.SearchList")]  //分組(可多標籤)        
+        [HttpPost("GetUserPermissionsMenuAsync")]
+        public async Task<ResultResponse<List<PermissionSearchListResponse>>> GetUserPermissionsMenuAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
+        {
+
+            #region 參數宣告
+            var result = new List<PermissionSearchListResponse>();
+            #endregion
+
+            #region 流程
+
+            result = await _permissionService.GetUserPermissionsMenuAsync(searchReq, cancellationToken).ConfigureAwait(false);
+
+            return SuccessResult(result);
+            #endregion
+        }
+
     }
 }

@@ -230,6 +230,33 @@ namespace Services.Implementations
         }
 
         /// <summary>
+        /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action）Menu
+        /// </summary>
+        /// <param name="searchReq"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<List<PermissionSearchListResponse>> GetUserPermissionsMenuAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
+        {
+            #region 參數宣告
+
+            var result = new List<PermissionSearchListResponse>();
+            #endregion
+
+            #region 流程
+            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+#if TEST
+            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+#endif
+            using (IDbHelper dbHelper = CDP_dbHelper)
+            {
+                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
+                result = await _pRp.GetUserPermissionsMenuAsync(searchReq, cancellationToken).ConfigureAwait(false);
+            }
+            return result;
+            #endregion
+        }
+
+        /// <summary>
         /// 取得所有權限清單列表
         /// </summary>
         /// <param name="cancellationToken"></param>

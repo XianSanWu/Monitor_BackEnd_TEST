@@ -222,7 +222,41 @@ namespace Repository.Implementations.PermissionRespository
             }
 
             // 先組合 SQL 語句
-            GetUserPermissions(fieldModel.Uuid, fieldModel.IsUse);
+            GetUserPermissions(fieldModel.UserId, fieldModel.UserName, fieldModel.IsUse);
+
+            var queryEntity = await _unitOfWork.Connection.QueryAsync<FeaturePermissionEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
+            result = _mapper.Map<List<PermissionSearchListResponse>>(queryEntity);
+            return result;
+            #endregion
+        }
+
+        /// <summary>
+        /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action）
+        /// </summary>
+        /// <param name="searchReq"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<List<PermissionSearchListResponse>> GetUserPermissionsMenuAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
+        {
+            #region 參數宣告
+
+            var result = new List<PermissionSearchListResponse>();
+
+            #endregion
+
+            #region 流程
+
+            // 在執行前檢查是否有取消的需求
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var fieldModel = new UserSearchListFieldModelRequest();
+            if (searchReq.FieldModel != null)
+            {
+                fieldModel = searchReq.FieldModel;
+            }
+
+            // 先組合 SQL 語句
+            GetUserPermissionsMenu(fieldModel.TokenUuid);
 
             var queryEntity = await _unitOfWork.Connection.QueryAsync<FeaturePermissionEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
             result = _mapper.Map<List<PermissionSearchListResponse>>(queryEntity);
