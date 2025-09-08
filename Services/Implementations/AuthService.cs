@@ -26,6 +26,9 @@ namespace Services.Implementations
         private Dictionary<string, string> Users => _config.GetSection("Users").Get<Dictionary<string, string>>() ?? [];
         private string Key => _config["EncryptionSettings:AESKey"] ?? string.Empty;
         private string Iv => _config["EncryptionSettings:AESIV"] ?? string.Empty;
+        private int JwtRefreshTokenExpiresAt => _config.GetValue<int>("Jwt:RefreshTokenExpiresAt");
+        private int JwtAccessTokenExpiresAt => _config.GetValue<int>("Jwt:AccessTokenExpiresAt");
+
 
         /// <summary>
         /// 登入驗證
@@ -46,18 +49,52 @@ namespace Services.Implementations
 
             if (isLogined)
             {
-                var user = await _permissionService.GetUserAsync(LoginReq.UserName ?? string.Empty, cancellationToken).ConfigureAwait(false);
-                var token = await _tokenService.GenerateTokenAsync(user.Uuid, user.FeatureMask).ConfigureAwait(false);
-                var tokenUuid = await _tokenService.InsertUserTokenAsync(user.Uuid, token, cancellationToken).ConfigureAwait(false);
+                var user = await _permissionService.GetUserByUserNameAsync(LoginReq.UserName ?? string.Empty, cancellationToken).ConfigureAwait(false);
+
+                // 設定 AccessToken 過期時間 (單純給人看用的)
+                var accessTokenExpiresAt = DateTime.Now.AddMinutes(JwtAccessTokenExpiresAt);
+
+                // 產生 AccessToken (JWT)
+                var accessToken = await _tokenService.GenerateTokenAsync(user.Uuid, user.FeatureMask).ConfigureAwait(false);
+
+                // 產生 RefreshToken
+                var refreshToken = await _tokenService.GenerateRefreshTokenAsync().ConfigureAwait(false);
+
+                // 設定 RefreshToken 過期時間 
+                var refreshTokenExpiresAt = DateTime.Now.AddMinutes(JwtRefreshTokenExpiresAt);
+
+                //var token = await _tokenService.GenerateTokenAsync(user.Uuid, user.FeatureMask).ConfigureAwait(false);
+                var tokenUuid = await _tokenService.InsertUserTokenAsync(
+                                                        user.Uuid,
+                                                        accessToken,
+                                                        accessTokenExpiresAt,
+                                                        refreshToken,
+                                                        refreshTokenExpiresAt,
+                                                        cancellationToken).ConfigureAwait(false);
+
                 result.IsLogin = true;
-                result.Token = token;
                 result.TokenUuid = tokenUuid;
+                result.AccessToken = accessToken;
+                result.AccessTokenExpiresAt = accessTokenExpiresAt;
+                result.RefreshToken = refreshToken;
+                result.RefreshTokenExpiresAt = refreshTokenExpiresAt;
 
                 return result;
             }
 
             result.IsLogin = false;
             return result;
+        }
+
+        /// <summary>
+        /// 取得 UserTokenByRefreshToken
+        /// </summary>
+        /// <param name="refreshToken"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<AuthResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
+        {
+            return await _tokenService.GetUserTokenByRefreshTokenAsync(refreshToken, cancellationToken).ConfigureAwait(false);
         }
     }
 }

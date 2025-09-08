@@ -288,7 +288,7 @@ namespace Services.Implementations
         /// <param name="userName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UserSearchListResponse> GetUserAsync(string userName, CancellationToken cancellationToken)
+        public async Task<UserSearchListResponse> GetUserByUserNameAsync(string userName, CancellationToken cancellationToken)
         {
             #region 參數宣告
             
@@ -303,13 +303,38 @@ namespace Services.Implementations
             using (IDbHelper dbHelper = CDP_dbHelper)
             {
                 IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.GetUserAsync(userName, cancellationToken).ConfigureAwait(false);
+                result = await _pRp.GetUserByUserNameAsync(userName, cancellationToken).ConfigureAwait(false);
             }
             return result;
             #endregion
         }
 
+        /// <summary>
+        /// 取得單一使用者主檔資訊
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<UserSearchListResponse> GetUserByUserIdAsync(string userId, CancellationToken cancellationToken)
+        {
+            #region 參數宣告
 
+            var result = new UserSearchListResponse();
+            #endregion
+
+            #region 流程
+            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+#if TEST
+            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+#endif
+            using (IDbHelper dbHelper = CDP_dbHelper)
+            {
+                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
+                result = await _pRp.GetUserByUserIdAsync(userId, cancellationToken).ConfigureAwait(false);
+            }
+            return result;
+            #endregion
+        }
 
     }
 }

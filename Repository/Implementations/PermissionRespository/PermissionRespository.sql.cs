@@ -694,7 +694,7 @@ AND fp.BitValue & (
             _sqlParams?.Add($"@TokenUuid", tokenUuid);
         }
 
-        public void GetUser(string userName)
+        public void GetUserByUserName(string userName)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@"
@@ -707,5 +707,20 @@ AND fp.BitValue & (
             _sqlParams = new DynamicParameters();
             _sqlParams?.Add($"@UserName", userName);
         }
+
+        public void GetUserByUserId(string userId)
+        {
+            _sqlStr = new StringBuilder();
+            _sqlStr?.Append(@"
+            SELECT *
+            FROM Users
+                WITH(NOLOCK)
+            WHERE Uuid = @UserId
+            ");
+
+            _sqlParams = new DynamicParameters();
+            _sqlParams?.Add($"@UserId", userId);
+        }
+        
     }
 }

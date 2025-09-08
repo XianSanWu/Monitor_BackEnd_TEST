@@ -1,16 +1,29 @@
 ﻿
+using Models.Dto.Responses;
+
 namespace Repository.Interfaces
 {
     public interface ITokenRespository
     {
+
+        /// <summary>
+        /// 取得 UserTokenByRefreshToken
+        /// </summary>
+        /// <param name="refreshToken"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<AuthResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
+
         /// <summary>
         /// 儲存User Token
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="token"></param>
-        /// <param name="expiresAt"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="accessTokenExpiresAt"></param>
+        /// <param name="refreshToken"></param>
+        /// <param name="refreshTokenExpiresAt"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> InsertUserTokenAsync(string userId, string token,DateTime expiresAt, CancellationToken cancellationToken);
+        Task<string> InsertUserTokenAsync(string userId, string accessToken, DateTime accessTokenExpiresAt, string refreshToken, DateTime refreshTokenExpiresAt, CancellationToken cancellationToken);
     }
 }

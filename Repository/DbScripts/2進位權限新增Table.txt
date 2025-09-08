@@ -173,9 +173,11 @@ CREATE TABLE UserTokens (
     Id INT IDENTITY PRIMARY KEY,
     UserId NVARCHAR(50) NOT NULL,
 	Uuid NVARCHAR(50) NOT NULL DEFAULT (newid()),
-    AccessToken NVARCHAR(MAX),
     CreateAt DATETIME NOT NULL DEFAULT getdate(),
-    ExpiresAt DATETIME
+    AccessToken NVARCHAR(MAX),
+    AccessTokenExpiresAt DATETIME NOT NULL,
+    RefreshToken NVARCHAR(MAX),
+    RefreshTokenExpiresAt DATETIME NOT NULL
 );
 
 -- ------------------------
@@ -186,5 +188,7 @@ EXEC sp_addextendedproperty 'MS_Description', N'唯一識別碼', 'SCHEMA', 'dbo', 'T
 EXEC sp_addextendedproperty 'MS_Description', N'使用者 ID', 'SCHEMA', 'dbo', 'TABLE', 'UserTokens', 'COLUMN', 'UserId';
 EXEC sp_addextendedproperty 'MS_Description', N'使用者唯一識別碼Uuid', 'SCHEMA', 'dbo', 'TABLE', 'UserTokens', 'COLUMN', 'Uuid';
 EXEC sp_addextendedproperty 'MS_Description', N'JWT 存取權杖', 'SCHEMA', 'dbo', 'TABLE', 'UserTokens', 'COLUMN', 'AccessToken';
+EXEC sp_addextendedproperty 'MS_Description', N'AccessToken 過期時間', 'SCHEMA', 'dbo', 'TABLE', 'UserTokens', 'COLUMN', 'AccessTokenExpiresAt';
 EXEC sp_addextendedproperty 'MS_Description', N'建立時間', N'SCHEMA', 'dbo', 'TABLE', 'UserTokens', 'COLUMN', 'CreateAt';
-EXEC sp_addextendedproperty 'MS_Description', N'權杖過期時間', 'SCHEMA', 'dbo', 'TABLE', 'UserTokens', 'COLUMN', 'ExpiresAt';
+EXEC sp_addextendedproperty 'MS_Description', N'重新整理權杖', 'SCHEMA', 'dbo', 'TABLE', 'UserTokens', 'COLUMN', 'RefreshToken';
+EXEC sp_addextendedproperty 'MS_Description', N'RefreshToken 過期時間', 'SCHEMA', 'dbo', 'TABLE', 'UserTokens', 'COLUMN', 'RefreshTokenExpiresAt';

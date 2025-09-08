@@ -130,7 +130,7 @@ try
                 // policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader(); 
 
                 var allowCors = (builder.Configuration["AppConfig:Cors"] ?? string.Empty).Split(",");
-                policy.WithOrigins(allowCors).AllowAnyMethod().AllowAnyHeader();
+                policy.WithOrigins(allowCors).AllowAnyMethod().AllowAnyHeader().AllowCredentials(); // 允許 cookie
             });
     });
     #endregion
@@ -222,12 +222,25 @@ try
         {
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = true,
+            ValidateLifetime = true,// 這裡會檢查 exp / nbf
             ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.FromMinutes(1), // 避免時差問題
+            ClockSkew = TimeSpan.FromMinutes(1), //  預設容忍時間(避免時差問題)
             ValidIssuer = jwtIssuer,
             ValidAudience = jwtAudience,
             IssuerSigningKey = new SymmetricSecurityKey(jwtKey)
+        };
+
+        // 從 Cookie 取 Token
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                if (context.Request.Cookies.ContainsKey("accessToken"))
+                {
+                    context.Token = context.Request.Cookies["accessToken"];
+                }
+                return Task.CompletedTask;
+            }
         };
     });
 

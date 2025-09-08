@@ -14,5 +14,13 @@ namespace Services.Interfaces
         /// <returns></returns>
         Task<AuthResponse> Login(LoginRequest LoginReq, CancellationToken cancellationToken = default);
 
+        /// <summary>
+        /// 取得 UserTokenByRefreshToken
+        /// </summary>
+        /// <param name="refreshToken"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<AuthResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
+
     }
 }

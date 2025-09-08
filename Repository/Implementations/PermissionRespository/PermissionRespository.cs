@@ -298,7 +298,7 @@ namespace Repository.Implementations.PermissionRespository
         /// <param name="userName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UserSearchListResponse> GetUserAsync(string userName, CancellationToken cancellationToken)
+        public async Task<UserSearchListResponse> GetUserByUserNameAsync(string userName, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -312,7 +312,7 @@ namespace Repository.Implementations.PermissionRespository
             cancellationToken.ThrowIfCancellationRequested();
 
             // 先組合 SQL 語句
-            GetUser(userName);
+            GetUserByUserName(userName);
 
             var queryEntity = await _unitOfWork.Connection.QueryAsync<UserEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
             var mapper = _mapper.Map<List<UserSearchListResponse>>(queryEntity);
@@ -321,5 +321,36 @@ namespace Repository.Implementations.PermissionRespository
             return result;
             #endregion
         }
+
+        /// <summary>
+        /// 取得單一使用者主檔資訊
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<UserSearchListResponse> GetUserByUserIdAsync(string userId, CancellationToken cancellationToken)
+        {
+            #region 參數宣告
+
+            var result = new UserSearchListResponse();
+
+            #endregion
+
+            #region 流程
+
+            // 在執行前檢查是否有取消的需求
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // 先組合 SQL 語句
+            GetUserByUserId(userId);
+
+            var queryEntity = await _unitOfWork.Connection.QueryAsync<UserEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
+            var mapper = _mapper.Map<List<UserSearchListResponse>>(queryEntity);
+            result = mapper.FirstOrDefault() ?? new();
+
+            return result;
+            #endregion
+        }
+        
     }
 }

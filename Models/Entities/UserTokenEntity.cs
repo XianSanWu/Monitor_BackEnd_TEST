@@ -27,9 +27,14 @@ namespace Models.Entities
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
-        /// 過期時間
+        /// 重新整理權杖
         /// </summary>
-        public DateTime ExpiredAt { get; set; }
+        public string RefreshToken { get; set; } = string.Empty;
+
+        /// <summary>
+        /// RefreshToken 過期時間
+        /// </summary>
+        public DateTime RefreshTokenExpiresAt { get; set; }
     }
 
 }

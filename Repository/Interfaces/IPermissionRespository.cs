@@ -81,6 +81,15 @@ namespace Repository.Interfaces
         /// <param name="userName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<UserSearchListResponse> GetUserAsync(string userName, CancellationToken cancellationToken);
+        Task<UserSearchListResponse> GetUserByUserNameAsync(string userName, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// 取得單一使用者主檔資訊
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<UserSearchListResponse> GetUserByUserIdAsync(string userId, CancellationToken cancellationToken);
+        
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Services.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace WebApi.Attributes
 {
@@ -61,22 +62,57 @@ namespace WebApi.Attributes
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var user = context.HttpContext.User;
-            if (user?.Identity?.IsAuthenticated != true)
+            var accessToken = context.HttpContext.Request.Cookies["accessToken"];
+            if (string.IsNullOrEmpty(accessToken))
             {
                 context.Result = new UnauthorizedResult();
                 return;
             }
 
-            var featureMaskClaim = user.Claims.FirstOrDefault(c => string.Equals(c.Type, "FeatureMask", StringComparison.OrdinalIgnoreCase))?.Value;
-            if (string.IsNullOrEmpty(featureMaskClaim) || !int.TryParse(featureMaskClaim, out int featureMask))
+            var handler = new JwtSecurityTokenHandler();
+            JwtSecurityToken? jwtToken = null;
+            try
+            {
+                jwtToken = handler.ReadJwtToken(accessToken);
+            }
+            catch
+            {
+                context.Result = new UnauthorizedResult();
+                return;
+            }
+
+            var claims = jwtToken.Claims;
+
+            // 驗證過期
+            var expClaim = claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)?.Value;
+            if (!string.IsNullOrEmpty(expClaim) && long.TryParse(expClaim, out var expUnix))
+            {
+                var expDate = DateTimeOffset.FromUnixTimeSeconds(expUnix).UtcDateTime;
+                if (DateTime.UtcNow > expDate)
+                {
+                    context.Result = new UnauthorizedResult();
+                    return;
+                }
+            }
+
+            // 取得 UserId
+            var userIdClaim = claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            if (string.IsNullOrWhiteSpace(userIdClaim))
+            {
+                context.Result = new UnauthorizedResult();
+                return;
+            }
+
+            // 取得 FeatureMask
+            var featureMaskClaim = claims.FirstOrDefault(c => c.Type == "FeatureMask")?.Value;
+            if (string.IsNullOrWhiteSpace(featureMaskClaim) || !int.TryParse(featureMaskClaim, out int featureMask))
             {
                 context.Result = new ForbidResult();
                 return;
             }
 
+            // 檢查權限
             var permissionService = context.HttpContext.RequestServices.GetRequiredService<IPermissionService>();
-
             foreach (var requirement in _requirements)
             {
                 var bitValue = await permissionService.GetBitValue(requirement.Module, requirement.Feature, requirement.Action);
@@ -89,5 +125,7 @@ namespace WebApi.Attributes
 
             context.Result = new ForbidResult();
         }
+
+
     }
 }
