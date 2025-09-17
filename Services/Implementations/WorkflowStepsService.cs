@@ -2,6 +2,7 @@
 using Confluent.Kafka;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Models.Enums;
 using Repository.Implementations;
@@ -15,83 +16,70 @@ using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsKafkaRespon
 namespace Services.Implementations
 {
     public class WorkflowStepsService(
-     ILogger<WorkflowStepsService> logger,
-     IWorkflowStepsRespository wfsRepository,
-     IConfiguration config,
-     IMemoryCache cache,
-     IMapper mapper) : IWorkflowStepsService
+         ILogger<WorkflowStepsService> logger,
+         IWorkflowStepsRespository wfsRepository,
+         IConfiguration config,
+         IMemoryCache cache,
+         IMapper mapper,
+         IHostEnvironment env
+    ) : IWorkflowStepsService
     {
         private readonly ILogger<WorkflowStepsService> _logger = logger;
         private readonly IConfiguration _config = config;
         private readonly IMemoryCache _cache = cache;
-        //private readonly IWorkflowStepsRespository _wfsRepository = wfsRepository;
+        private readonly IHostEnvironment _env = env;
+        private readonly IWorkflowStepsRespository _wfsRepository = wfsRepository;
 
         private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(10);
 
-        /// <summary>
-        /// 工作進度查詢(最後一筆)
-        /// </summary>
-        /// <param name="searchReq"></param>
-        /// <param name="_config"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default)
+        #region 工作進度查詢(最後一筆)
+        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(
+            WorkflowStepsSearchListRequest searchReq,
+            CancellationToken cancellationToken = default)
         {
-            #region 參數宣告
-            var result = new WorkflowStepsSearchListResponse();
-            #endregion
+            if (_env.EnvironmentName == "Test")
+            {
+                return await _wfsRepository.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken);
+            }
 
-            #region 流程
             var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
 #if TEST
             CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
 #endif
             using (IDbHelper dbHelper = CDP_dbHelper)
             {
-                IWorkflowStepsRespository _wfsRp = new WorkflowStepsRespository(dbHelper.UnitOfWork, mapper);
-                result = await _wfsRp.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken).ConfigureAwait(false);
+                var wfsRp = new WorkflowStepsRespository(dbHelper.UnitOfWork, mapper);
+                return await wfsRp.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken);
             }
-            
-            return result;
-            #endregion
         }
+        #endregion
 
-        /// <summary>
-        /// 工作進度查詢
-        /// </summary>
-        /// <param name="searchReq"></param>
-        /// <param name="_config"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default)
+        #region 工作進度查詢
+        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(
+            WorkflowStepsSearchListRequest searchReq,
+            CancellationToken cancellationToken = default)
         {
-            #region 參數宣告
-            //Task allTasks = null; 
-            var result = new WorkflowStepsSearchListResponse();
-            #endregion
+            if (_env.EnvironmentName == "Test")
+            {
+                return await _wfsRepository.QueryWorkflowStepsSearchList(searchReq, cancellationToken);
+            }
 
-            #region 流程
             var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
 #if TEST
             CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
 #endif
             using (IDbHelper dbHelper = CDP_dbHelper)
             {
-                IWorkflowStepsRespository _wfsRp = new WorkflowStepsRespository(dbHelper.UnitOfWork, mapper);
-                result = await _wfsRp.QueryWorkflowStepsSearchList(searchReq, cancellationToken).ConfigureAwait(false);
+                var wfsRp = new WorkflowStepsRespository(dbHelper.UnitOfWork, mapper);
+                return await wfsRp.QueryWorkflowStepsSearchList(searchReq, cancellationToken);
             }
-
-            return result;
-            #endregion
         }
+        #endregion
 
-        /// <summary>
-        /// 取得卡夫卡工作量
-        /// </summary>
-        /// <param name="req"></param>
-        /// <param name="_config"></param>
-        /// <param name="cancellationToken"></param>
-        public async Task<WorkflowStepsKafkaResponse> GetKafkaLag(WorkflowStepsKafkaRequest req, CancellationToken cancellationToken = default)
+        #region 取得 Kafka Lag
+        public async Task<WorkflowStepsKafkaResponse> GetKafkaLag(
+            WorkflowStepsKafkaRequest req,
+            CancellationToken cancellationToken = default)
         {
             string cacheKey = $"KafkaLag_{req.Channel}";
 
@@ -106,42 +94,22 @@ namespace Services.Implementations
             return result;
         }
 
-        private async Task<WorkflowStepsKafkaResponse> GetKafkaLagFromKafka(WorkflowStepsKafkaRequest req, CancellationToken cancellationToken = default)
+        private async Task<WorkflowStepsKafkaResponse> GetKafkaLagFromKafka(
+            WorkflowStepsKafkaRequest req,
+            CancellationToken cancellationToken = default)
         {
-
-            #region 回傳範例
 #if TEST
             return await Task.FromResult(new WorkflowStepsKafkaResponse
             {
                 PartitionLags = new List<KafkaLagInfo>
                 {
-                    new KafkaLagInfo
-                    {
-                        Partition = 0,
-                        CommittedOffset = 1012,
-                        HighWatermark = 1020,
-                        Lag = 8
-                    },
-                    new KafkaLagInfo
-                    {
-                        Partition = 1,
-                        CommittedOffset = 2000,
-                        HighWatermark = 2025,
-                        Lag = 25
-                    },
-                    new KafkaLagInfo
-                    {
-                        Partition = 1,
-                        CommittedOffset = 2000,
-                        HighWatermark = 2025,
-                        Lag = 25
-                    },
+                    new KafkaLagInfo { Partition = 0, CommittedOffset = 1012, HighWatermark = 1020, Lag = 8 },
+                    new KafkaLagInfo { Partition = 1, CommittedOffset = 2000, HighWatermark = 2025, Lag = 25 }
                 },
                 TotalLag = 33
             });
 #endif
-            #endregion
-
+            // 這裡生產環境使用 Kafka 讀取邏輯
             return await Task.Run(() =>
             {
                 var result = new WorkflowStepsKafkaResponse();
@@ -172,7 +140,6 @@ namespace Services.Implementations
                     var partition = new TopicPartition(_topic, partitionMetadata.PartitionId);
                     var committedOffsets = consumer.Committed(new List<TopicPartition> { partition }, TimeSpan.FromSeconds(_consumeTimeSpan));
                     var committedOffset = committedOffsets.First().Offset;
-
                     var endOffsets = consumer.QueryWatermarkOffsets(partition, TimeSpan.FromSeconds(_consumeTimeSpan));
                     var highWatermark = endOffsets.High;
                     var lag = highWatermark - committedOffset;
@@ -196,7 +163,6 @@ namespace Services.Implementations
         {
             _logger.LogError($"Kafka Error發生：Fatal{error.IsFatal}, Error code：{error}");
         }
-
-
+        #endregion
     }
 }
