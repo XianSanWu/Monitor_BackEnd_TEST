@@ -28,7 +28,6 @@ namespace Services.Implementations
         private readonly IMemoryCache _cache = cache;
         private readonly IUnitOfWorkFactory _uowFactory = uowFactory;
         private readonly IRepositoryFactory _repositoryFactory = repositoryFactory;
-        private readonly IMapper _mapper = mapper;
 
         private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(10);
 
@@ -37,23 +36,32 @@ namespace Services.Implementations
             WorkflowStepsSearchListRequest searchReq,
             CancellationToken cancellationToken = default)
         {
+            var dbType = DBConnectionEnum.Cdp;
+#if TEST
+            dbType = DBConnectionEnum.DefaultConnection;
+#endif
             // 使用工廠取得 UnitOfWork
-            using var uow = _uowFactory.Create(DBConnectionEnum.Cdp, useTransaction: false);
+            using var uow = _uowFactory.Create(dbType, useTransaction: false);
 
             // 使用 Repository 工廠產生 Repository
-            var wfsRepo = _repositoryFactory.Create<WorkflowStepsRespository>(uow, _mapper);
+            var wfsRepo = _repositoryFactory.Create<WorkflowStepsRespository>(uow, mapper);
 
             return await wfsRepo.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken);
         }
-        #endregion
+#endregion
 
         #region 工作進度查詢
         public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(
             WorkflowStepsSearchListRequest searchReq,
             CancellationToken cancellationToken = default)
         {
-            using var uow = _uowFactory.Create(DBConnectionEnum.Cdp, useTransaction: false);
-            var wfsRepo = _repositoryFactory.Create<WorkflowStepsRespository>(uow, _mapper);
+            var dbType = DBConnectionEnum.Cdp;
+#if TEST
+            dbType = DBConnectionEnum.DefaultConnection;
+#endif
+            using var uow = _uowFactory.Create(dbType, useTransaction: false);
+
+            var wfsRepo = _repositoryFactory.Create<WorkflowStepsRespository>(uow, mapper);
 
             return await wfsRepo.QueryWorkflowStepsSearchList(searchReq, cancellationToken);
         }

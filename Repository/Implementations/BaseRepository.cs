@@ -141,8 +141,14 @@ namespace Repository.Implementations
         {
             int TotalCount = 0;
 
-            // 不要 new SqlConnection，直接用 unitOfWork.Connection
-            var conn = (SqlConnection)unitOfWork.Connection; // cast 你的 DBConnection 為 SqlConnection
+            var conn = (SqlConnection)unitOfWork.Connection; // cast 為 SqlConnection
+
+            // 確保連線已開啟
+            if (conn.State != System.Data.ConnectionState.Open)
+            {
+                await conn.OpenAsync().ConfigureAwait(false);
+            }
+
             using (var cmd = conn.CreateCommand())
             {
                 string SqlStr = string.Format("{0} SELECT COUNT(1) as totalCount FROM ({1}) AS CNT", _sqlWithStr, _sqlStr);
@@ -161,18 +167,17 @@ namespace Repository.Implementations
                     }
                 }
 
-                using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+                if (await reader.ReadAsync().ConfigureAwait(false))
                 {
-                    while (await reader.ReadAsync().ConfigureAwait(false))
-                    {
-                        TotalCount = Convert.ToInt32(reader["totalCount"]);
-                    }
+                    TotalCount = Convert.ToInt32(reader["totalCount"]);
                 }
             }
 
             int TotalPage = (int)Math.Ceiling((decimal)TotalCount / PageSize);
             return PageIndex >= TotalPage ? TotalPage : PageIndex;
         }
+
 
 
         /// <summary>

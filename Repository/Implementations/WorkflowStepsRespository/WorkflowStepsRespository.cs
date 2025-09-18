@@ -37,10 +37,19 @@ namespace Repository.Implementations.WorkflowStepsRespository
             result.SearchItem = new List<WorkflowStepsSearchResponse>();
 
             var _pagingSql = await GetPagingSql(searchReq.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
+            try
+            {
+
             var queryWorkflowEntity = (await _unitOfWork.Connection.QueryAsync<WorkflowEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
             result.SearchItem = _mapper.Map<List<WorkflowStepsSearchResponse>>(queryWorkflowEntity);
             result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
 
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
             return result;
 
             #endregion

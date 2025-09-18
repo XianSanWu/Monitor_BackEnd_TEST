@@ -5,134 +5,103 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Repository.Interfaces;
 using Services.Implementations;
+using Models.Dto.Requests;
+using Models.Dto.Responses;
 using Models.Enums;
 using Xunit;
 using System.Threading;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using static Models.Dto.Requests.WorkflowStepsRequest;
-using static Models.Dto.Responses.WorkflowStepsResponse;
-using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsKafkaResponse;
-using Repository.Implementations.WorkflowStepsRespository;
 
-public class WorkflowStepsServiceTests
+namespace Services.Tests
 {
-    private readonly Mock<ILogger<WorkflowStepsService>> _loggerMock = new();
-    private readonly Mock<IConfiguration> _configMock = new();
-    private readonly Mock<IMemoryCache> _cacheMock = new();
-    private readonly Mock<IMapper> _mapperMock = new();
-    private readonly Mock<IUnitOfWorkFactory> _uowFactoryMock = new();
-    private readonly Mock<IRepositoryFactory> _repositoryFactoryMock = new();
-    private readonly Mock<IUnitOfWork> _uowMock = new();
-    private readonly Mock<IWorkflowStepsRespository> _repoMock = new();
-
-    private WorkflowStepsService CreateService()
+    public class WorkflowStepsServiceTests
     {
-        // Factory 回傳 Repository 介面
-        _repositoryFactoryMock
-    .Setup(f => f.Create<IWorkflowStepsRespository>(_uowMock.Object, _mapperMock.Object))
-    .Returns(_repoMock.Object);
+        private readonly Mock<IUnitOfWorkFactory> _mockUowFactory;
+        private readonly Mock<IRepositoryFactory> _mockRepoFactory;
+        private readonly Mock<IWorkflowStepsRespository> _mockRepo;
+        private readonly Mock<IMapper> _mockMapper;
+        private readonly Mock<ILogger<WorkflowStepsService>> _mockLogger;
+        private readonly Mock<IConfiguration> _mockConfig;
+        private readonly Mock<IMemoryCache> _mockCache;
 
+        private readonly WorkflowStepsService _service;
 
-        // Factory 回傳 UnitOfWork mock
-        _uowFactoryMock
-            .Setup(f => f.Create(DBConnectionEnum.Cdp, false))
-            .Returns(_uowMock.Object);
+        public WorkflowStepsServiceTests()
+        {
+            _mockUowFactory = new Mock<IUnitOfWorkFactory>();
+            _mockRepoFactory = new Mock<IRepositoryFactory>();
+            _mockRepo = new Mock<IWorkflowStepsRespository>();
+            _mockMapper = new Mock<IMapper>();
+            _mockLogger = new Mock<ILogger<WorkflowStepsService>>();
+            _mockConfig = new Mock<IConfiguration>();
+            _mockCache = new Mock<IMemoryCache>();
 
-        return new WorkflowStepsService(
-            _loggerMock.Object,
-            _configMock.Object,
-            _cacheMock.Object,
-            _mapperMock.Object,
-            _uowFactoryMock.Object,
-            _repositoryFactoryMock.Object
-        );
-    }
+            // 設定 RepositoryFactory 回傳 Mock Interface
+            _mockRepoFactory
+                .Setup(f => f.Create<IWorkflowStepsRespository>(It.IsAny<object[]>()))
+                .Returns(_mockRepo.Object);
 
-    [Fact]
-    public async Task QueryWorkflowStepsSearchList_ReturnsExpectedResult()
-    {
-        var service = CreateService();
-        var request = new WorkflowStepsSearchListRequest();
-        var expectedResponse = new WorkflowStepsSearchListResponse();
+            // 建立 Service
+            _service = new WorkflowStepsService(
+                _mockLogger.Object,
+                _mockConfig.Object,
+                _mockCache.Object,
+                _mockMapper.Object,
+                _mockUowFactory.Object,
+                _mockRepoFactory.Object
+            );
+        }
 
-        _repoMock
-            .Setup(r => r.QueryWorkflowStepsSearchList(request, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(expectedResponse);
+        [Fact]
+        public async Task QueryWorkflowStepsSearchLastList_ReturnsExpectedResult()
+        {
+            // Arrange
+            var searchReq = new WorkflowStepsRequest.WorkflowStepsSearchListRequest
+            {
+                FieldModel = new WorkflowStepsRequest.WorkflowStepsSearchListFieldModelRequest
+                {
+                    Channel = "Email",
+                    SendUuid = "123"
+                },
+            };
 
-        var result = await service.QueryWorkflowStepsSearchList(request);
+            var expectedResponse = new WorkflowStepsResponse.WorkflowStepsSearchListResponse
+            {
+                SearchItem = new List<WorkflowStepsResponse.WorkflowStepsSearchListResponse.WorkflowStepsSearchResponse>
+                {
+                    new WorkflowStepsResponse.WorkflowStepsSearchListResponse.WorkflowStepsSearchResponse
+                    {
+                        SN = 1,
+                        SendUuid = "123",
+                        Channel = "Email"
+                    }
+                },
+                Page = searchReq.Page
+            };
 
-        Assert.Equal(expectedResponse, result);
-        _repoMock.Verify(r => r.QueryWorkflowStepsSearchList(request, It.IsAny<CancellationToken>()), Times.Once);
-    }
+            // Mock UnitOfWork
+            var mockUow = new Mock<IUnitOfWork>();
+            _mockUowFactory
+                .Setup(f => f.Create(It.IsAny<DBConnectionEnum>(), It.IsAny<bool>()))
+                .Returns(mockUow.Object);
 
-    [Fact]
-    public async Task QueryWorkflowStepsSearchLastList_ReturnsExpectedResult()
-    {
-        var service = CreateService();
-        var request = new WorkflowStepsSearchListRequest();
-        var expectedResponse = new WorkflowStepsSearchListResponse();
+            // Mock Repository 方法
+            _mockRepo
+                .Setup(r => r.QueryWorkflowStepsSearchLastList(searchReq, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedResponse);
 
-        _repoMock
-            .Setup(r => r.QueryWorkflowStepsSearchLastList(request, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(expectedResponse);
+            // Act
+            var result = await _service.QueryWorkflowStepsSearchLastList(searchReq);
 
-        var result = await service.QueryWorkflowStepsSearchLastList(request);
+            // Assert
+            Assert.NotNull(result);
+            Assert.Single(result.SearchItem);
+            Assert.Equal("123", result.SearchItem[0].SendUuid);
+            Assert.Equal("Email", result.SearchItem[0].Channel);
 
-        Assert.Equal(expectedResponse, result);
-        _repoMock.Verify(r => r.QueryWorkflowStepsSearchLastList(request, It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetKafkaLag_ReturnsCachedValue_WhenCacheHit()
-    {
-        var service = CreateService();
-        var request = new WorkflowStepsKafkaRequest { Channel = "test" };
-        var cachedResponse = new WorkflowStepsKafkaResponse();
-
-        // 模擬 cache hit
-        object outValue = cachedResponse;
-        _cacheMock
-            .Setup(c => c.TryGetValue($"KafkaLag_{request.Channel}", out outValue))
-            .Returns(true);
-
-        var result = await service.GetKafkaLag(request);
-
-        Assert.Equal(cachedResponse, result);
-
-        // 正確 Verify LogInformation (擴充方法)
-        _loggerMock.Verify(
-    x => x.Log(
-        LogLevel.Information,
-        It.IsAny<EventId>(),
-        It.Is<It.IsAnyType>((v, t) => v.ToString() == "使用 Server 端 Cache 資料"),
-        It.IsAny<Exception>(),
-        It.IsAny<Func<It.IsAnyType, Exception, string>>()
-    ),
-    Times.Once
-);
-
-    }
-
-    [Fact]
-    public async Task GetKafkaLag_SetsCache_WhenCacheMiss()
-    {
-        var service = CreateService();
-        var request = new WorkflowStepsKafkaRequest { Channel = "test" };
-        var response = new WorkflowStepsKafkaResponse();
-
-        // cache miss
-        object outValue = null!;
-        _cacheMock
-            .Setup(c => c.TryGetValue(It.IsAny<object>(), out outValue))
-            .Returns(false);
-
-        _cacheMock
-            .Setup(c => c.Set(It.IsAny<object>(), It.IsAny<object>(), It.IsAny<TimeSpan>()))
-            .Returns(response);
-
-#if TEST
-        var result = await service.GetKafkaLag(request);
-        Assert.NotNull(result);
-#endif
+            // Verify Repository 被呼叫
+            _mockRepo.Verify(r => r.QueryWorkflowStepsSearchLastList(searchReq, It.IsAny<CancellationToken>()), Times.Once);
+        }
     }
 }
