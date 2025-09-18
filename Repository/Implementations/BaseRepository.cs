@@ -139,52 +139,41 @@ namespace Repository.Implementations
         /// <returns></returns>
         protected async Task<int> GetLastPageIndex(int PageSize, int PageIndex, IUnitOfWork unitOfWork, DynamicParameters? sqlParams)
         {
-            #region 參數宣告
             int TotalCount = 0;
-            int TotalPage = 0;
-            int ReturnValue = 1;
-            #endregion
 
-            #region 流程
-            //預設頁數
-            //var ConnString = UtilityClassLibrary.AES.DecryptInformation(ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString.ToString());
-            using (SqlConnection conn = new(unitOfWork.Connection.ConnectionString))
+            // 不要 new SqlConnection，直接用 unitOfWork.Connection
+            var conn = (SqlConnection)unitOfWork.Connection; // cast 你的 DBConnection 為 SqlConnection
+            using (var cmd = conn.CreateCommand())
             {
                 string SqlStr = string.Format("{0} SELECT COUNT(1) as totalCount FROM ({1}) AS CNT", _sqlWithStr, _sqlStr);
-                await conn.OpenAsync().ConfigureAwait(false);
-                using (SqlCommand cmd = new(SqlStr, conn))
-                {
-                    //組 sql parameter
-                    if (sqlParams != null && sqlParams.ParameterNames.Any())
-                    {
-                        foreach (var name in sqlParams.ParameterNames)
-                        {
-                            cmd.Parameters.Add(new SqlParameter(name, sqlParams.Get<dynamic>(name)));
-                        }
-                    }
+                cmd.CommandText = SqlStr;
 
-                    using SqlDataReader reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+                // 指定 Transaction，如果有的話
+                if (unitOfWork.Transaction != null)
+                    cmd.Transaction = (SqlTransaction)unitOfWork.Transaction;
+
+                // 組 sql parameter
+                if (sqlParams != null && sqlParams.ParameterNames.Any())
+                {
+                    foreach (var name in sqlParams.ParameterNames)
+                    {
+                        cmd.Parameters.Add(new SqlParameter(name, sqlParams.Get<dynamic>(name)));
+                    }
+                }
+
+                using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                {
                     while (await reader.ReadAsync().ConfigureAwait(false))
                     {
-                        TotalCount = Convert.ToInt32(reader["totalCount"]);    //第一筆資料                     
+                        TotalCount = Convert.ToInt32(reader["totalCount"]);
                     }
-
                 }
             }
 
-            //總頁數
-            TotalPage = (int)Math.Ceiling((decimal)TotalCount / (decimal)PageSize);
-
-            if (PageIndex >= TotalPage)
-                ReturnValue = TotalPage;
-            else
-                ReturnValue = PageIndex;
-
-
-            return ReturnValue;
-
-            #endregion
+            int TotalPage = (int)Math.Ceiling((decimal)TotalCount / PageSize);
+            return PageIndex >= TotalPage ? TotalPage : PageIndex;
         }
+
 
         /// <summary>
         /// 動態添加欄位條件篩選(必須相等)

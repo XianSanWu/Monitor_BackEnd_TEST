@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Models.Enums;
-using Repository.Implementations;
 using Repository.Implementations.WorkflowStepsRespository;
 using Repository.Interfaces;
 using Services.Interfaces;
@@ -17,18 +16,19 @@ namespace Services.Implementations
 {
     public class WorkflowStepsService(
          ILogger<WorkflowStepsService> logger,
-         IWorkflowStepsRespository wfsRepository,
          IConfiguration config,
          IMemoryCache cache,
          IMapper mapper,
-         IHostEnvironment env
+         IUnitOfWorkFactory uowFactory,
+         IRepositoryFactory repositoryFactory
     ) : IWorkflowStepsService
     {
         private readonly ILogger<WorkflowStepsService> _logger = logger;
         private readonly IConfiguration _config = config;
         private readonly IMemoryCache _cache = cache;
-        private readonly IHostEnvironment _env = env;
-        private readonly IWorkflowStepsRespository _wfsRepository = wfsRepository;
+        private readonly IUnitOfWorkFactory _uowFactory = uowFactory;
+        private readonly IRepositoryFactory _repositoryFactory = repositoryFactory;
+        private readonly IMapper _mapper = mapper;
 
         private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(10);
 
@@ -37,20 +37,13 @@ namespace Services.Implementations
             WorkflowStepsSearchListRequest searchReq,
             CancellationToken cancellationToken = default)
         {
-            if (_env.EnvironmentName == "Test")
-            {
-                return await _wfsRepository.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken);
-            }
+            // 使用工廠取得 UnitOfWork
+            using var uow = _uowFactory.Create(DBConnectionEnum.Cdp, useTransaction: false);
 
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
-#if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
-#endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                var wfsRp = new WorkflowStepsRespository(dbHelper.UnitOfWork, mapper);
-                return await wfsRp.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken);
-            }
+            // 使用 Repository 工廠產生 Repository
+            var wfsRepo = _repositoryFactory.Create<WorkflowStepsRespository>(uow, _mapper);
+
+            return await wfsRepo.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken);
         }
         #endregion
 
@@ -59,20 +52,10 @@ namespace Services.Implementations
             WorkflowStepsSearchListRequest searchReq,
             CancellationToken cancellationToken = default)
         {
-            if (_env.EnvironmentName == "Test")
-            {
-                return await _wfsRepository.QueryWorkflowStepsSearchList(searchReq, cancellationToken);
-            }
+            using var uow = _uowFactory.Create(DBConnectionEnum.Cdp, useTransaction: false);
+            var wfsRepo = _repositoryFactory.Create<WorkflowStepsRespository>(uow, _mapper);
 
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
-#if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
-#endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                var wfsRp = new WorkflowStepsRespository(dbHelper.UnitOfWork, mapper);
-                return await wfsRp.QueryWorkflowStepsSearchList(searchReq, cancellationToken);
-            }
+            return await wfsRepo.QueryWorkflowStepsSearchList(searchReq, cancellationToken);
         }
         #endregion
 
@@ -109,7 +92,6 @@ namespace Services.Implementations
                 TotalLag = 33
             });
 #endif
-            // 這裡生產環境使用 Kafka 讀取邏輯
             return await Task.Run(() =>
             {
                 var result = new WorkflowStepsKafkaResponse();
