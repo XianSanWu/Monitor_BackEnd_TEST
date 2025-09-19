@@ -10,7 +10,7 @@ namespace Repository.Implementations.WorkflowStepsRespository
 {
     public partial class WorkflowStepsRespository(
         IUnitOfWork unitOfWork,
-        IMapper mapper) : BaseRepository(unitOfWork, mapper), IWorkflowStepsRespository
+        IMapper mapper) : BaseRepository(unitOfWork, mapper), IWorkflowStepsRespository, IRepository
     {
         /// <summary>
         /// 工作進度查詢DB (最後一筆)
