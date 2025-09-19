@@ -1,7 +1,6 @@
 ﻿using Repository.Interfaces;
-using System.Threading;
 
-namespace Repository.Repositories
+namespace Repository.Implementations
 {
     public class UnitOfWorkScopeAccessor : IUnitOfWorkScopeAccessor
     {
