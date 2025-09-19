@@ -17,27 +17,6 @@ namespace Services.Interfaces
         Task<bool> SaveFeaturePermissionsAsync(PermissionUpdateRequest updateReq, CancellationToken cancellationToken);
 
         /// <summary>
-        /// 檢查需更新使用者是否存在
-        /// </summary>
-        /// <param name="updateReq"></param>
-        /// <param name="cancellationToken"></param>
-        Task<bool> CheckUpdateUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// 儲存使用者
-        /// </summary>
-        /// <param name="updateReq"></param>
-        /// <param name="cancellationToken"></param>
-        Task<bool> SaveUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// 啟用/停用使用者
-        /// </summary>
-        /// <param name="updateReq"></param>
-        /// <param name="cancellationToken"></param>
-        Task<bool> IsUseUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken);
-
-        /// <summary>
         /// 取得所有使用者清單列表
         /// </summary>
         /// <param name="searchReq"></param>

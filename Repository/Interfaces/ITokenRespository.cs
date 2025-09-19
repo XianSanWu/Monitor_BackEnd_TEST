@@ -3,7 +3,7 @@ using Models.Dto.Responses;
 
 namespace Repository.Interfaces
 {
-    public interface ITokenRespository
+    public interface ITokenRespository : IRepository
     {
 
         /// <summary>

@@ -9,12 +9,9 @@ using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsSearchListR
 namespace Repository.Implementations.WorkflowStepsRespository
 {
     public partial class WorkflowStepsRespository(
-        IUnitOfWork unitOfWork,
         IUnitOfWorkScopeAccessor scopeAccessor,
-
-    IMapper mapper) : BaseRepository(unitOfWork, mapper), IWorkflowStepsRespository, IRepository
+    IMapper mapper) : BaseRepository(scopeAccessor, mapper), IWorkflowStepsRespository, IRepository
     {
-        private readonly IUnitOfWorkScopeAccessor _scopeAccessor = scopeAccessor;
 
         /// <summary>
         /// 工作進度查詢DB (最後一筆)
@@ -31,7 +28,7 @@ namespace Repository.Implementations.WorkflowStepsRespository
             #endregion
 
             #region 流程
-            var _uow = _scopeAccessor.Current ?? throw new InvalidOperationException("UnitOfWork not available");
+
             // 在執行前檢查是否有取消的需求
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -41,20 +38,12 @@ namespace Repository.Implementations.WorkflowStepsRespository
             result.Page = searchReq.Page;
             result.SearchItem = new List<WorkflowStepsSearchResponse>();
 
-            var _pagingSql = await GetPagingSql(searchReq.Page, _uow, _sqlParams).ConfigureAwait(false);
-            try
-            {
+            var _pagingSql = await GetPagingSql(searchReq.Page, CurrentUow, _sqlParams).ConfigureAwait(false);
 
-                var queryWorkflowEntity = (await _uow.Connection.QueryAsync<WorkflowEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
-                result.SearchItem = _mapper.Map<List<WorkflowStepsSearchResponse>>(queryWorkflowEntity);
-                result.Page.TotalCount = (await _uow.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
+            var queryWorkflowEntity = (await CurrentUow.Connection.QueryAsync<WorkflowEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
+            result.SearchItem = _mapper.Map<List<WorkflowStepsSearchResponse>>(queryWorkflowEntity);
+            result.Page.TotalCount = (await CurrentUow.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
 
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
             return result;
 
             #endregion
@@ -86,10 +75,10 @@ namespace Repository.Implementations.WorkflowStepsRespository
             result.Page = searchReq.Page;
             result.SearchItem = new List<WorkflowStepsSearchResponse>();
 
-            var _pagingSql = await GetPagingSql(searchReq.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
-            var queryWorkflowEntity = (await _unitOfWork.Connection.QueryAsync<WorkflowEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
+            var _pagingSql = await GetPagingSql(searchReq.Page, CurrentUow, _sqlParams).ConfigureAwait(false);
+            var queryWorkflowEntity = (await CurrentUow.Connection.QueryAsync<WorkflowEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
             result.SearchItem = _mapper.Map<List<WorkflowStepsSearchResponse>>(queryWorkflowEntity);
-            result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
+            result.Page.TotalCount = (await CurrentUow.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
 
             return result;
 

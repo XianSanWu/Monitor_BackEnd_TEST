@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Repository.Implementations
 {
-    public class BaseRepository(IUnitOfWork unitOfWork, IMapper mapper)
+    public class BaseRepository(IUnitOfWorkScopeAccessor scopeAccessor, IMapper mapper)
     {
 
         #region 屬性
@@ -19,9 +19,16 @@ namespace Repository.Implementations
         protected List<DynamicParameters>? _sqlParamsList;
         //protected SqlConnection SQLConnection;
         //protected SqlTransaction SQLTransaction;
-        protected readonly IUnitOfWork _unitOfWork = unitOfWork;
+        //protected readonly IUnitOfWork _unitOfWork = unitOfWork;
+        protected readonly IUnitOfWorkScopeAccessor _scopeAccessor = scopeAccessor;
         protected readonly IMapper _mapper = mapper;
         #endregion
+
+        /// <summary>
+        /// 取得當前作用中的 UnitOfWork
+        /// </summary>
+        protected IUnitOfWork CurrentUow =>
+            _scopeAccessor.Current ?? throw new InvalidOperationException("UnitOfWork not available");
 
         /// <summary>
         /// SQL語法(查詢+分頁)

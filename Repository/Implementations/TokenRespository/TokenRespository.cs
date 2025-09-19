@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Dapper;
-using k8s.KubeConfigModels;
 using Models.Dto.Responses;
 using Repository.Interfaces;
-using System;
-using System.Threading;
 
 namespace Repository.Implementations.TokenRespository
 {
-    public partial class TokenRespository(IUnitOfWork unitOfWork, IMapper mapper)
-        : BaseRepository(unitOfWork, mapper), ITokenRespository
+    public partial class TokenRespository(IUnitOfWorkScopeAccessor scopeAccessor, IMapper mapper)
+        : BaseRepository(scopeAccessor, mapper), ITokenRespository, IRepository
     {
 
         /// <summary>
@@ -36,7 +32,7 @@ namespace Repository.Implementations.TokenRespository
             GetUserTokenByRefreshToken(refreshToken);
 
             // 執行 SQL 
-            result = await _unitOfWork.Connection.QueryFirstOrDefaultAsync<AuthResponse>(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
+            result = await CurrentUow.Connection.QueryFirstOrDefaultAsync<AuthResponse>(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -70,7 +66,7 @@ namespace Repository.Implementations.TokenRespository
             InsertUserToken(userId, accessToken, accessTokenExpiresAt, refreshToken, refreshTokenExpiresAt);
 
             // 執行 SQL 
-            result = await _unitOfWork.Connection.ExecuteScalarAsync<string>(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
+            result = await CurrentUow.Connection.ExecuteScalarAsync<string>(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
 
             if (result == null)
             {

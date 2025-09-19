@@ -16,7 +16,6 @@ namespace Monitor_BackEnd_UnitTest.Services
         private readonly Mock<IRepositoryFactory> _repositoryFactoryMock = new();
         private readonly Mock<IUnitOfWorkScopeAccessor> _scopeAccessorMock = new();
         private readonly Mock<IWorkflowStepsRespository> _repoMock = new();
-        private readonly Mock<IMapper> _mapperMock = new();
         private readonly Mock<IMemoryCache> _cacheMock = new();
         private readonly Mock<IConfiguration> _configMock = new();
         private readonly Mock<ILogger<WorkflowStepsService>> _loggerMock = new();
@@ -38,7 +37,6 @@ namespace Monitor_BackEnd_UnitTest.Services
                 _loggerMock.Object,
                 _configMock.Object,
                 _cacheMock.Object,
-                _mapperMock.Object,
                 _uowFactoryMock.Object,
                 _repositoryFactoryMock.Object,
                 _scopeAccessorMock.Object

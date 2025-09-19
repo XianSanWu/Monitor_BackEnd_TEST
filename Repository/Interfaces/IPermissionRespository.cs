@@ -6,7 +6,7 @@ using static Models.Dto.Responses.UserResponse;
 
 namespace Repository.Interfaces
 {
-    public interface IPermissionRespository
+    public interface IPermissionRespository : IRepository
     {
         /// <summary>
         /// 儲存全部權限

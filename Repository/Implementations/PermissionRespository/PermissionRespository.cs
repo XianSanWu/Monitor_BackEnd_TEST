@@ -10,8 +10,8 @@ using static Models.Dto.Responses.UserResponse;
 
 namespace Repository.Implementations.PermissionRespository
 {
-    public partial class PermissionRespository(IUnitOfWork unitOfWork, IMapper mapper)
-        : BaseRepository(unitOfWork, mapper), IPermissionRespository
+    public partial class PermissionRespository(IUnitOfWorkScopeAccessor scopeAccessor, IMapper mapper)
+        : BaseRepository(scopeAccessor, mapper), IPermissionRespository, IRepository
     {
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Repository.Implementations.PermissionRespository
             SaveFeaturePermissions(updateReq);
 
             // 使用 ExecuteAsync 來執行 SQL 更新，並傳入 cancellationToken
-            var affectedRows = await _unitOfWork.Connection.ExecuteAsync(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
+            var affectedRows = await CurrentUow.Connection.ExecuteAsync(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
 
             // 判斷是否有資料被更新
             result = affectedRows > 0;
@@ -68,7 +68,7 @@ namespace Repository.Implementations.PermissionRespository
             CheckUpdateUser(updateReq);
 
             // 使用 QueryAsync 來執行 SQL 更新，並傳入 cancellationToken
-            var affectedRows = await _unitOfWork.Connection.QueryAsync(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
+            var affectedRows = await CurrentUow.Connection.QueryAsync(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
 
             // 判斷是否有資料
             result = !(affectedRows.Count() <= 0);
@@ -99,7 +99,7 @@ namespace Repository.Implementations.PermissionRespository
             SaveUser(updateReq);
 
             // 使用 ExecuteAsync 來執行 SQL 更新，並傳入 cancellationToken
-            var affectedRows = await _unitOfWork.Connection.ExecuteAsync(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
+            var affectedRows = await CurrentUow.Connection.ExecuteAsync(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
 
             // 判斷是否有資料被更新
             result = affectedRows > 0;
@@ -130,7 +130,7 @@ namespace Repository.Implementations.PermissionRespository
             IsUseUser(updateReq);
 
             // 使用 ExecuteAsync 來執行 SQL 更新，並傳入 cancellationToken
-            var affectedRows = await _unitOfWork.Connection.ExecuteAsync(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
+            var affectedRows = await CurrentUow.Connection.ExecuteAsync(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
 
             // 判斷是否有資料被更新
             result = affectedRows > 0;
@@ -163,10 +163,10 @@ namespace Repository.Implementations.PermissionRespository
             result.Page = searchReq.Page;
             result.SearchItem = new List<UserSearchListResponse>();
 
-            var _pagingSql = await GetPagingSql(searchReq.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
-            var queryEntity = (await _unitOfWork.Connection.QueryAsync<UserEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
+            var _pagingSql = await GetPagingSql(searchReq.Page, CurrentUow, _sqlParams).ConfigureAwait(false);
+            var queryEntity = (await CurrentUow.Connection.QueryAsync<UserEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
             result.SearchItem = _mapper.Map<List<UserSearchListResponse>>(queryEntity);
-            result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
+            result.Page.TotalCount = (await CurrentUow.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
             return result;
             #endregion
         }
@@ -190,7 +190,7 @@ namespace Repository.Implementations.PermissionRespository
             // 先組合 SQL 語句
             GetBitValue(module, feature, action);
 
-            result = await _unitOfWork.Connection.QueryFirstOrDefaultAsync<int?>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
+            result = await CurrentUow.Connection.QueryFirstOrDefaultAsync<int?>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -224,7 +224,7 @@ namespace Repository.Implementations.PermissionRespository
             // 先組合 SQL 語句
             GetUserPermissions(fieldModel.UserId, fieldModel.UserName, fieldModel.IsUse);
 
-            var queryEntity = await _unitOfWork.Connection.QueryAsync<FeaturePermissionEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
+            var queryEntity = await CurrentUow.Connection.QueryAsync<FeaturePermissionEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
             result = _mapper.Map<List<PermissionSearchListResponse>>(queryEntity);
             return result;
             #endregion
@@ -258,7 +258,7 @@ namespace Repository.Implementations.PermissionRespository
             // 先組合 SQL 語句
             GetUserPermissionsMenu(fieldModel.TokenUuid);
 
-            var queryEntity = await _unitOfWork.Connection.QueryAsync<FeaturePermissionEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
+            var queryEntity = await CurrentUow.Connection.QueryAsync<FeaturePermissionEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
             result = _mapper.Map<List<PermissionSearchListResponse>>(queryEntity);
             return result;
             #endregion
@@ -285,7 +285,7 @@ namespace Repository.Implementations.PermissionRespository
             // 先組合 SQL 語句
             GetPermissions(searchReq);
 
-            var queryEntity = await _unitOfWork.Connection.QueryAsync<FeaturePermissionEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
+            var queryEntity = await CurrentUow.Connection.QueryAsync<FeaturePermissionEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
             result = _mapper.Map<List<PermissionSearchListResponse>>(queryEntity);
 
             return result;
@@ -314,7 +314,7 @@ namespace Repository.Implementations.PermissionRespository
             // 先組合 SQL 語句
             GetUserByUserName(userName);
 
-            var queryEntity = await _unitOfWork.Connection.QueryAsync<UserEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
+            var queryEntity = await CurrentUow.Connection.QueryAsync<UserEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
             var mapper = _mapper.Map<List<UserSearchListResponse>>(queryEntity);
             result = mapper.FirstOrDefault() ?? new();
 
@@ -344,13 +344,13 @@ namespace Repository.Implementations.PermissionRespository
             // 先組合 SQL 語句
             GetUserByUserId(userId);
 
-            var queryEntity = await _unitOfWork.Connection.QueryAsync<UserEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
+            var queryEntity = await CurrentUow.Connection.QueryAsync<UserEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
             var mapper = _mapper.Map<List<UserSearchListResponse>>(queryEntity);
             result = mapper.FirstOrDefault() ?? new();
 
             return result;
             #endregion
         }
-        
+
     }
 }
