@@ -8,8 +8,9 @@ using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsSearchListR
 
 namespace Repository.Implementations.WorkflowStepsRespository
 {
-    public partial class WorkflowStepsRespository(IUnitOfWork unitOfWork, IMapper mapper)
-        : BaseRepository(unitOfWork, mapper), IWorkflowStepsRespository
+    public partial class WorkflowStepsRespository(
+        IUnitOfWork unitOfWork,
+        IMapper mapper) : BaseRepository(unitOfWork, mapper), IWorkflowStepsRespository
     {
         /// <summary>
         /// 工作進度查詢DB (最後一筆)

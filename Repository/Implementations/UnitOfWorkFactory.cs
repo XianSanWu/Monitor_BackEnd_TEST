@@ -4,14 +4,9 @@ using Repository.Interfaces;
 
 namespace Repository.Implementations
 {
-    public class UnitOfWorkFactory : IUnitOfWorkFactory
+    public class UnitOfWorkFactory(IConfiguration config) : IUnitOfWorkFactory
     {
-        private readonly IConfiguration _config;
-
-        public UnitOfWorkFactory(IConfiguration config)
-        {
-            _config = config;
-        }
+        private readonly IConfiguration _config = config;
 
         public IUnitOfWork Create(DBConnectionEnum connectionType = DBConnectionEnum.DefaultConnection, bool useTransaction = true)
         {

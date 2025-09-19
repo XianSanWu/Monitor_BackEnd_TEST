@@ -2,55 +2,64 @@
 using Confluent.Kafka;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Models.Enums;
 using Repository.Implementations.WorkflowStepsRespository;
 using Repository.Interfaces;
 using Services.Interfaces;
+using Repository.UnitOfWorkExtension;
 using static Models.Dto.Requests.WorkflowStepsRequest;
 using static Models.Dto.Responses.WorkflowStepsResponse;
 using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsKafkaResponse;
 
 namespace Services.Implementations
 {
-    public class WorkflowStepsService(
-         ILogger<WorkflowStepsService> logger,
-         IConfiguration config,
-         IMemoryCache cache,
-         IMapper mapper,
-         IUnitOfWorkFactory uowFactory,
-         IRepositoryFactory repositoryFactory
-    ) : IWorkflowStepsService
+    public class WorkflowStepsService : IWorkflowStepsService
     {
-        private readonly ILogger<WorkflowStepsService> _logger = logger;
-        private readonly IConfiguration _config = config;
-        private readonly IMemoryCache _cache = cache;
-        private readonly IUnitOfWorkFactory _uowFactory = uowFactory;
-        private readonly IRepositoryFactory _repositoryFactory = repositoryFactory;
+        private readonly ILogger<WorkflowStepsService> _logger;
+        private readonly IConfiguration _config;
+        private readonly IMemoryCache _cache;
+        private readonly IMapper _mapper;
+        private readonly IUnitOfWorkFactory _uowFactory;
+        private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IUnitOfWorkScopeAccessor _scopeAccessor;
 
         private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(10);
 
-        #region 工作進度查詢(最後一筆)
+        public WorkflowStepsService(
+            ILogger<WorkflowStepsService> logger,
+            IConfiguration config,
+            IMemoryCache cache,
+            IMapper mapper,
+            IUnitOfWorkFactory uowFactory,
+            IRepositoryFactory repositoryFactory,
+            IUnitOfWorkScopeAccessor scopeAccessor)
+        {
+            _logger = logger;
+            _config = config;
+            _cache = cache;
+            _mapper = mapper;
+            _uowFactory = uowFactory;
+            _repositoryFactory = repositoryFactory;
+            _scopeAccessor = scopeAccessor;
+        }
+
         public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(
-            WorkflowStepsSearchListRequest searchReq,
-            CancellationToken cancellationToken = default)
+         WorkflowStepsSearchListRequest searchReq,
+         CancellationToken cancellationToken = default)
         {
             var dbType = DBConnectionEnum.Cdp;
 #if TEST
             dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            // 使用工廠取得 UnitOfWork
-            using var uow = _uowFactory.Create(dbType, useTransaction: false);
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
+            
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IWorkflowStepsRespository>(_scopeAccessor);
 
-            // 使用 Repository 工廠產生 Repository
-            var wfsRepo = _repositoryFactory.Create<WorkflowStepsRespository>(uow, mapper);
-
-            return await wfsRepo.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken);
+            return await repo.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken);
         }
-#endregion
 
-        #region 工作進度查詢
         public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(
             WorkflowStepsSearchListRequest searchReq,
             CancellationToken cancellationToken = default)
@@ -59,13 +68,16 @@ namespace Services.Implementations
 #if TEST
             dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            using var uow = _uowFactory.Create(dbType, useTransaction: false);
+            //using var uow = _uowFactory.Create(dbType, useTransaction: false);
+            //_scopeAccessor.Current = uow;
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
 
-            var wfsRepo = _repositoryFactory.Create<WorkflowStepsRespository>(uow, mapper);
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IWorkflowStepsRespository>(_scopeAccessor);
 
-            return await wfsRepo.QueryWorkflowStepsSearchList(searchReq, cancellationToken);
+            return await repo.QueryWorkflowStepsSearchList(searchReq, cancellationToken);
         }
-        #endregion
+
 
         #region 取得 Kafka Lag
         public async Task<WorkflowStepsKafkaResponse> GetKafkaLag(

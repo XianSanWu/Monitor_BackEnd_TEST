@@ -5,103 +5,106 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Repository.Interfaces;
 using Services.Implementations;
-using Models.Dto.Requests;
 using Models.Dto.Responses;
-using Models.Enums;
-using Xunit;
-using System.Threading;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Models.Dto.Requests;
 
-namespace Services.Tests
+namespace Services.UnitTests
 {
     public class WorkflowStepsServiceTests
     {
-        private readonly Mock<IUnitOfWorkFactory> _mockUowFactory;
-        private readonly Mock<IRepositoryFactory> _mockRepoFactory;
-        private readonly Mock<IWorkflowStepsRespository> _mockRepo;
-        private readonly Mock<IMapper> _mockMapper;
-        private readonly Mock<ILogger<WorkflowStepsService>> _mockLogger;
-        private readonly Mock<IConfiguration> _mockConfig;
-        private readonly Mock<IMemoryCache> _mockCache;
+        private readonly Mock<IUnitOfWorkFactory> _uowFactoryMock = new();
+        private readonly Mock<IRepositoryFactory> _repositoryFactoryMock = new();
+        private readonly Mock<IUnitOfWorkScopeAccessor> _scopeAccessorMock = new();
+        private readonly Mock<IWorkflowStepsRespository> _repoMock = new();
+        private readonly Mock<IMapper> _mapperMock = new();
+        private readonly Mock<IMemoryCache> _cacheMock = new();
+        private readonly Mock<IConfiguration> _configMock = new();
+        private readonly Mock<ILogger<WorkflowStepsService>> _loggerMock = new();
 
         private readonly WorkflowStepsService _service;
 
         public WorkflowStepsServiceTests()
         {
-            _mockUowFactory = new Mock<IUnitOfWorkFactory>();
-            _mockRepoFactory = new Mock<IRepositoryFactory>();
-            _mockRepo = new Mock<IWorkflowStepsRespository>();
-            _mockMapper = new Mock<IMapper>();
-            _mockLogger = new Mock<ILogger<WorkflowStepsService>>();
-            _mockConfig = new Mock<IConfiguration>();
-            _mockCache = new Mock<IMemoryCache>();
+            // mock UoW
+            var uowMock = new Mock<IUnitOfWork>();
+            _scopeAccessorMock.SetupProperty(x => x.Current, uowMock.Object);
 
-            // 設定 RepositoryFactory 回傳 Mock Interface
-            _mockRepoFactory
-                .Setup(f => f.Create<IWorkflowStepsRespository>(It.IsAny<object[]>()))
-                .Returns(_mockRepo.Object);
+            // mock repository factory
+            _repositoryFactoryMock
+                .Setup(f => f.Create<IWorkflowStepsRespository>(It.IsAny<IUnitOfWorkScopeAccessor>()))
+                .Returns(_repoMock.Object);
 
-            // 建立 Service
             _service = new WorkflowStepsService(
-                _mockLogger.Object,
-                _mockConfig.Object,
-                _mockCache.Object,
-                _mockMapper.Object,
-                _mockUowFactory.Object,
-                _mockRepoFactory.Object
+                _loggerMock.Object,
+                _configMock.Object,
+                _cacheMock.Object,
+                _mapperMock.Object,
+                _uowFactoryMock.Object,
+                _repositoryFactoryMock.Object,
+                _scopeAccessorMock.Object
             );
         }
 
         [Fact]
-        public async Task QueryWorkflowStepsSearchLastList_ReturnsExpectedResult()
+        public async Task QueryWorkflowStepsSearchList_ReturnsExpectedData()
         {
-            // Arrange
-            var searchReq = new WorkflowStepsRequest.WorkflowStepsSearchListRequest
+            var request = new WorkflowStepsRequest.WorkflowStepsSearchListRequest
             {
                 FieldModel = new WorkflowStepsRequest.WorkflowStepsSearchListFieldModelRequest
                 {
-                    Channel = "Email",
-                    SendUuid = "123"
-                },
+                    Channel = "Email"
+                }
             };
 
             var expectedResponse = new WorkflowStepsResponse.WorkflowStepsSearchListResponse
             {
                 SearchItem = new List<WorkflowStepsResponse.WorkflowStepsSearchListResponse.WorkflowStepsSearchResponse>
                 {
-                    new WorkflowStepsResponse.WorkflowStepsSearchListResponse.WorkflowStepsSearchResponse
-                    {
-                        SN = 1,
-                        SendUuid = "123",
-                        Channel = "Email"
-                    }
-                },
-                Page = searchReq.Page
+                    new() { SN = 1, WorkflowUuid = "UUID123", Channel = "Email" }
+                }
             };
 
-            // Mock UnitOfWork
-            var mockUow = new Mock<IUnitOfWork>();
-            _mockUowFactory
-                .Setup(f => f.Create(It.IsAny<DBConnectionEnum>(), It.IsAny<bool>()))
-                .Returns(mockUow.Object);
-
-            // Mock Repository 方法
-            _mockRepo
-                .Setup(r => r.QueryWorkflowStepsSearchLastList(searchReq, It.IsAny<CancellationToken>()))
+            _repoMock
+                .Setup(r => r.QueryWorkflowStepsSearchList(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);
 
-            // Act
-            var result = await _service.QueryWorkflowStepsSearchLastList(searchReq);
+            var result = await _service.QueryWorkflowStepsSearchList(request, CancellationToken.None);
 
-            // Assert
             Assert.NotNull(result);
             Assert.Single(result.SearchItem);
-            Assert.Equal("123", result.SearchItem[0].SendUuid);
+            Assert.Equal("UUID123", result.SearchItem[0].WorkflowUuid);
             Assert.Equal("Email", result.SearchItem[0].Channel);
+        }
 
-            // Verify Repository 被呼叫
-            _mockRepo.Verify(r => r.QueryWorkflowStepsSearchLastList(searchReq, It.IsAny<CancellationToken>()), Times.Once);
+        [Fact]
+        public async Task QueryWorkflowStepsSearchLastList_ReturnsExpectedData()
+        {
+            var request = new WorkflowStepsRequest.WorkflowStepsSearchListRequest
+            {
+                FieldModel = new WorkflowStepsRequest.WorkflowStepsSearchListFieldModelRequest
+                {
+                    Channel = "SMS"
+                }
+            };
+
+            var expectedResponse = new WorkflowStepsResponse.WorkflowStepsSearchListResponse
+            {
+                SearchItem = new List<WorkflowStepsResponse.WorkflowStepsSearchListResponse.WorkflowStepsSearchResponse>
+                {
+                    new() { SN = 2, WorkflowUuid = "UUID456", Channel = "SMS" }
+                }
+            };
+
+            _repoMock
+                .Setup(r => r.QueryWorkflowStepsSearchLastList(request, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedResponse);
+
+            var result = await _service.QueryWorkflowStepsSearchLastList(request, CancellationToken.None);
+
+            Assert.NotNull(result);
+            Assert.Single(result.SearchItem);
+            Assert.Equal("UUID456", result.SearchItem[0].WorkflowUuid);
+            Assert.Equal("SMS", result.SearchItem[0].Channel);
         }
     }
 }
