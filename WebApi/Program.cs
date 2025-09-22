@@ -19,6 +19,8 @@ using Utilities.Utilities;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using WebApi.Filters;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -250,7 +252,47 @@ try
 
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+    builder.Services.AddSwaggerGen(c =>
+    {
+        // JWT Bearer 定義
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "請輸入 Auth 登入後的 AccessToken"
+        });
+
+        // 全域 Security Requirement (可選，通常交給 OperationFilter 動態決定即可)
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+
+        // 自訂 OperationFilter (處理 PermissionGroupFilter)
+        c.OperationFilter<PermissionOperationFilter>();
+
+        // 如果有 XML 註解，讓 Swagger 顯示 API Summary
+        var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+        if (File.Exists(xmlPath))
+        {
+            c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+        }
+    });
+
 
     var app = builder.Build();
 
@@ -258,7 +300,43 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+
+            // 注入自訂 JS 來覆寫 Logout
+            c.HeadContent = @"
+    <script>
+    window.addEventListener('load', function() {
+        const interval = setInterval(() => {
+            const logoutBtn = document.querySelector('.auth-wrapper .btn.clear-auth');
+            if(logoutBtn) {
+                logoutBtn.onclick = async () => {
+                    try {
+                        // 呼叫後端 Logout API
+                        await fetch('/Auth/Logout', { method: 'POST', credentials: 'include' });
+                        // 清除 Swagger UI token
+                        const authStore = window.localStorage.getItem('swagger-auth');
+                        if(authStore) window.localStorage.removeItem('swagger-auth');
+                        // 強制刷新 Swagger UI 授權狀態
+                        const authorizeBtn = document.querySelector('.auth-wrapper .authorize');
+                        if(authorizeBtn) authorizeBtn.click(); // 打開授權視窗
+                        const cancelBtn = document.querySelector('.btn.modal-btn.cancel');
+                        if(cancelBtn) cancelBtn.click(); // 關閉授權視窗
+                        alert('已登出 (後端 cookie 已清除)!');
+                    } catch(err) {
+                        console.error(err);
+                        alert('登出失敗');
+                    }
+                };
+                clearInterval(interval);
+            }
+        }, 500);
+    });
+    </script>
+    ";
+        });
+
     }
 
     // 註冊 RequestResponseLoggingMiddleware 來記錄請求/回傳
