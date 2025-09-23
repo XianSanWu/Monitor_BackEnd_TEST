@@ -8,7 +8,7 @@ using Services.Implementations;
 using Models.Dto.Responses;
 using Models.Dto.Requests;
 
-namespace Monitor_BackEnd_UnitTest.Services
+namespace UnitTest.Services
 {
     public class WorkflowStepsServiceTests
     {

@@ -54,7 +54,6 @@ namespace WebAPi.Controllers
             "Module=CDP;Feature=APP_PUSH_Detail;Action=Read",
             "Module=CDP;Feature=SMS_Detail;Action=Read"
         )]
-
         public async Task<ResultResponse<WorkflowStepsSearchListResponse>> QuerySearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告

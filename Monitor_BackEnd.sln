@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.UnitTest", "4.UnitTest", "{20DF02CC-44D4-4454-B6C1-C666301912BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor_BackEnd_UnitTest", "Monitor_BackEnd_UnitTest\Monitor_BackEnd_UnitTest.csproj", "{0182C265-B435-4852-A02C-B814DB87D525}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "Monitor_BackEnd_UnitTest\UnitTest.csproj", "{0182C265-B435-4852-A02C-B814DB87D525}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
