@@ -3,17 +3,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Models.Dto.Responses;
 using Models.Enums;
-using Repository.Implementations;
 using Repository.Interfaces;
 using Services.Interfaces;
 using static Models.Dto.Requests.PermissionRequest;
-using Repository.Implementations.PermissionRespository;
 using static Models.Dto.Responses.PermissionResponse;
 using static Models.Dto.Responses.UserResponse;
 using static Models.Dto.Requests.UserRequest;
 using Repository.UnitOfWorkExtension;
-using AutoMapper.Features;
-using System;
 
 namespace Services.Implementations
 {
