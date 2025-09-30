@@ -11,18 +11,24 @@ using System.Text;
 using Utilities.Utilities;
 using Repository.Implementations.TokenRespository;
 using System.Security.Cryptography;
-using Azure.Core;
-using k8s.KubeConfigModels;
 using Models.Dto.Responses;
+using Repository.UnitOfWorkExtension;
 
 namespace Services.Implementations
 {
     public class TokenService(IConfiguration configuration,
-        IMapper mapper
+        IMapper mapper,
+        IUnitOfWorkFactory uowFactory,
+        IRepositoryFactory repositoryFactory,
+        IUnitOfWorkScopeAccessor scopeAccessor
         ) : ITokenService
     {
         private readonly IConfiguration _config = configuration;
         private readonly IMapper _mapper = mapper;
+        private readonly IUnitOfWorkFactory _uowFactory = uowFactory;
+        private readonly IRepositoryFactory _repositoryFactory = repositoryFactory;
+        private readonly IUnitOfWorkScopeAccessor _scopeAccessor = scopeAccessor;
+
         private string Key => _config["EncryptionSettings:AESKey"] ?? string.Empty;
         private string Iv => _config["EncryptionSettings:AESIV"] ?? string.Empty;
         private string JwtKey => _config["Jwt:Key"] ?? string.Empty;
@@ -44,16 +50,16 @@ namespace Services.Implementations
             #endregion
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+            var dbType = DBConnectionEnum.Cdp;
 #if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+            dbType = DBConnectionEnum.DefaultConnection;
 #endif
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
 
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                ITokenRespository _tRp = new TokenRespository(dbHelper.UnitOfWork, mapper);
-                result = await _tRp.GetUserTokenByRefreshTokenAsync(refreshToken, cancellationToken).ConfigureAwait(false);
-            }
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<ITokenRespository>(_scopeAccessor);
+
+            result = await repo.GetUserTokenByRefreshTokenAsync(refreshToken, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -120,16 +126,16 @@ namespace Services.Implementations
             #endregion
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+            var dbType = DBConnectionEnum.Cdp;
 #if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+            dbType = DBConnectionEnum.DefaultConnection;
 #endif
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
 
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                ITokenRespository _tRp = new TokenRespository(dbHelper.UnitOfWork, mapper);
-                result = await _tRp.InsertUserTokenAsync(userId, accessToken, accessTokenExpiresAt, refreshToken, refreshTokenExpiresAt, cancellationToken).ConfigureAwait(false);
-            }
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<ITokenRespository>(_scopeAccessor);
+
+            result = await repo.InsertUserTokenAsync(userId, accessToken, accessTokenExpiresAt, refreshToken, refreshTokenExpiresAt, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion

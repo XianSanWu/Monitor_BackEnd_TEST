@@ -3,7 +3,7 @@ using static Models.Dto.Responses.MailHunterResponse;
 
 namespace Repository.Interfaces
 {
-    public interface IMailHunterRespository
+    public interface IMailHunterRespository : IRepository
     {
         /// <summary>
         /// 查詢專案發送數量

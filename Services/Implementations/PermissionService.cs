@@ -3,19 +3,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Models.Dto.Responses;
 using Models.Enums;
-using Repository.Implementations;
 using Repository.Interfaces;
+using Repository.UnitOfWorkExtension;
 using Services.Interfaces;
 using static Models.Dto.Requests.PermissionRequest;
-using Repository.Implementations.PermissionRespository;
-using AutoMapper.Features;
-using System;
-using static Models.Dto.Responses.PermissionResponse;
-using k8s.KubeConfigModels;
-using static Models.Dto.Responses.UserResponse;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using static Models.Dto.Requests.UserRequest;
+using static Models.Dto.Responses.PermissionResponse;
+using static Models.Dto.Responses.UserResponse;
 
 namespace Services.Implementations
 {
@@ -23,13 +17,19 @@ namespace Services.Implementations
         IPermissionRespository permissionRespository,
         ILogger<PermissionService> logger,
         IConfiguration config,
-        IMapper mapper
+        IMapper mapper,
+        IUnitOfWorkFactory uowFactory,
+        IRepositoryFactory repositoryFactory,
+        IUnitOfWorkScopeAccessor scopeAccessor
             ) : IPermissionService
     {
         private readonly ILogger<PermissionService> _logger = logger;
         private readonly IMapper _mapper = mapper;
         private readonly IConfiguration _config = config;
         private readonly IPermissionRespository _permissionRespository = permissionRespository;
+        private readonly IUnitOfWorkFactory _uowFactory = uowFactory;
+        private readonly IRepositoryFactory _repositoryFactory = repositoryFactory;
+        private readonly IUnitOfWorkScopeAccessor _scopeAccessor = scopeAccessor;
 
         /// <summary>
         /// 儲存全部權限
@@ -45,15 +45,16 @@ namespace Services.Implementations
             #endregion
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+            var dbType = DBConnectionEnum.Cdp;
 #if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+            dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.SaveFeaturePermissionsAsync(updateReq, cancellationToken).ConfigureAwait(false);
-            }
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
+
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
+
+            result = await repo.SaveFeaturePermissionsAsync(updateReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -72,15 +73,16 @@ namespace Services.Implementations
             #endregion
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+            var dbType = DBConnectionEnum.Cdp;
 #if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+            dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.CheckUpdateUserAsync(updateReq, cancellationToken).ConfigureAwait(false);
-            }
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
+
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
+
+            result = await repo.CheckUpdateUserAsync(updateReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -94,7 +96,7 @@ namespace Services.Implementations
         public async Task<bool> SaveUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            
+
             var result = false;
             #endregion
 
@@ -104,15 +106,16 @@ namespace Services.Implementations
             }
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+            var dbType = DBConnectionEnum.Cdp;
 #if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+            dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.SaveUserAsync(updateReq, cancellationToken).ConfigureAwait(false);
-            }
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
+
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
+
+            result = await repo.SaveUserAsync(updateReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -126,7 +129,7 @@ namespace Services.Implementations
         public async Task<bool> IsUseUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            
+
             var result = false;
             #endregion
 
@@ -136,15 +139,16 @@ namespace Services.Implementations
             }
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+            var dbType = DBConnectionEnum.Cdp;
 #if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+            dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.IsUseUserAsync(updateReq, cancellationToken).ConfigureAwait(false);
-            }
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
+
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
+
+            result = await repo.IsUseUserAsync(updateReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -158,20 +162,21 @@ namespace Services.Implementations
         public async Task<UserResponse> GetUserListAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            
+
             var result = new UserResponse();
             #endregion
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+            var dbType = DBConnectionEnum.Cdp;
 #if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+            dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.GetUserListAsync(searchReq, cancellationToken).ConfigureAwait(false);
-            }
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
+
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
+
+            result = await repo.GetUserListAsync(searchReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -183,20 +188,21 @@ namespace Services.Implementations
         public async Task<int?> GetBitValue(string module, string feature, string action, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
-            
+
             var result = (int?)null;
             #endregion
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+            var dbType = DBConnectionEnum.Cdp;
 #if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+            dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.GetBitValue(module, feature, action, cancellationToken).ConfigureAwait(false);
-            }
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
+
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
+
+            result = await repo.GetBitValue(module, feature, action, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -211,20 +217,22 @@ namespace Services.Implementations
         public async Task<List<PermissionSearchListResponse>> GetUserPermissionsAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            
+
             var result = new List<PermissionSearchListResponse>();
             #endregion
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+            var dbType = DBConnectionEnum.Cdp;
 #if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+            dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.GetUserPermissionsAsync(searchReq, cancellationToken).ConfigureAwait(false);
-            }
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
+
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
+
+            result = await repo.GetUserPermissionsAsync(searchReq, cancellationToken).ConfigureAwait(false);
+
             return result;
             #endregion
         }
@@ -243,15 +251,17 @@ namespace Services.Implementations
             #endregion
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+            var dbType = DBConnectionEnum.Cdp;
 #if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+            dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.GetUserPermissionsMenuAsync(searchReq, cancellationToken).ConfigureAwait(false);
-            }
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
+
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
+
+            result = await repo.GetUserPermissionsMenuAsync(searchReq, cancellationToken).ConfigureAwait(false);
+
             return result;
             #endregion
         }
@@ -264,20 +274,22 @@ namespace Services.Implementations
         public async Task<List<PermissionSearchListResponse>> GetPermissionListAsync(PermissionSearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            
+
             var result = new List<PermissionSearchListResponse>();
             #endregion
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+            var dbType = DBConnectionEnum.Cdp;
 #if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+            dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.GetPermissionListAsync(searchReq, cancellationToken).ConfigureAwait(false);
-            }
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
+
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
+
+            result = await repo.GetPermissionListAsync(searchReq, cancellationToken).ConfigureAwait(false);
+
             return result;
             #endregion
         }
@@ -291,20 +303,22 @@ namespace Services.Implementations
         public async Task<UserSearchListResponse> GetUserByUserNameAsync(string userName, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            
+
             var result = new UserSearchListResponse();
             #endregion
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+            var dbType = DBConnectionEnum.Cdp;
 #if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+            dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.GetUserByUserNameAsync(userName, cancellationToken).ConfigureAwait(false);
-            }
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
+
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
+
+            result = await repo.GetUserByUserNameAsync(userName, cancellationToken).ConfigureAwait(false);
+
             return result;
             #endregion
         }
@@ -323,15 +337,17 @@ namespace Services.Implementations
             #endregion
 
             #region 流程
-            var CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.Cdp);
+            var dbType = DBConnectionEnum.Cdp;
 #if TEST
-            CDP_dbHelper = new DbHelper(_config, DBConnectionEnum.DefaultConnection);
+            dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            using (IDbHelper dbHelper = CDP_dbHelper)
-            {
-                IPermissionRespository _pRp = new PermissionRespository(dbHelper.UnitOfWork, mapper);
-                result = await _pRp.GetUserByUserIdAsync(userId, cancellationToken).ConfigureAwait(false);
-            }
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
+
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
+
+            result = await repo.GetUserByUserIdAsync(userId, cancellationToken).ConfigureAwait(false);
+
             return result;
             #endregion
         }

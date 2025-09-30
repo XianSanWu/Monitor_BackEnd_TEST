@@ -10,7 +10,7 @@ using System.Threading;
 namespace Repository.Implementations.TokenRespository
 {
     public partial class TokenRespository(IUnitOfWork unitOfWork, IMapper mapper)
-        : BaseRepository(unitOfWork, mapper), ITokenRespository
+        : BaseRepository(unitOfWork, mapper), ITokenRespository, IRepository
     {
 
         /// <summary>

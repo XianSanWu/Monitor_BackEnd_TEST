@@ -11,7 +11,7 @@ using static Models.Dto.Responses.UserResponse;
 namespace Repository.Implementations.PermissionRespository
 {
     public partial class PermissionRespository(IUnitOfWork unitOfWork, IMapper mapper)
-        : BaseRepository(unitOfWork, mapper), IPermissionRespository
+        : BaseRepository(unitOfWork, mapper), IPermissionRespository, IRepository
     {
 
         /// <summary>

@@ -5,7 +5,6 @@ using Models.Dto.Responses;
 using Services.Interfaces;
 using Utilities.Utilities;
 using static Models.Dto.Requests.AuthRequest;
-using static Models.Dto.Requests.UserRequest;
 
 namespace Services.Implementations
 {

@@ -4,7 +4,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Models.Enums;
-using Repository.Implementations.WorkflowStepsRespository;
 using Repository.Interfaces;
 using Services.Interfaces;
 using Repository.UnitOfWorkExtension;
@@ -14,35 +13,24 @@ using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsKafkaRespon
 
 namespace Services.Implementations
 {
-    public class WorkflowStepsService : IWorkflowStepsService
+    public class WorkflowStepsService(
+        ILogger<WorkflowStepsService> logger,
+        IConfiguration config,
+        IMemoryCache cache,
+        IMapper mapper,
+        IUnitOfWorkFactory uowFactory,
+        IRepositoryFactory repositoryFactory,
+        IUnitOfWorkScopeAccessor scopeAccessor) : IWorkflowStepsService
     {
-        private readonly ILogger<WorkflowStepsService> _logger;
-        private readonly IConfiguration _config;
-        private readonly IMemoryCache _cache;
-        private readonly IMapper _mapper;
-        private readonly IUnitOfWorkFactory _uowFactory;
-        private readonly IRepositoryFactory _repositoryFactory;
-        private readonly IUnitOfWorkScopeAccessor _scopeAccessor;
+        private readonly ILogger<WorkflowStepsService> _logger = logger;
+        private readonly IConfiguration _config = config;
+        private readonly IMemoryCache _cache = cache;
+        private readonly IMapper _mapper = mapper;
+        private readonly IUnitOfWorkFactory _uowFactory = uowFactory;
+        private readonly IRepositoryFactory _repositoryFactory = repositoryFactory;
+        private readonly IUnitOfWorkScopeAccessor _scopeAccessor = scopeAccessor;
 
         private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(10);
-
-        public WorkflowStepsService(
-            ILogger<WorkflowStepsService> logger,
-            IConfiguration config,
-            IMemoryCache cache,
-            IMapper mapper,
-            IUnitOfWorkFactory uowFactory,
-            IRepositoryFactory repositoryFactory,
-            IUnitOfWorkScopeAccessor scopeAccessor)
-        {
-            _logger = logger;
-            _config = config;
-            _cache = cache;
-            _mapper = mapper;
-            _uowFactory = uowFactory;
-            _repositoryFactory = repositoryFactory;
-            _scopeAccessor = scopeAccessor;
-        }
 
         public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(
          WorkflowStepsSearchListRequest searchReq,

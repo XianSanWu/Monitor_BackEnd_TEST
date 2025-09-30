@@ -8,7 +8,7 @@ using static Models.Dto.Responses.MailHunterResponse;
 namespace Repository.Implementations.MailHunterRespository
 {
     public partial class MailHunterRespository(IUnitOfWork unitOfWork, IMapper mapper)
-       : BaseRepository(unitOfWork, mapper), IMailHunterRespository
+       : BaseRepository(unitOfWork, mapper), IMailHunterRespository, IRepository
     {
 
         /// <summary>

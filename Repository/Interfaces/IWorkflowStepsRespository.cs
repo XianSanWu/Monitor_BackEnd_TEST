@@ -3,7 +3,7 @@ using static Models.Dto.Responses.WorkflowStepsResponse;
 
 namespace Repository.Interfaces
 {
-    public interface IWorkflowStepsRespository: IRepository
+    public interface IWorkflowStepsRespository : IRepository
     {
 
         /// <summary>
@@ -21,6 +21,6 @@ namespace Repository.Interfaces
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default);
-      
+
     }
 }
