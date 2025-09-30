@@ -460,4 +460,5 @@ finally
     Log.CloseAndFlush();
 }
 
+public partial class Program { } //給單元測試用
 

@@ -17,7 +17,7 @@ namespace Services.Implementations
         ILogger<WorkflowStepsService> logger,
         IConfiguration config,
         IMemoryCache cache,
-        IMapper mapper,
+        //IMapper mapper,
         IUnitOfWorkFactory uowFactory,
         IRepositoryFactory repositoryFactory,
         IUnitOfWorkScopeAccessor scopeAccessor) : IWorkflowStepsService
@@ -25,7 +25,7 @@ namespace Services.Implementations
         private readonly ILogger<WorkflowStepsService> _logger = logger;
         private readonly IConfiguration _config = config;
         private readonly IMemoryCache _cache = cache;
-        private readonly IMapper _mapper = mapper;
+        //private readonly IMapper _mapper = mapper;
         private readonly IUnitOfWorkFactory _uowFactory = uowFactory;
         private readonly IRepositoryFactory _repositoryFactory = repositoryFactory;
         private readonly IUnitOfWorkScopeAccessor _scopeAccessor = scopeAccessor;
