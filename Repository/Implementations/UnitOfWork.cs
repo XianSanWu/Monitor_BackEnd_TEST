@@ -15,6 +15,7 @@ namespace Repository.Implementations
         private readonly string? _dbConnString;
         private readonly DbConnection _conn;
         private readonly UnitOfWork _unitOfWork;
+
         public DbHelper(IConfiguration _config, DBConnectionEnum ConnectionType = DBConnectionEnum.DefaultConnection)
         {
             // 選擇不同的 DB 連線
@@ -40,7 +41,6 @@ namespace Repository.Implementations
             };
 
             _conn = new SqlConnection(sqlConnBuilder.ConnectionString);
-
             _unitOfWork = new UnitOfWork(_conn);
         }
 
@@ -50,51 +50,42 @@ namespace Repository.Implementations
         public void Dispose()
         {
             _unitOfWork?.Dispose();
-
             if (_conn?.State != System.Data.ConnectionState.Closed)
                 _conn?.Close();
-
             _conn?.Dispose();
-
             GC.SuppressFinalize(this);
         }
 
         public async ValueTask DisposeAsync()
         {
             await _unitOfWork.DisposeAsync();
-
             if (_conn is not null)
             {
                 if (_conn.State != System.Data.ConnectionState.Closed)
                     await _conn.CloseAsync();
-
                 await _conn.DisposeAsync();
             }
-
             GC.SuppressFinalize(this);
         }
-
     }
 
-    public class UnitOfWork(DbConnection? connection = null) : IUnitOfWork, IDisposable, IAsyncDisposable
+    public class UnitOfWork : IUnitOfWork, IDisposable, IAsyncDisposable
     {
         private readonly Guid _id = Guid.NewGuid();
-        private readonly DbConnection? _connection = connection;
+        private readonly DbConnection? _connection;
         private DbTransaction? _transaction;
 
+        public UnitOfWork(DbConnection? connection = null) => _connection = connection;
         public DbConnection Connection => _connection ?? throw new InvalidOperationException("Connection is null.");
         public DbTransaction? Transaction => _transaction;
-
         Guid IUnitOfWork.Id => _id;
 
         public void Begin()
         {
             if (_connection == null)
                 throw new InvalidOperationException("Cannot begin transaction: Connection is null.");
-
             if (_connection.State != System.Data.ConnectionState.Open)
                 _connection.Open();
-
             _transaction = _connection.BeginTransaction();
         }
 
@@ -102,22 +93,20 @@ namespace Repository.Implementations
         {
             if (_transaction == null)
                 throw new InvalidOperationException("Transaction is null.");
-
             await _transaction.CommitAsync().ConfigureAwait(false);
             await _transaction.DisposeAsync().ConfigureAwait(false);
             _transaction = null;
         }
+
         public async Task RollbackAsync()
         {
             if (_transaction == null)
                 throw new InvalidOperationException("Transaction is null.");
-
             await _transaction.RollbackAsync().ConfigureAwait(false);
-
             await _transaction.DisposeAsync().ConfigureAwait(false);
-
             _transaction = null;
         }
+
         public void Dispose()
         {
             _transaction?.Dispose();
@@ -132,7 +121,6 @@ namespace Repository.Implementations
                 await _transaction.DisposeAsync();
                 _transaction = null;
             }
-
             GC.SuppressFinalize(this);
         }
     }
