@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Dapper;
-using k8s.KubeConfigModels;
 using Models.Dto.Responses;
 using Repository.Interfaces;
-using System;
-using System.Threading;
 
 namespace Repository.Implementations.TokenRespository
 {

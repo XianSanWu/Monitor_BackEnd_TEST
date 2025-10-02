@@ -24,7 +24,7 @@ namespace Models.Entities
         /// <summary>
         /// 建立時間
         /// </summary>
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreateAt { get; set; }
 
         /// <summary>
         /// 重新整理權杖

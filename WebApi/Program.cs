@@ -1,26 +1,27 @@
-﻿using WebAPi.Extensions;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Repository.Interfaces;
 using Serilog;
 using Serilog.Events;
 using Services.Interfaces;
-using WebAPi.Profile;
-using FluentValidation;
 using System.Reflection;
-using HealthChecks.UI.Client;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using WebAPi.Filters;
-using static Utilities.Extensions.JsonExtension;
-using static WebAPi.Filters.ExceptionHandleActionFilters;
-using static Utilities.Monitor.HealthCheckHelper;
-using Repository.Interfaces;
-using FluentValidation.AspNetCore;
-using WebAPi.Middleware;
-using Utilities.Utilities;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Utilities.Utilities;
 using WebApi.Filters;
+using WebApi.Middleware;
+using WebAPi.Extensions;
+using WebAPi.Filters;
+using WebAPi.Middleware;
+using WebAPi.Profile;
+using static Utilities.Extensions.JsonExtension;
+using static Utilities.Monitor.HealthCheckHelper;
+using static WebAPi.Filters.ExceptionHandleActionFilters;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -409,6 +410,9 @@ try
 
     app.UseAuthentication();
     app.UseAuthorization();
+
+    // 註冊 AuditMiddleware 來記錄稽核軌跡 // 要在UseAuthentication後
+    app.UseMiddleware<AuditMiddleware>();
 
     app.MapControllers();
 
