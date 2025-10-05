@@ -7,11 +7,11 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace WebApi.Middleware
 {
-    public class AuditMiddleware
+    public class AuditMiddleware(RequestDelegate next, ILogger<AuditMiddleware> logger, IConfiguration config)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<AuditMiddleware> _logger;
-        private readonly IConfiguration _config;
+        private readonly RequestDelegate _next = next;
+        private readonly ILogger<AuditMiddleware> _logger = logger;
+        private readonly IConfiguration _config = config;
 
         private string[] ExcludedPaths =>
             (_config["AuditSettings:ExcludedPaths"] ?? string.Empty)
@@ -20,13 +20,6 @@ namespace WebApi.Middleware
         private string[] ExcludedMethods =>
             (_config["AuditSettings:ExcludedMethods"] ?? string.Empty)
             .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-        public AuditMiddleware(RequestDelegate next, ILogger<AuditMiddleware> logger, IConfiguration config)
-        {
-            _next = next;
-            _logger = logger;
-            _config = config;
-        }
 
         public async Task InvokeAsync(HttpContext context, IAuditService auditService)
         {
@@ -97,7 +90,7 @@ namespace WebApi.Middleware
             // 優先用前端 header，沒有就 fallback 後端組合
             //var frontUrl = context.Request.Headers["X-Front-Url"].FirstOrDefault()
             //               ?? $"{context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}";
-            var frontUrl = context.Request.Headers["Referer"].FirstOrDefault() ?? string.Empty;
+            var frontUrl = context.Request.Headers["X-FrontUrl"].FirstOrDefault() ?? string.Empty;
 
             var audit = new AuditRequest
             {
