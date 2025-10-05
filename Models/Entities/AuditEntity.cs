@@ -22,9 +22,14 @@
         public string FrontUrl { get; set; } = string.Empty;
 
         /// <summary>
+        /// 前端按鈕，供稽核使用
+        /// </summary>
+        public string FrontActionName { get; set; } = string.Empty;
+
+        /// <summary>
         /// 動作名稱，例如 Controller/Action
         /// </summary>
-        public string ActionName { get; set; } = string.Empty;
+        public string BackActionName { get; set; } = string.Empty;
 
         /// <summary>
         /// HTTP 方法 (GET/POST/PUT/DELETE)

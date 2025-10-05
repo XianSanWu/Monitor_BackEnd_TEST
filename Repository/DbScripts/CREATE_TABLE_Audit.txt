@@ -2,16 +2,17 @@ USE CDP
 
 -- 建立稽核紀錄表 (Audit)
 CREATE TABLE Audit (
-    Id BIGINT IDENTITY PRIMARY KEY,   -- 主鍵，自動遞增
-    UserId NVARCHAR(50) NOT NULL,     -- 使用者ID
-    FrontUrl NVARCHAR(4000) NULL,     -- 前端完整 URL，供稽核使用
-    ActionName NVARCHAR(200),         -- Controller/Service 動作
-    HttpMethod NVARCHAR(10),          -- HTTP 方法 (GET/POST/PUT/DELETE)
-    RequestPath NVARCHAR(1000),       -- API 請求路徑
-    Parameters NVARCHAR(4000),        -- JSON 格式的傳入參數
-    IpAddress NVARCHAR(100),          -- 呼叫來源 IP
-    CreateAt DATETIME NOT NULL       -- 建立時間
-        DEFAULT (GETDATE())           -- 預設當下伺服器時間
+    Id BIGINT IDENTITY PRIMARY KEY,     -- 主鍵，自動遞增
+    UserId NVARCHAR(50) NOT NULL,       -- 使用者ID
+    FrontUrl NVARCHAR(4000) NULL,       -- 前端完整 URL，供稽核使用
+    FrontActionName NVARCHAR(100) NULL, -- 前端按鈕，供稽核使用
+    BackActionName NVARCHAR(200),       -- Controller/Service 動作
+    HttpMethod NVARCHAR(10),            -- HTTP 方法 (GET/POST/PUT/DELETE)
+    RequestPath NVARCHAR(1000),         -- API 請求路徑
+    Parameters NVARCHAR(4000),          -- JSON 格式的傳入參數
+    IpAddress NVARCHAR(100),            -- 呼叫來源 IP
+    CreateAt DATETIME NOT NULL          -- 建立時間
+        DEFAULT (GETDATE())             -- 預設當下伺服器時間
 );
 GO
 
@@ -45,10 +46,17 @@ EXEC sp_addextendedproperty
 
 EXEC sp_addextendedproperty 
     @name = N'MS_Description', 
+    @value = N'前端按鈕，供稽核使用', 
+    @level0type = N'SCHEMA', @level0name = 'dbo',
+    @level1type = N'TABLE',  @level1name = 'Audit',
+    @level2type = N'COLUMN', @level2name = 'FrontActionName';
+    
+EXEC sp_addextendedproperty 
+    @name = N'MS_Description', 
     @value = N'動作名稱，例如 Controller/Service 方法名稱', 
     @level0type = N'SCHEMA', @level0name = 'dbo',
     @level1type = N'TABLE',  @level1name = 'Audit',
-    @level2type = N'COLUMN', @level2name = 'ActionName';
+    @level2type = N'COLUMN', @level2name = 'BackActionName';
 
 EXEC sp_addextendedproperty 
     @name = N'MS_Description', 

@@ -86,21 +86,20 @@ namespace WebApi.Middleware
                 }
             }
 
-            // 取得前端 URL
-            // 優先用前端 header，沒有就 fallback 後端組合
-            //var frontUrl = context.Request.Headers["X-Front-Url"].FirstOrDefault()
-            //               ?? $"{context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}";
+            // 取得前端 資訊
             var frontUrl = context.Request.Headers["X-FrontUrl"].FirstOrDefault() ?? string.Empty;
+            var frontActionName = Uri.UnescapeDataString(context.Request.Headers["X-ActionName"].FirstOrDefault() ?? string.Empty);
 
             var audit = new AuditRequest
             {
                 UserId = userId,
-                ActionName = $"{context.Request.Method} {context.Request.Path}",
+                BackActionName = $"{context.Request.Method} {context.Request.Path}",
                 HttpMethod = context.Request.Method,
                 RequestPath = context.Request.Path,
                 Parameters = body,
                 IpAddress = IpHelper.GetClientIp(context),
                 FrontUrl = frontUrl,
+                FrontActionName = frontActionName,
                 CreateAt = DateTime.Now
             };
 
