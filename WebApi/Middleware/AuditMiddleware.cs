@@ -1,12 +1,18 @@
 ﻿using Models.Dto.Requests;
 using Services.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.RegularExpressions;
 using Utilities.IpHelper;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace WebApi.Middleware
 {
+    /// <summary>
+    /// 稽核軌跡
+    /// </summary>
+    /// <param name="next"></param>
+    /// <param name="logger"></param>
+    /// <param name="config"></param>
     public class AuditMiddleware(RequestDelegate next, ILogger<AuditMiddleware> logger, IConfiguration config)
     {
         private readonly RequestDelegate _next = next;
@@ -54,9 +60,9 @@ namespace WebApi.Middleware
                 }
 
                 // 截斷過大內容
-                if (body.Length > 4000)
+                if (body.Length > 3900)
                 {
-                    body = string.Concat(body.AsSpan(0, 4000), "...(truncated)");
+                    body = string.Concat(body.AsSpan(0, 3900), "...(truncated)");
                 }
             }
 
@@ -86,7 +92,13 @@ namespace WebApi.Middleware
                 }
             }
 
-            // 取得前端 資訊
+            // 先呼叫下一層 Middleware，再取得狀態碼
+            await _next(context);
+
+            // 取得回應狀態碼
+            var httpStatusCode = (context.Response?.StatusCode ?? 0).ToString();
+
+            // 取得前端資訊
             var frontUrl = context.Request.Headers["X-FrontUrl"].FirstOrDefault() ?? string.Empty;
             var frontActionName = Uri.UnescapeDataString(context.Request.Headers["X-ActionName"].FirstOrDefault() ?? string.Empty);
 
@@ -100,6 +112,7 @@ namespace WebApi.Middleware
                 IpAddress = IpHelper.GetClientIp(context),
                 FrontUrl = frontUrl,
                 FrontActionName = frontActionName,
+                HttpStatusCode = httpStatusCode, 
                 CreateAt = DateTime.Now
             };
 
@@ -111,8 +124,6 @@ namespace WebApi.Middleware
             {
                 _logger.LogError(ex, "Failed to save audit log.");
             }
-
-            await _next(context);
         }
     }
 }

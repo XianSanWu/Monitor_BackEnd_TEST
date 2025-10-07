@@ -37,6 +37,11 @@
         public string HttpMethod { get; set; } = string.Empty;
 
         /// <summary>
+        /// HTTP 回應
+        /// </summary>
+        public string HttpStatusCode { get; set; } = string.Empty;
+        
+        /// <summary>
         /// API 請求路徑，例如 /api/orders/123
         /// </summary>
         public string RequestPath { get; set; } = string.Empty;

@@ -8,6 +8,7 @@ CREATE TABLE Audit (
     FrontActionName NVARCHAR(100) NULL, -- 前端按鈕，供稽核使用
     BackActionName NVARCHAR(200),       -- Controller/Service 動作
     HttpMethod NVARCHAR(10),            -- HTTP 方法 (GET/POST/PUT/DELETE)
+    HttpStatusCode NVARCHAR(10),        -- HTTP 回應
     RequestPath NVARCHAR(1000),         -- API 請求路徑
     Parameters NVARCHAR(4000),          -- JSON 格式的傳入參數
     IpAddress NVARCHAR(100),            -- 呼叫來源 IP
@@ -64,6 +65,13 @@ EXEC sp_addextendedproperty
     @level0type = N'SCHEMA', @level0name = 'dbo',
     @level1type = N'TABLE',  @level1name = 'Audit',
     @level2type = N'COLUMN', @level2name = 'HttpMethod';
+
+EXEC sp_addextendedproperty 
+    @name = N'MS_Description', 
+    @value = N'HTTP 回應', 
+    @level0type = N'SCHEMA', @level0name = 'dbo',
+    @level1type = N'TABLE',  @level1name = 'Audit',
+    @level2type = N'COLUMN', @level2name = 'HttpStatusCode';
 
 EXEC sp_addextendedproperty 
     @name = N'MS_Description', 
