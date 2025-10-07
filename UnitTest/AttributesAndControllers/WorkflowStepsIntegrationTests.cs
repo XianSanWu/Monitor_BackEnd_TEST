@@ -46,7 +46,7 @@ namespace UnitTest.AttributesAndControllers
                 }
             };
 
-            var response = await client.PostAsJsonAsync("/WorkflowSteps/SearchList", request);
+            var response = await client.PostAsJsonAsync("api/WorkflowSteps/SearchList", request);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
