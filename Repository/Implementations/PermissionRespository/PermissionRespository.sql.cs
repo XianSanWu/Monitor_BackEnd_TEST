@@ -674,20 +674,37 @@ WHEN NOT MATCHED THEN
 
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@"
-SELECT *
-FROM FeaturePermissions fp WITH(NOLOCK)
-WHERE fp.IsUse = 1  -- 功能啟用
-AND fp.BitValue & (
+-- 先取得使用者 FeatureMask
+WITH UserFeature AS (
     SELECT TOP 1 u.FeatureMask
     FROM Users u WITH(NOLOCK)
+    INNER JOIN UserTokens ut WITH(NOLOCK) ON ut.UserId = u.Uuid
     WHERE u.IsUse = 1
-      AND u.Uuid = (
-          SELECT TOP 1 ut.UserId
-          FROM UserTokens ut WITH(NOLOCK)
-          WHERE ut.Uuid = @TokenUuid
-      )
-) >= 0;
-            ");
+      AND ut.Uuid = @TokenUuid
+)
+-- 取得直接符合功能權限的功能
+, DirectFeatures AS (
+    SELECT fp.*
+    FROM FeaturePermissions fp
+    CROSS JOIN UserFeature uf
+    WHERE fp.IsUse = 1
+      AND fp.BitValue & uf.FeatureMask > 0
+)
+-- 取得父節點
+, ParentFeatures AS (
+    SELECT DISTINCT fpParent.*
+    FROM FeaturePermissions fpParent
+    INNER JOIN DirectFeatures df ON df.ParentUuid = fpParent.Uuid
+    WHERE fpParent.IsUse = 1
+)
+-- 最終結果
+SELECT *
+FROM DirectFeatures
+UNION
+SELECT *
+FROM ParentFeatures
+ORDER BY Uuid
+");
 
             var custSql = string.Empty;
             _sqlParams = new DynamicParameters();
