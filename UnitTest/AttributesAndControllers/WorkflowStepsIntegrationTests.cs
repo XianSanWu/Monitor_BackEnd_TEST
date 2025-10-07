@@ -24,7 +24,7 @@ namespace UnitTest.AttributesAndControllers
 
             // 用 Cookie 傳 token
             client.DefaultRequestHeaders.Add("Cookie",
-                "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI2M0MyMTgyRC1BRDFELTRFQ0QtQkVENy1EQjZGQzNERjlFRUMiLCJGZWF0dXJlTWFzayI6IjI2MjE0MyIsImV4cCI6MTc1ODYyNDk1NiwiaXNzIjoiTW9uaXRvcl9CYWNrRW5kIiwiYXVkIjoiTW9uaXRvcl9CYWNrRW5kX1VzZXJzIn0.qpNhjNTDPpFAUUbdc4pSTuLwGOkJYOuC-uCohX_A5hA");
+                "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJERjM5QjlFNi03NEQ0LTQwQUItOURFMi1FREVFQTYwNzJBQjQiLCJGZWF0dXJlTWFzayI6IjEiLCJleHAiOjE3NTk4MTgzODEsImlzcyI6Ik1vbml0b3JfQmFja0VuZCIsImF1ZCI6Ik1vbml0b3JfQmFja0VuZF9Vc2VycyJ9.KDqA5nGRCDipF5DhXla2jSPIuw7-6exYO5Vq89shnfA");
 
             var request = new WorkflowStepsSearchListRequest
             {
@@ -46,7 +46,7 @@ namespace UnitTest.AttributesAndControllers
                 }
             };
 
-            var response = await client.PostAsJsonAsync("/WorkflowSteps/SearchList", request);
+            var response = await client.PostAsJsonAsync("api/WorkflowSteps/SearchList", request);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
