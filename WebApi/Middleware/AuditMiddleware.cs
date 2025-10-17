@@ -10,14 +10,18 @@ namespace WebApi.Middleware
     /// <summary>
     /// 稽核軌跡
     /// </summary>
-    /// <param name="next"></param>
-    /// <param name="logger"></param>
-    /// <param name="config"></param>
-    public class AuditMiddleware(RequestDelegate next, ILogger<AuditMiddleware> logger, IConfiguration config)
+    public class AuditMiddleware
     {
-        private readonly RequestDelegate _next = next;
-        private readonly ILogger<AuditMiddleware> _logger = logger;
-        private readonly IConfiguration _config = config;
+        private readonly RequestDelegate _next;
+        private readonly ILogger<AuditMiddleware> _logger;
+        private readonly IConfiguration _config;
+
+        public AuditMiddleware(RequestDelegate next, ILogger<AuditMiddleware> logger, IConfiguration config)
+        {
+            _next = next;
+            _logger = logger;
+            _config = config;
+        }
 
         private string[] ExcludedPaths =>
             (_config["AuditSettings:ExcludedPaths"] ?? string.Empty)
@@ -38,12 +42,10 @@ namespace WebApi.Middleware
             }
 
             string body = string.Empty;
+            string responseBodyText = string.Empty;
 
-            // 記錄 GET / POST / PUT / PATCH
-            if (context.Request.Method == HttpMethods.Get ||
-                context.Request.Method == HttpMethods.Post ||
-                context.Request.Method == HttpMethods.Put ||
-                context.Request.Method == HttpMethods.Patch)
+            // ====== 讀取 Request Body ======
+            if (context.Request.Method == HttpMethods.Get || context.Request.Method == HttpMethods.Post || context.Request.Method == HttpMethods.Put || context.Request.Method == HttpMethods.Patch)
             {
                 if (context.Request.Body.CanSeek)
                 {
@@ -54,21 +56,14 @@ namespace WebApi.Middleware
                 }
 
                 if (!string.IsNullOrEmpty(body))
-                {
-                    // 遮罩 password
                     body = Regex.Replace(body, "\"password\":\".*?\"", "\"password\":\"***\"");
-                }
 
-                // 截斷過大內容
                 if (body.Length > 3900)
-                {
-                    body = string.Concat(body.AsSpan(0, 3900), "...(truncated)");
-                }
+                    body = body[..3900] + "...(truncated)";
             }
 
-            // 取得 UserId
+            // ====== 取得 UserId ======
             string userId = string.Empty;
-
             if (context.User?.Identity?.IsAuthenticated == true)
             {
                 userId = context.User.FindFirst("UserId")?.Value ?? string.Empty;
@@ -92,13 +87,34 @@ namespace WebApi.Middleware
                 }
             }
 
-            // 先呼叫下一層 Middleware，再取得狀態碼
-            await _next(context);
+            // ====== 攔截 Response Body ======
+            var originalBodyStream = context.Response.Body;
+            await using var responseBody = new MemoryStream();
+            context.Response.Body = responseBody;
 
-            // 取得回應狀態碼
+            try
+            {
+                await _next(context); // 呼叫下一層 middleware
+
+                // 僅在 Content-Type 為 JSON 時才記錄回傳內容
+                if (context.Response.ContentType?.Contains("application/json", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    context.Response.Body.Seek(0, SeekOrigin.Begin);
+                    responseBodyText = await new StreamReader(context.Response.Body).ReadToEndAsync();
+                    context.Response.Body.Seek(0, SeekOrigin.Begin);
+
+                    if (responseBodyText.Length > 3900)
+                        responseBodyText = responseBodyText[..3900] + "...(truncated)";
+                }
+            }
+            finally
+            {
+                await responseBody.CopyToAsync(originalBodyStream);
+                context.Response.Body = originalBodyStream;
+            }
+
+            // ====== 組成稽核資料 ======
             var httpStatusCode = (context.Response?.StatusCode ?? 0).ToString();
-
-            // 取得前端資訊
             var frontUrl = context.Request.Headers["X-FrontUrl"].FirstOrDefault() ?? string.Empty;
             var frontActionName = Uri.UnescapeDataString(context.Request.Headers["X-ActionName"].FirstOrDefault() ?? string.Empty);
 
@@ -112,10 +128,12 @@ namespace WebApi.Middleware
                 IpAddress = IpHelper.GetClientIp(context),
                 FrontUrl = frontUrl,
                 FrontActionName = frontActionName,
-                HttpStatusCode = httpStatusCode, 
+                HttpStatusCode = httpStatusCode,
+                ResponseBody = responseBodyText, 
                 CreateAt = DateTime.Now
             };
 
+            // ====== 儲存稽核 ======
             try
             {
                 await auditService.SaveAuditLogAsync(audit);

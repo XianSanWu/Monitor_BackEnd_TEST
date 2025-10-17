@@ -17,6 +17,11 @@
         public string UserId { get; set; } = string.Empty;
 
         /// <summary>
+        /// 使用者 帳號
+        /// </summary>
+        public string UserName { get; set; } = string.Empty;
+
+        /// <summary>
         /// 前端完整 URL，供稽核使用
         /// </summary>
         public string FrontUrl { get; set; } = string.Empty;
@@ -50,6 +55,11 @@
         /// JSON 格式的傳入參數（完整序列化）
         /// </summary>
         public string Parameters { get; set; } = string.Empty;
+
+        /// <summary>
+        /// JSON 格式的傳出
+        /// </summary>
+        public string ResponseBody { get; set; } = string.Empty;
 
         /// <summary>
         /// 呼叫來源 IP 位址

@@ -3,6 +3,7 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using Models.Dto.Common;
 using Repository.Interfaces;
+using System.Collections;
 using System.Text;
 
 namespace Repository.Implementations
@@ -203,36 +204,52 @@ namespace Repository.Implementations
 
             var queryKey = key.Replace(".", "_");
 
-            // 判斷是否為集合型別
-            if (value is IEnumerable<string> stringEnumerable)
-            {
-                var list = stringEnumerable.ToList();
-                if (list.Count== 0)
-                    return; // 空集合不處理
+            // 動態判斷是否為集合（排除 string）
+            //if (value is IEnumerable enumerable && value is not string)
+            //{
+            //    var list = enumerable.Cast<object>().ToList();
+            //    if (list.Count == 0)
+            //        return;
 
-                // 產生 IN 條件，Dapper 可自動展開 IEnumerable
-                _sqlStr?.Append($" AND {key} IN @{queryKey} ");
-                _sqlParams?.Add($"@{queryKey}", list);
-            }
-            // 判斷是否為集合型別
-            else if (value.GetType().IsArray)
-            {
-                var array = ((Array)value).Cast<object>().ToList();
-                if (array.Count == 0) return;
+            //    _sqlStr?.Append($" AND {key} IN @{queryKey} ");
+            //    _sqlParams?.Add(queryKey, list); // 不要加 @
+            //    return;
+            //}
 
-                _sqlStr?.Append($" AND {key} IN @{queryKey} ");
-                _sqlParams?.Add($"@{queryKey}", array);
+            // 動態判斷是否為集合（排除 string）
+            if (value is IEnumerable enumerable && value is not string)
+            {
+                var list = enumerable.Cast<object>().ToList();
+                if (list.Count == 0)
+                    return;
+
+                // Dapper 不支援直接用 DynamicParameters.Add(list) 給 IN
+                // 所以要用多個個別參數展開
+                var placeholders = new List<string>();
+                int index = 0;
+
+                foreach (var item in list)
+                {
+                    var paramName = $"{queryKey}_{index++}";
+                    placeholders.Add($"@{paramName}");
+                    _sqlParams?.Add(paramName, item);
+                }
+
+                _sqlStr?.Append($" AND {key} IN ({string.Join(", ", placeholders)}) ");
+                return;
             }
-            else if (key.EndsWith("At", StringComparison.OrdinalIgnoreCase))
+
+            // 日期時間欄位模糊比對
+            if (key.EndsWith("At", StringComparison.OrdinalIgnoreCase))
             {
                 _sqlStr?.Append($" AND CONVERT(VARCHAR, {key}, 121) LIKE @{queryKey} ");
-                _sqlParams?.Add($"@{queryKey}", $"%{value}%");
+                _sqlParams?.Add(queryKey, $"%{value}%");
+                return;
             }
-            else
-            {
-                _sqlStr?.Append($" AND {key} = @{queryKey} ");
-                _sqlParams?.Add($"@{queryKey}", $"{value}");
-            }
+
+            // 一般欄位相等比對
+            _sqlStr?.Append($" AND {key} = @{queryKey} ");
+            _sqlParams?.Add(queryKey, value);
 
         }
 

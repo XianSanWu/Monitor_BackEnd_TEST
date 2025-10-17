@@ -72,6 +72,11 @@ namespace Models.Dto.Responses
                 public string Parameters { get; set; } = string.Empty;
 
                 /// <summary>
+                /// JSON 格式的傳出
+                /// </summary>
+                public string ResponseBody { get; set; } = string.Empty;
+
+                /// <summary>
                 /// 呼叫來源 IP 位址
                 /// </summary>
                 public string IpAddress { get; set; } = string.Empty;
