@@ -203,7 +203,27 @@ namespace Repository.Implementations
 
             var queryKey = key.Replace(".", "_");
 
-            if (key.EndsWith("At", StringComparison.OrdinalIgnoreCase))
+            // 判斷是否為集合型別
+            if (value is IEnumerable<string> stringEnumerable)
+            {
+                var list = stringEnumerable.ToList();
+                if (list.Count== 0)
+                    return; // 空集合不處理
+
+                // 產生 IN 條件，Dapper 可自動展開 IEnumerable
+                _sqlStr?.Append($" AND {key} IN @{queryKey} ");
+                _sqlParams?.Add($"@{queryKey}", list);
+            }
+            // 判斷是否為集合型別
+            else if (value.GetType().IsArray)
+            {
+                var array = ((Array)value).Cast<object>().ToList();
+                if (array.Count == 0) return;
+
+                _sqlStr?.Append($" AND {key} IN @{queryKey} ");
+                _sqlParams?.Add($"@{queryKey}", array);
+            }
+            else if (key.EndsWith("At", StringComparison.OrdinalIgnoreCase))
             {
                 _sqlStr?.Append($" AND CONVERT(VARCHAR, {key}, 121) LIKE @{queryKey} ");
                 _sqlParams?.Add($"@{queryKey}", $"%{value}%");

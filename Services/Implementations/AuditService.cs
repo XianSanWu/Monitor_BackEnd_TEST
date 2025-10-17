@@ -2,10 +2,12 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Models.Dto.Requests;
+using Models.Dto.Responses;
 using Models.Enums;
 using Repository.Interfaces;
-using Services.Interfaces;
 using Repository.UnitOfWorkExtension;
+using Services.Interfaces;
+using static Models.Dto.Responses.AuditResponse;
 
 namespace Services.Implementations
 {
@@ -24,6 +26,12 @@ namespace Services.Implementations
         private readonly IRepositoryFactory _repositoryFactory = repositoryFactory;
         private readonly IUnitOfWorkScopeAccessor _scopeAccessor = scopeAccessor;
 
+        /// <summary>
+        /// 存取稽核軌跡
+        /// </summary>
+        /// <param name="log"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<bool> SaveAuditLogAsync(AuditRequest log, CancellationToken cancellationToken = default)
         {
             var dbType = DBConnectionEnum.Cdp;
@@ -36,6 +44,27 @@ namespace Services.Implementations
             var repo = _repositoryFactory.Create<IAuditRespository>(_scopeAccessor);
 
             return await repo.SaveAuditLogAsync(log, cancellationToken).ConfigureAwait(false);
+        }
+
+
+        /// <summary>
+        /// 查詢稽核軌跡
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<AuditSearchListResponse> QueryAuditLogAsync(AuditSearchListRequest req, CancellationToken cancellationToken = default)
+        {
+            var dbType = DBConnectionEnum.Cdp;
+#if TEST
+            dbType = DBConnectionEnum.DefaultConnection;
+#endif
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
+
+            // 改成通用 Factory 呼叫
+            var repo = _repositoryFactory.Create<IAuditRespository>(_scopeAccessor);
+
+            return await repo.QueryAuditLogAsync(req, cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using Dapper;
-using k8s.KubeConfigModels;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.Dto.Common;
 using Models.Entities;
 using Models.Enums;

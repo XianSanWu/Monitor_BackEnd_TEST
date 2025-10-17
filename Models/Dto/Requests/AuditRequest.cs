@@ -1,5 +1,23 @@
-﻿namespace Models.Dto.Requests
+﻿using Models.Dto.Common;
+
+namespace Models.Dto.Requests
 {
+    #region 稽核紀錄表 (前端查詢使用)
+    public class AuditSearchListRequest : BaseSearchModel
+    {
+        public AuditSearchListFieldModelRequest? FieldModel { get; set; }
+    }
+
+    public class AuditSearchListFieldModelRequest
+    {
+        public List<string>? AuditName { get; set; }
+        public List<string>? UserUuid { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+    }
+    #endregion
+
+    #region 稽核紀錄表 (Middleware)
     /// <summary>
     /// 稽核紀錄表 (AuditLogs)
     /// 用來紀錄 API 的操作軌跡，包含使用者、請求方法、路徑、參數、來源 IP 等資訊。
@@ -40,7 +58,7 @@
         /// HTTP 回應
         /// </summary>
         public string HttpStatusCode { get; set; } = string.Empty;
-        
+
         /// <summary>
         /// API 請求路徑，例如 /api/orders/123
         /// </summary>
@@ -61,4 +79,5 @@
         /// </summary>
         public DateTime CreateAt { get; set; }
     }
+    #endregion
 }

@@ -1,4 +1,5 @@
 ﻿using Models.Entities;
+using static Models.Dto.Responses.AuditResponse.AuditSearchListResponse;
 using static Models.Dto.Responses.MailHunterResponse;
 using static Models.Dto.Responses.PermissionResponse;
 using static Models.Dto.Responses.UserResponse;
@@ -14,6 +15,7 @@ namespace WebAPi.Profile
             CreateMap<ProjectMailCountEnyity, MailHunterSearchListDetailResponse>();
             CreateMap<FeaturePermissionEntity, PermissionSearchListResponse>();
             CreateMap<UserEntity, UserSearchListResponse>();
+            CreateMap<AuditEntity, AuditSearchResponse>();
             
         }
     }
