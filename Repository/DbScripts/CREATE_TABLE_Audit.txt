@@ -7,6 +7,7 @@ CREATE TABLE Audit (
     Id BIGINT IDENTITY PRIMARY KEY,     -- 主鍵，自動遞增
     UserId NVARCHAR(50) NOT NULL,       -- 使用者ID
     FrontUrl NVARCHAR(4000) NULL,       -- 前端完整 URL，供稽核使用
+    FrontActionId NVARCHAR(50) NULL,    -- 同批次操作識別碼
     FrontActionName NVARCHAR(100) NULL, -- 前端按鈕，供稽核使用
     BackActionName NVARCHAR(200),       -- Controller/Service 動作
     HttpMethod NVARCHAR(10),            -- HTTP 方法 (GET/POST/PUT/DELETE)
@@ -50,11 +51,18 @@ EXEC sp_addextendedproperty
 
 EXEC sp_addextendedproperty 
     @name = N'MS_Description', 
+    @value = N'同批次操作識別碼', 
+    @level0type = N'SCHEMA', @level0name = 'dbo',
+    @level1type = N'TABLE',  @level1name = 'Audit',
+    @level2type = N'COLUMN', @level2name = 'FrontActionId';
+
+EXEC sp_addextendedproperty 
+    @name = N'MS_Description', 
     @value = N'前端按鈕，供稽核使用', 
     @level0type = N'SCHEMA', @level0name = 'dbo',
     @level1type = N'TABLE',  @level1name = 'Audit',
     @level2type = N'COLUMN', @level2name = 'FrontActionName';
-    
+  
 EXEC sp_addextendedproperty 
     @name = N'MS_Description', 
     @value = N'動作名稱，例如 Controller/Service 方法名稱', 

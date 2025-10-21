@@ -15,13 +15,14 @@ namespace Repository.Implementations.AuditLogRespository
 
             _sqlStr.Append(@"
                 INSERT INTO Audit
-                (UserId, FrontUrl, FrontActionName, BackActionName, HttpMethod, HttpStatusCode, RequestPath, Parameters, ResponseBody, IpAddress, CreateAt)
-                VALUES (@UserId, @FrontUrl, @FrontActionName, @BackActionName, @HttpMethod, @HttpStatusCode, @RequestPath, @Parameters, @ResponseBody, @IpAddress, @CreateAt);
+                (UserId, FrontUrl, FrontActionId, FrontActionName, BackActionName, HttpMethod, HttpStatusCode, RequestPath, Parameters, ResponseBody, IpAddress, CreateAt)
+                VALUES (@UserId, @FrontUrl, @FrontActionId, @FrontActionName, @BackActionName, @HttpMethod, @HttpStatusCode, @RequestPath, @Parameters, @ResponseBody, @IpAddress, @CreateAt);
             ");
 
             _sqlParams = new DynamicParameters();
             _sqlParams.Add("@UserId", log.UserId);
             _sqlParams.Add("@FrontUrl", log.FrontUrl);
+            _sqlParams.Add("@FrontActionId", log.FrontActionId);
             _sqlParams.Add("@FrontActionName", log.FrontActionName);
             _sqlParams.Add("@BackActionName", log.BackActionName);
             _sqlParams.Add("@HttpMethod", log.HttpMethod);

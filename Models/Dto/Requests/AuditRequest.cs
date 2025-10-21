@@ -40,6 +40,11 @@ namespace Models.Dto.Requests
         public string FrontUrl { get; set; } = string.Empty;
 
         /// <summary>
+        ///  同批次操作識別碼
+        /// </summary>
+        public string FrontActionId { get; set; } = string.Empty;
+
+        /// <summary>
         /// 前端按鈕，供稽核使用
         /// </summary>
         public string FrontActionName { get; set; } = string.Empty;

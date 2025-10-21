@@ -10,18 +10,11 @@ namespace WebApi.Middleware
     /// <summary>
     /// 稽核軌跡
     /// </summary>
-    public class AuditMiddleware
+    public class AuditMiddleware(RequestDelegate next, ILogger<AuditMiddleware> logger, IConfiguration config)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<AuditMiddleware> _logger;
-        private readonly IConfiguration _config;
-
-        public AuditMiddleware(RequestDelegate next, ILogger<AuditMiddleware> logger, IConfiguration config)
-        {
-            _next = next;
-            _logger = logger;
-            _config = config;
-        }
+        private readonly RequestDelegate _next = next;
+        private readonly ILogger<AuditMiddleware> _logger = logger;
+        private readonly IConfiguration _config = config;
 
         private string[] ExcludedPaths =>
             (_config["AuditSettings:ExcludedPaths"] ?? string.Empty)
@@ -116,6 +109,7 @@ namespace WebApi.Middleware
             // ====== 組成稽核資料 ======
             var httpStatusCode = (context.Response?.StatusCode ?? 0).ToString();
             var frontUrl = context.Request.Headers["X-FrontUrl"].FirstOrDefault() ?? string.Empty;
+            var frontActionId = context.Request.Headers["X-ActionId"].FirstOrDefault() ?? string.Empty;
             var frontActionName = Uri.UnescapeDataString(context.Request.Headers["X-ActionName"].FirstOrDefault() ?? string.Empty);
 
             var audit = new AuditRequest
@@ -128,6 +122,7 @@ namespace WebApi.Middleware
                 IpAddress = IpHelper.GetClientIp(context),
                 FrontUrl = frontUrl,
                 FrontActionName = frontActionName,
+                FrontActionId = frontActionId,
                 HttpStatusCode = httpStatusCode,
                 ResponseBody = responseBodyText, 
                 CreateAt = DateTime.Now
