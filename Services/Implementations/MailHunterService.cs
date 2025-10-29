@@ -42,6 +42,8 @@ namespace Services.Implementations
             var result = new MailHunterSearchListResponse();
             #endregion
 
+            var entityReq = mapper.Map<MailHunterSearchListEntityRequest>(req);
+
             #region 流程
             var dbType = DBConnectionEnum.Mail_hunter;
 #if TEST
@@ -51,8 +53,6 @@ namespace Services.Implementations
 
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IMailHunterRespository>(_scopeAccessor);
-
-            var entityReq = mapper.Map<MailHunterSearchListEntityRequest>(req);
 
             result = await repo.GetProjectMailCountList(entityReq, cancellationToken).ConfigureAwait(false);
 

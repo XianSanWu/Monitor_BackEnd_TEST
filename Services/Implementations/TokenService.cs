@@ -2,18 +2,15 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Models.Enums;
-using Repository.Implementations;
 using Repository.Interfaces;
 using Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Utilities.Utilities;
-using Repository.Implementations.TokenRespository;
 using System.Security.Cryptography;
 using Models.Dto.Responses;
 using Repository.UnitOfWorkExtension;
-using Models.Entities.Responses;
 
 namespace Services.Implementations
 {

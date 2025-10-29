@@ -48,6 +48,8 @@ namespace Services.Implementations
             var result = false;
             #endregion
 
+            var entityReq = mapper.Map<PermissionUpdateEntityRequest>(req);
+
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
 #if TEST
@@ -57,8 +59,6 @@ namespace Services.Implementations
 
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
-            var entityReq = mapper.Map<PermissionUpdateEntityRequest>(req);
 
             result = await repo.SaveFeaturePermissionsAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
@@ -78,6 +78,8 @@ namespace Services.Implementations
             var result = false;
             #endregion
 
+            var entityReq = mapper.Map<UserUpdateEntityRequest>(req);
+
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
 #if TEST
@@ -87,8 +89,6 @@ namespace Services.Implementations
 
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
-            var entityReq = mapper.Map<UserUpdateEntityRequest>(req);
 
             result = await repo.CheckUpdateUserAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
@@ -113,6 +113,8 @@ namespace Services.Implementations
                 req.FieldRequest.UpdateAt = DateTime.Now;
             }
 
+            var entityReq = mapper.Map<UserUpdateEntityRequest>(req);
+
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
 #if TEST
@@ -122,8 +124,6 @@ namespace Services.Implementations
 
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
-            var entityReq = mapper.Map<UserUpdateEntityRequest>(req);
 
             result = await repo.SaveUserAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
@@ -148,6 +148,8 @@ namespace Services.Implementations
                 req.FieldRequest.UpdateAt = DateTime.Now;
             }
 
+            var entityReq = mapper.Map<UserUpdateEntityRequest>(req);
+
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
 #if TEST
@@ -157,8 +159,6 @@ namespace Services.Implementations
 
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
-            var entityReq = mapper.Map<UserUpdateEntityRequest>(req);
 
             result = await repo.IsUseUserAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
@@ -178,6 +178,8 @@ namespace Services.Implementations
             var result = new UserResponse();
             #endregion
 
+            var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
+
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
 #if TEST
@@ -187,8 +189,6 @@ namespace Services.Implementations
 
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
-            var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
 
             result = await repo.GetUserListAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
@@ -235,6 +235,8 @@ namespace Services.Implementations
             var result = new List<PermissionSearchListResponse>();
             #endregion
 
+            var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
+
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
 #if TEST
@@ -244,8 +246,6 @@ namespace Services.Implementations
 
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
-            var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
 
             result = await repo.GetUserPermissionsAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
@@ -266,6 +266,8 @@ namespace Services.Implementations
             var result = new List<PermissionSearchListResponse>();
             #endregion
 
+            var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
+
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
 #if TEST
@@ -275,8 +277,6 @@ namespace Services.Implementations
 
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
-            var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
 
             result = await repo.GetUserPermissionsMenuAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
@@ -296,6 +296,8 @@ namespace Services.Implementations
             var result = new List<PermissionSearchListResponse>();
             #endregion
 
+            var entityReq = _mapper.Map<PermissionSearchListEntityRequest>(req);
+
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
 #if TEST
@@ -305,8 +307,6 @@ namespace Services.Implementations
 
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
-            var entityReq = _mapper.Map<PermissionSearchListEntityRequest>(req);
 
             result = await repo.GetPermissionListAsync(entityReq, cancellationToken).ConfigureAwait(false);
 

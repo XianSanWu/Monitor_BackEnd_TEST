@@ -35,6 +35,8 @@ namespace Services.Implementations
         /// <returns></returns>
         public async Task<bool> SaveAuditLogAsync(AuditRequest req, CancellationToken cancellationToken = default)
         {
+            var entityReq = mapper.Map<AuditEntityRequest>(req);
+
             var dbType = DBConnectionEnum.Cdp;
 #if TEST
             dbType = DBConnectionEnum.DefaultConnection;
@@ -43,8 +45,6 @@ namespace Services.Implementations
 
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IAuditRespository>(_scopeAccessor);
-
-            var entityReq = mapper.Map<AuditEntityRequest>(req);
 
             return await repo.SaveAuditLogAsync(entityReq, cancellationToken).ConfigureAwait(false);
         }
@@ -58,6 +58,8 @@ namespace Services.Implementations
         /// <returns></returns>
         public async Task<AuditSearchListResponse> QueryAuditLogAsync(AuditSearchListRequest req, CancellationToken cancellationToken = default)
         {
+            var entityReq = mapper.Map<AuditSearchListEntityRequest>(req);
+
             var dbType = DBConnectionEnum.Cdp;
 #if TEST
             dbType = DBConnectionEnum.DefaultConnection;
@@ -66,8 +68,6 @@ namespace Services.Implementations
 
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IAuditRespository>(_scopeAccessor);
-
-            var entityReq = mapper.Map<AuditSearchListEntityRequest>(req);
 
             return await repo.QueryAuditLogAsync(entityReq, cancellationToken).ConfigureAwait(false);
         }
