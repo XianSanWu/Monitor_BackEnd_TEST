@@ -2,11 +2,12 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Models.Dto.Responses;
 using Moq;
 using Repository.Interfaces;
 using Services.Implementations;
-using Models.Dto.Responses;
-using Models.Dto.Requests;
+using static Models.Dto.Requests.WorkflowStepsRequest;
+using static Models.Entities.Requests.WorkflowStepsEntityRequest;
 
 namespace UnitTest.Services
 {
@@ -17,6 +18,7 @@ namespace UnitTest.Services
         private readonly Mock<IUnitOfWorkScopeAccessor> _scopeAccessorMock = new();
         private readonly Mock<IWorkflowStepsRespository> _repoMock = new();
         private readonly Mock<IMemoryCache> _cacheMock = new();
+        private readonly Mock<IMapper>  _mapper = new ();
         private readonly Mock<IConfiguration> _configMock = new();
         private readonly Mock<ILogger<WorkflowStepsService>> _loggerMock = new();
 
@@ -37,6 +39,7 @@ namespace UnitTest.Services
                 _loggerMock.Object,
                 _configMock.Object,
                 _cacheMock.Object,
+                _mapper.Object,
                 _uowFactoryMock.Object,
                 _repositoryFactoryMock.Object,
                 _scopeAccessorMock.Object
@@ -46,9 +49,9 @@ namespace UnitTest.Services
         [Fact]
         public async Task QueryWorkflowStepsSearchList_ReturnsExpectedData()
         {
-            var request = new WorkflowStepsRequest.WorkflowStepsSearchListRequest
+            var request = new WorkflowStepsSearchListEntityRequest
             {
-                FieldModel = new WorkflowStepsRequest.WorkflowStepsSearchListFieldModelRequest
+                FieldModel = new WorkflowStepsSearchListFieldModelEntityRequest
                 {
                     Channel = "Email"
                 }
@@ -66,7 +69,15 @@ namespace UnitTest.Services
                 .Setup(r => r.QueryWorkflowStepsSearchList(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);
 
-            var result = await _service.QueryWorkflowStepsSearchList(request, CancellationToken.None);
+            var req = new WorkflowStepsSearchListRequest
+            {
+                FieldModel = new WorkflowStepsSearchListFieldModelRequest
+                {
+                    Channel = "Email"
+                }
+            };
+
+            var result = await _service.QueryWorkflowStepsSearchList(req, CancellationToken.None);
 
             Assert.NotNull(result);
             Assert.Single(result.SearchItem);
@@ -77,9 +88,9 @@ namespace UnitTest.Services
         [Fact]
         public async Task QueryWorkflowStepsSearchLastList_ReturnsExpectedData()
         {
-            var request = new WorkflowStepsRequest.WorkflowStepsSearchListRequest
+            var request = new WorkflowStepsSearchListEntityRequest
             {
-                FieldModel = new WorkflowStepsRequest.WorkflowStepsSearchListFieldModelRequest
+                FieldModel = new WorkflowStepsSearchListFieldModelEntityRequest
                 {
                     Channel = "SMS"
                 }
@@ -97,7 +108,15 @@ namespace UnitTest.Services
                 .Setup(r => r.QueryWorkflowStepsSearchLastList(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);
 
-            var result = await _service.QueryWorkflowStepsSearchLastList(request, CancellationToken.None);
+            var req = new WorkflowStepsSearchListRequest
+            {
+                FieldModel = new WorkflowStepsSearchListFieldModelRequest
+                {
+                    Channel = "SMS"
+                }
+            };
+
+            var result = await _service.QueryWorkflowStepsSearchLastList(req, CancellationToken.None);
 
             Assert.NotNull(result);
             Assert.Single(result.SearchItem);

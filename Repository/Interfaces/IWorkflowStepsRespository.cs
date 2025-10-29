@@ -1,5 +1,5 @@
-﻿using static Models.Dto.Requests.WorkflowStepsRequest;
-using static Models.Dto.Responses.WorkflowStepsResponse;
+﻿using static Models.Dto.Responses.WorkflowStepsResponse;
+using static Models.Entities.Requests.WorkflowStepsEntityRequest;
 
 namespace Repository.Interfaces
 {
@@ -12,7 +12,7 @@ namespace Repository.Interfaces
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default);
+        Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsSearchListEntityRequest searchReq, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 工作進度查詢DB
@@ -20,7 +20,7 @@ namespace Repository.Interfaces
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default);
+        Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListEntityRequest searchReq, CancellationToken cancellationToken = default);
 
     }
 }

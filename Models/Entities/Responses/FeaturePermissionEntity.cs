@@ -1,5 +1,4 @@
-﻿
-namespace Models.Entities
+﻿namespace Models.Entities.Responses
 {
     /// <summary>
     /// 功能權限定義資料表（模組 / 功能 / 動作）

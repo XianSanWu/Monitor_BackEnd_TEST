@@ -1,8 +1,10 @@
 ﻿using Models.Dto.Responses;
+using Models.Entities.Responses;
 using static Models.Dto.Requests.PermissionRequest;
 using static Models.Dto.Requests.UserRequest;
 using static Models.Dto.Responses.PermissionResponse;
 using static Models.Dto.Responses.UserResponse;
+using static Models.Entities.Requests.PermissionEntityRequest;
 
 namespace Services.Interfaces
 {

@@ -1,5 +1,4 @@
-﻿
-namespace Models.Entities
+﻿namespace Models.Entities.Responses
 {
     /// <summary>
     /// 使用者 Token 紀錄表（支援多裝置登入 / JWT 驗證）

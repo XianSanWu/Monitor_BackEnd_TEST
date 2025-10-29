@@ -1,9 +1,9 @@
 ﻿using Dapper;
-using Models.Entities;
+using Models.Entities.Responses;
 using Models.Enums;
 using System.Text;
 using Utilities.Utilities;
-using static Models.Dto.Requests.MailHunterRequest;
+using static Models.Entities.Requests.MailHunterEntityRequest;
 
 namespace Repository.Implementations.MailHunterRespository
 {
@@ -15,7 +15,7 @@ namespace Repository.Implementations.MailHunterRespository
         /// 查詢專案發送數量
         /// </summary>
         /// <param name="searchReq"></param>
-        private void QueryProjectMailCountSql(MailHunterSearchListRequest searchReq)
+        private void QueryProjectMailCountSql(MailHunterSearchListEntityRequest searchReq)
         {
             _sqlStr = new StringBuilder();
             _sqlWithStr = new StringBuilder();

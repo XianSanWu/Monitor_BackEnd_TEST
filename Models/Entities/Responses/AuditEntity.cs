@@ -1,31 +1,10 @@
-﻿using Models.Common;
-
-namespace Models.Dto.Requests
+﻿namespace Models.Entities.Responses
 {
-    #region 稽核紀錄表 (前端查詢使用)
-    public class AuditSearchListRequest : BaseSearchModel
-    {
-        public AuditSearchListFieldModelRequest? FieldModel { get; set; }
-    }
-
-    public class AuditSearchListFieldModelRequest
-    {
-        //public List<string>? AuditName { get; set; }
-        public List<string>? FrontActionName { get; set; }
-
-        //public List<string>? UserUuid { get; set; }
-        public List<string>? UserId { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-    }
-    #endregion
-
-    #region 稽核紀錄表 (Middleware)
     /// <summary>
     /// 稽核紀錄表 (AuditLogs)
     /// 用來紀錄 API 的操作軌跡，包含使用者、請求方法、路徑、參數、來源 IP 等資訊。
     /// </summary>
-    public class AuditRequest
+    public class AuditEntity
     {
         /// <summary>
         /// 主鍵，自動遞增
@@ -38,13 +17,18 @@ namespace Models.Dto.Requests
         public string UserId { get; set; } = string.Empty;
 
         /// <summary>
+        /// 使用者 帳號
+        /// </summary>
+        public string UserName { get; set; } = string.Empty;
+
+        /// <summary>
         /// 前端完整 URL，供稽核使用
         /// </summary>
         public string FrontUrl { get; set; } = string.Empty;
 
         /// <summary>
-        ///  同批次操作識別碼
-        /// </summary>
+         ///  同批次操作識別碼
+         /// </summary>
         public string FrontActionId { get; set; } = string.Empty;
 
         /// <summary>
@@ -92,5 +76,4 @@ namespace Models.Dto.Requests
         /// </summary>
         public DateTime CreateAt { get; set; }
     }
-    #endregion
 }

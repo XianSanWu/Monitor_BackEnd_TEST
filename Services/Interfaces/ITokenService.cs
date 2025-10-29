@@ -1,6 +1,7 @@
 ﻿
 
 using Models.Dto.Responses;
+using Models.Entities.Responses;
 
 namespace Services.Interfaces
 {

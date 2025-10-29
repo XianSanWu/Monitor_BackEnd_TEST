@@ -1,5 +1,4 @@
 ﻿using Models.Dto.Requests;
-using Models.Dto.Responses;
 using static Models.Dto.Responses.AuditResponse;
 
 namespace Services.Interfaces

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using static Models.Dto.Requests.MailHunterRequest;
+
 namespace Models.Dto.Requests.Validation
 {
     public class MailHunterRequestValidator

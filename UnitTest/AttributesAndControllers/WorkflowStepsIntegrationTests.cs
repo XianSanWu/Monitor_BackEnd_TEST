@@ -6,7 +6,7 @@ using Models.Dto.Responses;
 using Models.Enums;
 using System.Net.Http.Json;
 using static Models.Dto.Requests.WorkflowStepsRequest;
-using Models.Dto.Common;
+using Models.Common;
 
 namespace UnitTest.AttributesAndControllers
 {
@@ -28,7 +28,7 @@ namespace UnitTest.AttributesAndControllers
 
             var request = new WorkflowStepsSearchListRequest
             {
-                Page = new Models.Dto.Common.PageBase
+                Page = new PageBase
                 {
                     PageSize = 10,
                     PageIndex = 1,

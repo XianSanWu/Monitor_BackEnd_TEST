@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using Dapper;
-using Models.Entities;
+using Models.Entities.Responses;
 using Repository.Interfaces;
-using static Models.Dto.Requests.MailHunterRequest;
 using static Models.Dto.Responses.MailHunterResponse;
-
+using static Models.Entities.Requests.MailHunterEntityRequest;
 namespace Repository.Implementations.MailHunterRespository
 {
     public partial class MailHunterRespository(IUnitOfWork unitOfWork, IMapper mapper)
@@ -17,7 +16,7 @@ namespace Repository.Implementations.MailHunterRespository
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListRequest searchReq, CancellationToken cancellationToken = default)
+        public async Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListEntityRequest searchReq, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 

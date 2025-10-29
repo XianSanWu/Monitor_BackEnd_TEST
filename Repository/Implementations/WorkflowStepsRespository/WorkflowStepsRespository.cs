@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Dapper;
-using Models.Entities;
+using Models.Entities.Responses;
 using Repository.Interfaces;
-using static Models.Dto.Requests.WorkflowStepsRequest;
 using static Models.Dto.Responses.WorkflowStepsResponse;
 using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsSearchListResponse;
+using static Models.Entities.Requests.WorkflowStepsEntityRequest;
 
 namespace Repository.Implementations.WorkflowStepsRespository
 {
@@ -18,7 +18,7 @@ namespace Repository.Implementations.WorkflowStepsRespository
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default)
+        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsSearchListEntityRequest searchReq, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 
@@ -63,7 +63,7 @@ namespace Repository.Implementations.WorkflowStepsRespository
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken = default)
+        public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListEntityRequest searchReq, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 

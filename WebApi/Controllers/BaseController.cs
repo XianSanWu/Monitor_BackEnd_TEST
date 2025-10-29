@@ -1,6 +1,7 @@
 ﻿//using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Models.Dto.Responses;
+using Models.Entities.Responses;
 using Models.Enums;
 
 namespace WebAPi.Controllers

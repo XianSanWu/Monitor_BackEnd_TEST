@@ -1,5 +1,4 @@
-﻿
-namespace Models.Entities
+﻿namespace Models.Entities.Responses
 {
     /// <summary>
     /// 使用者資料表

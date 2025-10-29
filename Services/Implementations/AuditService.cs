@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
+using Humanizer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Models.Dto.Requests;
-using Models.Dto.Responses;
+using Models.Entities.Requests;
 using Models.Enums;
 using Repository.Interfaces;
 using Repository.UnitOfWorkExtension;
@@ -32,7 +33,7 @@ namespace Services.Implementations
         /// <param name="log"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<bool> SaveAuditLogAsync(AuditRequest log, CancellationToken cancellationToken = default)
+        public async Task<bool> SaveAuditLogAsync(AuditRequest req, CancellationToken cancellationToken = default)
         {
             var dbType = DBConnectionEnum.Cdp;
 #if TEST
@@ -43,7 +44,9 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IAuditRespository>(_scopeAccessor);
 
-            return await repo.SaveAuditLogAsync(log, cancellationToken).ConfigureAwait(false);
+            var entityReq = mapper.Map<AuditEntityRequest>(req);
+
+            return await repo.SaveAuditLogAsync(entityReq, cancellationToken).ConfigureAwait(false);
         }
 
 
@@ -64,7 +67,9 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IAuditRespository>(_scopeAccessor);
 
-            return await repo.QueryAuditLogAsync(req, cancellationToken).ConfigureAwait(false);
+            var entityReq = mapper.Map<AuditSearchListEntityRequest>(req);
+
+            return await repo.QueryAuditLogAsync(entityReq, cancellationToken).ConfigureAwait(false);
         }
     }
 }

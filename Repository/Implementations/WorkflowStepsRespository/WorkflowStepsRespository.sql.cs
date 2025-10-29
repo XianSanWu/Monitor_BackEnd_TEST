@@ -1,9 +1,9 @@
 ﻿using Dapper;
-using Models.Entities;
+using Models.Entities.Responses;
 using Repository.Interfaces;
 using System.Text;
 using Utilities.Utilities;
-using static Models.Dto.Requests.WorkflowStepsRequest;
+using static Models.Entities.Requests.WorkflowStepsEntityRequest;
 
 namespace Repository.Implementations.WorkflowStepsRespository
 {
@@ -15,7 +15,7 @@ namespace Repository.Implementations.WorkflowStepsRespository
         /// 工作進度查詢DB (最後一筆)
         /// </summary>
         /// <param name="searchReq"></param>
-        private void QueryWorkflowLastSql(WorkflowStepsSearchListRequest searchReq)
+        private void QueryWorkflowLastSql(WorkflowStepsSearchListEntityRequest searchReq)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@"
@@ -93,7 +93,7 @@ JOIN (
         /// 工作進度查詢DB
         /// </summary>
         /// <param name="searchReq"></param>
-        private void QueryWorkflowSql(WorkflowStepsSearchListRequest searchReq)
+        private void QueryWorkflowSql(WorkflowStepsSearchListEntityRequest searchReq)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@" SELECT * FROM Workflow WITH (NOLOCK) WHERE 1=1 ");

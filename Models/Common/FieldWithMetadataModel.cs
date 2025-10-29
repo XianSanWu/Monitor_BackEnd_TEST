@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
-using YamlDotNet.Core.Tokens;
 
-namespace Models.Dto.Common
+namespace Models.Common
 {
     public class FieldWithMetadataModel
     {

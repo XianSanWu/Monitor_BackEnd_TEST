@@ -1,16 +1,16 @@
 ﻿using Models.Common;
 
-namespace Models.Dto.Requests
+namespace Models.Entities.Requests
 {
-    public class UserRequest
+    public class UserEntityRequest
     {
         #region 查詢用
-        public class UserSearchListRequest : BaseSearchModel
+        public class UserSearchListEntityRequest : BaseSearchModel
         {
-            public UserSearchListFieldModelRequest? FieldModel { get; set; }
+            public UserSearchListFieldModelEntityRequest? FieldModel { get; set; }
 
         }
-        public class UserSearchListFieldModelRequest
+        public class UserSearchListFieldModelEntityRequest
         {
             public string? UserId { get; set; }
             public string? TokenUuid { get; set; }
@@ -21,17 +21,17 @@ namespace Models.Dto.Requests
         #endregion
 
         #region 更新
-        public class UserUpdateRequest
+        public class UserUpdateEntityRequest
         {
-            public UserUpdateFieldRequest? FieldRequest { get; set; }
-            public List<UserUpdateConditionRequest>? ConditionRequest { get; set; }
+            public UserUpdateFieldEntityRequest? FieldRequest { get; set; }
+            public List<UserUpdateConditionEntityRequest>? ConditionRequest { get; set; }
         }
         #endregion
 
 
         #region 更新[欄位]
         /// <summary> User更新[欄位] </summary>
-        public class UserUpdateFieldRequest
+        public class UserUpdateFieldEntityRequest
         {
             public string? UserName { get; set; }
             public bool? IsUse { get; set; }
@@ -42,7 +42,7 @@ namespace Models.Dto.Requests
 
         #region 更新[條件]
         /// <summary>User更新[條件]</summary>
-        public class UserUpdateConditionRequest : BaseConditionModel
+        public class UserUpdateConditionEntityRequest : BaseConditionModel
         {
             public FieldWithMetadataModel? UserName { get; set; } = new();
             public FieldWithMetadataModel? Uuid { get; set; } = new();

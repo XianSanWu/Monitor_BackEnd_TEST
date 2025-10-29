@@ -1,18 +1,18 @@
 ﻿using Dapper;
-using Models.Dto.Common;
-using Models.Entities;
+using Models.Common;
+using Models.Entities.Responses;
 using Models.Enums;
 using Repository.Interfaces;
 using System.Text;
 using Utilities.Utilities;
-using static Models.Dto.Requests.PermissionRequest;
-using static Models.Dto.Requests.UserRequest;
+using static Models.Entities.Requests.PermissionEntityRequest;
+using static Models.Entities.Requests.UserEntityRequest;
 
 namespace Repository.Implementations.PermissionRespository
 {
     public partial class PermissionRespository : BaseRepository, IPermissionRespository
     {
-        private void SaveFeaturePermissions(PermissionUpdateRequest updateReq)
+        private void SaveFeaturePermissions(PermissionUpdateEntityRequest updateReq)
         {
             if (updateReq?.FieldRequest == null || !updateReq.FieldRequest.Any())
                 throw new ArgumentException("FieldRequest 不得為空");
@@ -97,7 +97,7 @@ WHEN NOT MATCHED BY TARGET THEN
         }
 
 
-        private void CheckUpdateUser(UserUpdateRequest updateReq)
+        private void CheckUpdateUser(UserUpdateEntityRequest updateReq)
         {
             _sqlStr = new StringBuilder();
             _sqlStr.AppendLine(" SELECT * FROM Users WITH(NOLOCK) WHERE 1=1 AND UserName = @UserName ");
@@ -109,7 +109,7 @@ WHEN NOT MATCHED BY TARGET THEN
             _sqlParams.Add("@UserName", updateReq.FieldRequest.UserName);
         }
 
-        private void SaveUser(UserUpdateRequest updateReq)
+        private void SaveUser(UserUpdateEntityRequest updateReq)
         {
             _sqlStr = new StringBuilder();
             _sqlParams = new DynamicParameters();
@@ -236,7 +236,7 @@ WHEN NOT MATCHED THEN
         }
 
 
-        private void IsUseUser(UserUpdateRequest updateReq)
+        private void IsUseUser(UserUpdateEntityRequest updateReq)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@" UPDATE Users SET ");
@@ -432,7 +432,7 @@ WHEN NOT MATCHED THEN
 
         }
 
-        private void GetUserList(UserSearchListRequest searchReq)
+        private void GetUserList(UserSearchListEntityRequest searchReq)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@" SELECT * FROM Users WITH(NOLOCK) WHERE 1=1 ");
@@ -559,7 +559,7 @@ WHEN NOT MATCHED THEN
             _sqlParams?.Add($"@Action", action);
         }
 
-        private void GetPermissions(PermissionSearchListRequest searchReq)
+        private void GetPermissions(PermissionSearchListEntityRequest searchReq)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@"

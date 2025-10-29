@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Services.Interfaces;
-using static Models.Dto.Requests.MsmqQueueRequest;
-using static Models.Dto.Responses.MsmqQueueResponse;
 using System.Diagnostics;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using static Models.Dto.Responses.MsmqQueueResponse;
+using static Models.Dto.Requests.MsmqQueueRequest;
 
 namespace Services.Implementations
 {

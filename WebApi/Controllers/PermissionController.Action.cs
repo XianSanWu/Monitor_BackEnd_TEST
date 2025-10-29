@@ -3,7 +3,6 @@ using Models.Dto.Responses;
 using WebAPi.Controllers;
 using static Models.Dto.Requests.PermissionRequest;
 using static Models.Dto.Requests.UserRequest;
-using static Models.Dto.Responses.PermissionResponse;
 
 namespace WebApi.Controllers
 {

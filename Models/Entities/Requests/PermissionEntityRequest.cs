@@ -1,17 +1,17 @@
 ﻿using Models.Common;
 
-namespace Models.Dto.Requests
+namespace Models.Entities.Requests
 {
-    public class PermissionRequest
+    public class PermissionEntityRequest
     {
         #region 查詢用
-        public class PermissionSearchListRequest : BaseSearchModel
+        public class PermissionSearchListEntityRequest : BaseSearchModel
         {
-            public PermissionSearchListFieldModelRequest? FieldModel { get; set; }
+            public PermissionSearchListFieldModelEntityRequest? FieldModel { get; set; }
 
         }
         
-        public class PermissionSearchListFieldModelRequest
+        public class PermissionSearchListFieldModelEntityRequest
         {
             public bool? IsUse { get; set; }
         }
@@ -19,14 +19,14 @@ namespace Models.Dto.Requests
         #endregion
 
         #region 更新用
-        public class PermissionUpdateRequest
+        public class PermissionUpdateEntityRequest
         {
-            public List<PermissionUpdateFieldRequest>? FieldRequest { get; set; }
+            public List<PermissionUpdateFieldEntityRequest>? FieldRequest { get; set; }
             //public List<PermissionUpdateConditionRequest>? ConditionRequest { get; set; }
         }
 
         // 更新欄位
-        public class PermissionUpdateFieldRequest
+        public class PermissionUpdateFieldEntityRequest
         {
             public string Uuid { get; set; } = string.Empty;
             public string? ParentUuid { get; set; }
@@ -44,7 +44,7 @@ namespace Models.Dto.Requests
         }
 
         // 更新條件
-        public class PermissionUpdateConditionRequest : BaseConditionModel
+        public class PermissionUpdateConditionEntityRequest : BaseConditionModel
         {
             public FieldWithMetadataModel? Uuid { get; set; } = new FieldWithMetadataModel();
         }

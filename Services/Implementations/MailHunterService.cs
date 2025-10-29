@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Models.Entities.Requests;
 using Models.Enums;
 using Repository.Interfaces;
+using Repository.UnitOfWorkExtension;
 using Services.Interfaces;
 using static Models.Dto.Requests.MailHunterRequest;
 using static Models.Dto.Responses.MailHunterResponse;
-using Microsoft.Extensions.Logging;
-using Repository.UnitOfWorkExtension;
+using static Models.Entities.Requests.MailHunterEntityRequest;
 
 namespace Services.Implementations
 {
@@ -33,7 +35,7 @@ namespace Services.Implementations
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListRequest searchReq, CancellationToken cancellationToken = default)
+        public async Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListRequest req, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
             //Task allTasks = null; 
@@ -50,7 +52,9 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IMailHunterRespository>(_scopeAccessor);
 
-            result = await repo.GetProjectMailCountList(searchReq, cancellationToken).ConfigureAwait(false);
+            var entityReq = mapper.Map<MailHunterSearchListEntityRequest>(req);
+
+            result = await repo.GetProjectMailCountList(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion

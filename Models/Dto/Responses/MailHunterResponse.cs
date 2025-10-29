@@ -1,4 +1,4 @@
-﻿using Models.Dto.Common;
+﻿using Models.Common;
 using System.ComponentModel.DataAnnotations;
 namespace Models.Dto.Responses
 {

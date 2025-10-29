@@ -10,6 +10,10 @@ using static Models.Dto.Requests.PermissionRequest;
 using static Models.Dto.Requests.UserRequest;
 using static Models.Dto.Responses.PermissionResponse;
 using static Models.Dto.Responses.UserResponse;
+using static Models.Entities.Requests.MailHunterEntityRequest;
+using static Models.Entities.Requests.PermissionEntityRequest;
+using static Models.Entities.Requests.UserEntityRequest;
+using static Models.Entities.Requests.WorkflowStepsEntityRequest;
 
 namespace Services.Implementations
 {
@@ -37,7 +41,7 @@ namespace Services.Implementations
         /// <param name="updateReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<bool> SaveFeaturePermissionsAsync(PermissionUpdateRequest updateReq, CancellationToken cancellationToken)
+        public async Task<bool> SaveFeaturePermissionsAsync(PermissionUpdateRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -54,7 +58,9 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
 
-            result = await repo.SaveFeaturePermissionsAsync(updateReq, cancellationToken).ConfigureAwait(false);
+            var entityReq = mapper.Map<PermissionUpdateEntityRequest>(req);
+
+            result = await repo.SaveFeaturePermissionsAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -65,7 +71,7 @@ namespace Services.Implementations
         /// </summary>
         /// <param name="updateReq"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<bool> CheckUpdateUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken)
+        public async Task<bool> CheckUpdateUserAsync(UserUpdateRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -82,7 +88,9 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
 
-            result = await repo.CheckUpdateUserAsync(updateReq, cancellationToken).ConfigureAwait(false);
+            var entityReq = mapper.Map<UserUpdateEntityRequest>(req);
+
+            result = await repo.CheckUpdateUserAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -93,16 +101,16 @@ namespace Services.Implementations
         /// </summary>
         /// <param name="updateReq"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<bool> SaveUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken)
+        public async Task<bool> SaveUserAsync(UserUpdateRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
             var result = false;
             #endregion
 
-            if (updateReq.FieldRequest != null)
+            if (req.FieldRequest != null)
             {
-                updateReq.FieldRequest.UpdateAt = DateTime.Now;
+                req.FieldRequest.UpdateAt = DateTime.Now;
             }
 
             #region 流程
@@ -115,7 +123,9 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
 
-            result = await repo.SaveUserAsync(updateReq, cancellationToken).ConfigureAwait(false);
+            var entityReq = mapper.Map<UserUpdateEntityRequest>(req);
+
+            result = await repo.SaveUserAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -126,16 +136,16 @@ namespace Services.Implementations
         /// </summary>
         /// <param name="updateReq"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<bool> IsUseUserAsync(UserUpdateRequest updateReq, CancellationToken cancellationToken)
+        public async Task<bool> IsUseUserAsync(UserUpdateRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
             var result = false;
             #endregion
 
-            if (updateReq.FieldRequest != null)
+            if (req.FieldRequest != null)
             {
-                updateReq.FieldRequest.UpdateAt = DateTime.Now;
+                req.FieldRequest.UpdateAt = DateTime.Now;
             }
 
             #region 流程
@@ -148,7 +158,9 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
 
-            result = await repo.IsUseUserAsync(updateReq, cancellationToken).ConfigureAwait(false);
+            var entityReq = mapper.Map<UserUpdateEntityRequest>(req);
+
+            result = await repo.IsUseUserAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -159,7 +171,7 @@ namespace Services.Implementations
         /// </summary>
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<UserResponse> GetUserListAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<UserResponse> GetUserListAsync(UserSearchListRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -176,7 +188,9 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
 
-            result = await repo.GetUserListAsync(searchReq, cancellationToken).ConfigureAwait(false);
+            var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
+
+            result = await repo.GetUserListAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -214,7 +228,7 @@ namespace Services.Implementations
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<PermissionSearchListResponse>> GetUserPermissionsAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<List<PermissionSearchListResponse>> GetUserPermissionsAsync(UserSearchListRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -231,7 +245,9 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
 
-            result = await repo.GetUserPermissionsAsync(searchReq, cancellationToken).ConfigureAwait(false);
+            var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
+
+            result = await repo.GetUserPermissionsAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -243,7 +259,7 @@ namespace Services.Implementations
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<PermissionSearchListResponse>> GetUserPermissionsMenuAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<List<PermissionSearchListResponse>> GetUserPermissionsMenuAsync(UserSearchListRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -260,7 +276,9 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
 
-            result = await repo.GetUserPermissionsMenuAsync(searchReq, cancellationToken).ConfigureAwait(false);
+            var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
+
+            result = await repo.GetUserPermissionsMenuAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion
@@ -271,7 +289,7 @@ namespace Services.Implementations
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<PermissionSearchListResponse>> GetPermissionListAsync(PermissionSearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<List<PermissionSearchListResponse>> GetPermissionListAsync(PermissionSearchListRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -288,7 +306,9 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
 
-            result = await repo.GetPermissionListAsync(searchReq, cancellationToken).ConfigureAwait(false);
+            var entityReq = _mapper.Map<PermissionSearchListEntityRequest>(req);
+
+            result = await repo.GetPermissionListAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
             #endregion

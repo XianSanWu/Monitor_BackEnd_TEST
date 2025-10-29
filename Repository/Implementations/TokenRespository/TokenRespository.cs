@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Dapper;
 using Models.Dto.Responses;
+using Models.Entities.Responses;
 using Repository.Interfaces;
 
 namespace Repository.Implementations.TokenRespository

@@ -1,4 +1,4 @@
-﻿namespace Models.Entities
+﻿namespace Models.Entities.Responses
 {
     public class WorkflowEntity
     {

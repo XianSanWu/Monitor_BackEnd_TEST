@@ -5,11 +5,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Models.Enums;
 using Repository.Interfaces;
-using Services.Interfaces;
 using Repository.UnitOfWorkExtension;
+using Services.Interfaces;
 using static Models.Dto.Requests.WorkflowStepsRequest;
 using static Models.Dto.Responses.WorkflowStepsResponse;
 using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsKafkaResponse;
+using static Models.Entities.Requests.UserEntityRequest;
+using static Models.Entities.Requests.WorkflowStepsEntityRequest;
 
 namespace Services.Implementations
 {
@@ -17,7 +19,7 @@ namespace Services.Implementations
         ILogger<WorkflowStepsService> logger,
         IConfiguration config,
         IMemoryCache cache,
-        //IMapper mapper,
+        IMapper mapper,
         IUnitOfWorkFactory uowFactory,
         IRepositoryFactory repositoryFactory,
         IUnitOfWorkScopeAccessor scopeAccessor) : IWorkflowStepsService
@@ -25,7 +27,7 @@ namespace Services.Implementations
         private readonly ILogger<WorkflowStepsService> _logger = logger;
         private readonly IConfiguration _config = config;
         private readonly IMemoryCache _cache = cache;
-        //private readonly IMapper _mapper = mapper;
+        private readonly IMapper _mapper = mapper;
         private readonly IUnitOfWorkFactory _uowFactory = uowFactory;
         private readonly IRepositoryFactory _repositoryFactory = repositoryFactory;
         private readonly IUnitOfWorkScopeAccessor _scopeAccessor = scopeAccessor;
@@ -33,7 +35,7 @@ namespace Services.Implementations
         private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(10);
 
         public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchLastList(
-         WorkflowStepsSearchListRequest searchReq,
+         WorkflowStepsSearchListRequest req,
          CancellationToken cancellationToken = default)
         {
             var dbType = DBConnectionEnum.Cdp;
@@ -45,11 +47,13 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IWorkflowStepsRespository>(_scopeAccessor);
 
-            return await repo.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken);
+            var entityReq = _mapper.Map<WorkflowStepsSearchListEntityRequest>(req);
+
+            return await repo.QueryWorkflowStepsSearchLastList(entityReq, cancellationToken);
         }
 
         public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(
-            WorkflowStepsSearchListRequest searchReq,
+            WorkflowStepsSearchListRequest req,
             CancellationToken cancellationToken = default)
         {
             var dbType = DBConnectionEnum.Cdp;
@@ -60,10 +64,12 @@ namespace Services.Implementations
             //_scopeAccessor.Current = uow;
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
 
+            var entityReq = _mapper.Map<WorkflowStepsSearchListEntityRequest>(req);
+
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IWorkflowStepsRespository>(_scopeAccessor);
 
-            return await repo.QueryWorkflowStepsSearchList(searchReq, cancellationToken);
+            return await repo.QueryWorkflowStepsSearchList(entityReq, cancellationToken);
         }
 
 

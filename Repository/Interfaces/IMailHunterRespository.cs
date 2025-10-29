@@ -1,5 +1,5 @@
-﻿using static Models.Dto.Requests.MailHunterRequest;
-using static Models.Dto.Responses.MailHunterResponse;
+﻿using static Models.Dto.Responses.MailHunterResponse;
+using static Models.Entities.Requests.MailHunterEntityRequest;
 
 namespace Repository.Interfaces
 {
@@ -11,7 +11,7 @@ namespace Repository.Interfaces
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListRequest searchReq, CancellationToken cancellationToken = default);
+        Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListEntityRequest searchReq, CancellationToken cancellationToken = default);
 
     }
 }
