@@ -41,11 +41,7 @@ namespace Services.Implementations
             var entityReq = mapper.Map<AuditEntityRequest>(req);
 
             var dbType = DBConnectionEnum.Cdp;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
-
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IAuditRespository>(_scopeAccessor);
 
@@ -64,10 +60,6 @@ namespace Services.Implementations
             var entityReq = mapper.Map<AuditSearchListEntityRequest>(req);
 
             var dbType = DBConnectionEnum.Cdp;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
-
             // 改成通用 Factory 呼叫
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             var repo = _repositoryFactory.Create<IAuditRespository>(_scopeAccessor);

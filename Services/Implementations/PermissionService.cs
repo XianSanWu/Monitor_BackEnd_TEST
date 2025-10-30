@@ -52,14 +52,9 @@ namespace Services.Implementations
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
-
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
             result = await repo.SaveFeaturePermissionsAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
@@ -82,16 +77,11 @@ namespace Services.Implementations
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
-
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
             result = await repo.CheckUpdateUserAsync(entityReq, cancellationToken).ConfigureAwait(false);
-
+            
             return result;
             #endregion
         }
@@ -117,14 +107,9 @@ namespace Services.Implementations
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
-
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
             result = await repo.SaveUserAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
@@ -152,14 +137,9 @@ namespace Services.Implementations
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
-
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
             result = await repo.IsUseUserAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
@@ -182,14 +162,9 @@ namespace Services.Implementations
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
-
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
             result = await repo.GetUserListAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
@@ -208,14 +183,9 @@ namespace Services.Implementations
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
-
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
             result = await repo.GetBitValue(module, feature, action, cancellationToken).ConfigureAwait(false);
 
             return result;
@@ -239,14 +209,9 @@ namespace Services.Implementations
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
-
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
             result = await repo.GetUserPermissionsAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
@@ -270,14 +235,9 @@ namespace Services.Implementations
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
-
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
             result = await repo.GetUserPermissionsMenuAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
@@ -300,14 +260,9 @@ namespace Services.Implementations
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
-
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
             result = await repo.GetPermissionListAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
@@ -329,14 +284,9 @@ namespace Services.Implementations
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
-
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
             result = await repo.GetUserByUserNameAsync(userName, cancellationToken).ConfigureAwait(false);
 
             return result;
@@ -358,14 +308,9 @@ namespace Services.Implementations
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
-
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-
             result = await repo.GetUserByUserIdAsync(userId, cancellationToken).ConfigureAwait(false);
 
             return result;

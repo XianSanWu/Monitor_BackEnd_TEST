@@ -46,14 +46,9 @@ namespace Services.Implementations
 
             #region 流程
             var dbType = DBConnectionEnum.Mail_hunter;
-#if TEST
-            dbType = DBConnectionEnum.DefaultConnection;
-#endif
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
-
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IMailHunterRespository>(_scopeAccessor);
-
             result = await repo.GetProjectMailCountList(entityReq, cancellationToken).ConfigureAwait(false);
 
             return result;
