@@ -67,11 +67,10 @@ namespace Services.Implementations
 #if TEST
             dbType = DBConnectionEnum.DefaultConnection;
 #endif
-            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
 
             // 改成通用 Factory 呼叫
+            using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             var repo = _repositoryFactory.Create<IAuditRespository>(_scopeAccessor);
-
             var entityRes = await repo.QueryAuditLogAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
             var result = mapper.Map<AuditSearchListResponse>(entityRes);

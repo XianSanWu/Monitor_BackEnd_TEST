@@ -65,13 +65,15 @@ namespace Repository.Implementations.AuditLogRespository
 
             // 先組合 SQL 語句
             QueryAuditLog(req);
-
+            // 取得分頁 SQL
             var _pagingSql = await GetPagingSql(req.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
+            // 執行查詢
             var queryEntity = (await _unitOfWork.Connection.QueryAsync<AuditEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
-           
-            result.Page = req.Page;
-            result.SearchItem = queryEntity;
-            result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
+
+            // 組合回傳結果
+            result.Page = req.Page; // 回傳分頁資訊
+            result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;   // 回傳總筆數
+            result.SearchItem = queryEntity;    // 回傳查詢結果清單            
 
             return result;
 
