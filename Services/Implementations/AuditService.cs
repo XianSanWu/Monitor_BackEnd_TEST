@@ -1,14 +1,17 @@
 ﻿using AutoMapper;
 using Humanizer;
+using IdentityModel.OidcClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Models.Dto.Requests;
 using Models.Entities.Requests;
+using Models.Entities.Responses;
 using Models.Enums;
 using Repository.Interfaces;
 using Repository.UnitOfWorkExtension;
 using Services.Interfaces;
 using static Models.Dto.Responses.AuditResponse;
+using static Models.Dto.Responses.AuditResponse.AuditSearchListResponse;
 
 namespace Services.Implementations
 {
@@ -69,7 +72,11 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IAuditRespository>(_scopeAccessor);
 
-            return await repo.QueryAuditLogAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var entityRes = await repo.QueryAuditLogAsync(entityReq, cancellationToken).ConfigureAwait(false);
+
+            var result = mapper.Map<AuditSearchListResponse>(entityRes);
+
+            return result;
         }
     }
 }

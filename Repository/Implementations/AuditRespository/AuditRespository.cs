@@ -5,6 +5,7 @@ using Models.Entities.Responses;
 using Repository.Interfaces;
 using static Models.Dto.Responses.AuditResponse;
 using static Models.Dto.Responses.AuditResponse.AuditSearchListResponse;
+using static Models.Entities.Responses.AuditEntityResponse;
 
 namespace Repository.Implementations.AuditLogRespository
 {
@@ -49,11 +50,11 @@ namespace Repository.Implementations.AuditLogRespository
         /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<AuditSearchListResponse> QueryAuditLogAsync(AuditSearchListEntityRequest req, CancellationToken cancellationToken = default)
+        public async Task<AuditEntitySearchListResponse> QueryAuditLogAsync(AuditSearchListEntityRequest req, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 
-            var result = new AuditSearchListResponse();
+            var result = new AuditEntitySearchListResponse();
 
             #endregion
 
@@ -65,13 +66,11 @@ namespace Repository.Implementations.AuditLogRespository
             // 先組合 SQL 語句
             QueryAuditLog(req);
 
-            result.Page = req.Page;
-            result.SearchItem = new List<AuditSearchResponse>();
-
             var _pagingSql = await GetPagingSql(req.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
             var queryEntity = (await _unitOfWork.Connection.QueryAsync<AuditEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
            
-            result.SearchItem = _mapper.Map<List<AuditSearchResponse>>(queryEntity);
+            result.Page = req.Page;
+            result.SearchItem = queryEntity;
             result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
 
             return result;

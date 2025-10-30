@@ -1,11 +1,13 @@
 ﻿using IdentityModel.OidcClient;
 using Models.Dto.Requests;
+using Models.Dto.Responses;
 using Models.Entities.Requests;
 using Models.Entities.Responses;
 using static Models.Dto.Requests.MailHunterRequest;
 using static Models.Dto.Requests.PermissionRequest;
 using static Models.Dto.Requests.UserRequest;
 using static Models.Dto.Requests.WorkflowStepsRequest;
+using static Models.Dto.Responses.AuditResponse;
 using static Models.Dto.Responses.AuditResponse.AuditSearchListResponse;
 using static Models.Dto.Responses.MailHunterResponse;
 using static Models.Dto.Responses.PermissionResponse;
@@ -16,6 +18,7 @@ using static Models.Entities.Requests.MailHunterEntityRequest;
 using static Models.Entities.Requests.PermissionEntityRequest;
 using static Models.Entities.Requests.UserEntityRequest;
 using static Models.Entities.Requests.WorkflowStepsEntityRequest;
+using static Models.Entities.Responses.AuditEntityResponse;
 
 namespace WebAPi.Profile
 {
@@ -24,15 +27,17 @@ namespace WebAPi.Profile
         //.ReverseMap(); 不接受反向，故不使用
         public MapperProfile()
         {
+            #region Repository Entity → Service Response
             // Repository Entity → Service Response
             CreateMap<WorkflowEntity, WorkflowStepsSearchResponse>();
             CreateMap<ProjectMailCountEnyity, MailHunterSearchListDetailResponse>();
             CreateMap<FeaturePermissionEntity, PermissionSearchListResponse>();
             CreateMap<UserEntity, UserSearchListResponse>();
             CreateMap<AuditEntity, AuditSearchResponse>();
+            #endregion
 
+            #region Service Request → Repository Request
             // Service Request → Repository Request
-
             // Audit
             CreateMap<AuditSearchListRequest, AuditSearchListEntityRequest>();
             CreateMap<AuditSearchListFieldModelRequest, AuditSearchListFieldModelEntityRequest>();
@@ -63,6 +68,17 @@ namespace WebAPi.Profile
             // MailHunter
             CreateMap<MailHunterSearchListRequest, MailHunterSearchListEntityRequest>();
             CreateMap<MailHunterSearchListFieldModelRequest, MailHunterSearchListFieldModelEntityRequest>();
+            #endregion
+
+            #region Repository Response → Service Response
+            // Service Repository Response → Service Response
+            // Audit
+            //CreateMap<AuditSearchListResponse, AuditEntitySearchListResponse>();
+            CreateMap<AuditEntitySearchListResponse, AuditSearchListResponse>()
+                .ForMember(dest => dest.SearchItem, opt => opt.MapFrom(src => src.SearchItem));
+
+            CreateMap<AuditEntity, AuditSearchResponse>();
+            #endregion
 
         }
     }

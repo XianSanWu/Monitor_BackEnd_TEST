@@ -1,6 +1,5 @@
-﻿using Models.Dto.Requests;
-using Models.Entities.Requests;
-using static Models.Dto.Responses.AuditResponse;
+﻿using Models.Entities.Requests;
+using static Models.Entities.Responses.AuditEntityResponse;
 
 namespace Repository.Interfaces
 {
@@ -20,7 +19,7 @@ namespace Repository.Interfaces
         /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AuditSearchListResponse> QueryAuditLogAsync(AuditSearchListEntityRequest req, CancellationToken cancellationToken = default);
+        Task<AuditEntitySearchListResponse> QueryAuditLogAsync(AuditSearchListEntityRequest req, CancellationToken cancellationToken = default);
 
     }
 }

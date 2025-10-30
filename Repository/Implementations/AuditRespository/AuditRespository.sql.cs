@@ -1,9 +1,8 @@
 ﻿using Dapper;
-using Models.Dto.Requests;
 using Models.Entities.Requests;
-using Models.Entities.Responses;
 using System.Text;
 using Utilities.Utilities;
+using static Models.Entities.Responses.AuditEntityResponse;
 
 namespace Repository.Implementations.AuditLogRespository
 {
