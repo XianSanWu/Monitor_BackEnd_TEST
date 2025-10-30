@@ -192,15 +192,17 @@ namespace Repository.Implementations
             if (string.IsNullOrWhiteSpace(key) || value == null || string.IsNullOrWhiteSpace(value?.ToString()))
                 return;
 
-            if (validColumns != null)
-            {
-                var keyToCompare = key.Split('.').Last(); // 取最後一段
-                if (!validColumns.Contains(keyToCompare, StringComparer.OrdinalIgnoreCase))
-                {
-                    // 不存在於 validColumns 中
-                    return;
-                }
-            }
+            // 取得 BaseModel 欄位名稱集合
+            var baseModelProps = typeof(BaseModel).GetProperties().Select(p => p.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            // 若屬於 BaseModel 欄位，則排除
+            var keyToCompare = key.Split('.').Last();
+            if (baseModelProps.Contains(keyToCompare))
+                return;
+
+            // 若有限制欄位清單，也必須符合
+            if (validColumns != null && !validColumns.Contains(keyToCompare, StringComparer.OrdinalIgnoreCase))
+                return;
 
             var queryKey = key.Replace(".", "_");
 
@@ -264,15 +266,17 @@ namespace Repository.Implementations
             if (string.IsNullOrWhiteSpace(key) || value == null || string.IsNullOrWhiteSpace(value?.ToString()))
                 return;
 
-            if (validColumns != null)
-            {
-                var keyToCompare = key.Split('.').Last(); // 取最後一段
-                if (!validColumns.Contains(keyToCompare, StringComparer.OrdinalIgnoreCase))
-                {
-                    // 不存在於 validColumns 中
-                    return;
-                }
-            }
+            // 取得 BaseModel 欄位名稱集合
+            var baseModelProps = typeof(BaseModel).GetProperties().Select(p => p.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            // 若屬於 BaseModel 欄位，則排除
+            var keyToCompare = key.Split('.').Last();
+            if (baseModelProps.Contains(keyToCompare))
+                return;
+
+            // 若有限制欄位清單，也必須符合
+            if (validColumns != null && !validColumns.Contains(keyToCompare, StringComparer.OrdinalIgnoreCase))
+                return;
 
             var queryKey = key.Replace(".", "_");
 
