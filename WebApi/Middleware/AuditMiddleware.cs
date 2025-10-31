@@ -80,31 +80,44 @@ namespace WebApi.Middleware
                 }
             }
 
-            // ====== 攔截 Response Body ======
-            var originalBodyStream = context.Response.Body;
-            await using var responseBody = new MemoryStream();
-            context.Response.Body = responseBody;
+            // ====== 判斷是否為檔案 ======
+            var isFile = (context.Request.Headers["IsFile"].FirstOrDefault() ?? string.Empty) == "true" ? true : false;
 
-            try
+            if (!isFile)
             {
-                await _next(context); // 呼叫下一層 middleware
+                // ====== 攔截 Response Body ======
+                var originalBodyStream = context.Response.Body;
+                await using var responseBody = new MemoryStream();
+                context.Response.Body = responseBody;
 
-                // 僅在 Content-Type 為 JSON 時才記錄回傳內容
-                if (context.Response.ContentType?.Contains("application/json", StringComparison.OrdinalIgnoreCase) == true)
+                try
                 {
-                    context.Response.Body.Seek(0, SeekOrigin.Begin);
-                    responseBodyText = await new StreamReader(context.Response.Body).ReadToEndAsync();
-                    context.Response.Body.Seek(0, SeekOrigin.Begin);
+                    await _next(context); // 呼叫下一層 middleware
 
-                    if (responseBodyText.Length > 3900)
-                        responseBodyText = responseBodyText[..3900] + "...(truncated)";
+                    // 僅在 Content-Type 為 JSON 時才記錄回傳內容
+                    if (context.Response.ContentType?.Contains("application/json", StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        context.Response.Body.Seek(0, SeekOrigin.Begin);
+                        responseBodyText = await new StreamReader(context.Response.Body).ReadToEndAsync();
+                        context.Response.Body.Seek(0, SeekOrigin.Begin);
+
+                        if (responseBodyText.Length > 3900)
+                            responseBodyText = responseBodyText[..3900] + "...(truncated)";
+                    }
                 }
+                finally
+                {
+                    await responseBody.CopyToAsync(originalBodyStream);
+                    context.Response.Body = originalBodyStream;
+                }
+
             }
-            finally
+            else
             {
-                await responseBody.CopyToAsync(originalBodyStream);
-                context.Response.Body = originalBodyStream;
+                responseBodyText = "File download - response body not logged.";
+                await _next(context); // 直接呼叫下一層 middleware
             }
+
 
             // ====== 組成稽核資料 ======
             var httpStatusCode = (context.Response?.StatusCode ?? 0).ToString();
@@ -124,7 +137,7 @@ namespace WebApi.Middleware
                 FrontActionName = frontActionName,
                 FrontActionId = frontActionId,
                 HttpStatusCode = httpStatusCode,
-                ResponseBody = responseBodyText, 
+                ResponseBody = responseBodyText,
                 CreateAt = DateTime.Now
             };
 
