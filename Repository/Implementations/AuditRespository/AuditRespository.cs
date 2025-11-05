@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using Dapper;
 using Models.Entities.Requests;
-using Models.Entities.Responses;
 using Repository.Interfaces;
-using static Models.Dto.Responses.AuditResponse;
-using static Models.Dto.Responses.AuditResponse.AuditSearchListResponse;
 using static Models.Entities.Responses.AuditEntityResponse;
 
 namespace Repository.Implementations.AuditLogRespository

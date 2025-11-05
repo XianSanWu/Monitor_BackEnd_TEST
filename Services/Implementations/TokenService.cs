@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Models.Dto.Responses;
 using Models.Enums;
 using Repository.Interfaces;
+using Repository.UnitOfWorkExtension;
 using Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Utilities.Utilities;
-using System.Security.Cryptography;
-using Models.Dto.Responses;
-using Repository.UnitOfWorkExtension;
 
 namespace Services.Implementations
 {
@@ -42,17 +42,13 @@ namespace Services.Implementations
         /// <returns></returns>
         public async Task<AuthResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
         {
-            #region 參數宣告
-
-            var result = new AuthResponse();
-            #endregion
-
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<ITokenRespository>(_scopeAccessor);
-            result = await repo.GetUserTokenByRefreshTokenAsync(refreshToken, cancellationToken).ConfigureAwait(false);
+            var entityRes = await repo.GetUserTokenByRefreshTokenAsync(refreshToken, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<AuthResponse>(entityRes);
 
             return result;
             #endregion

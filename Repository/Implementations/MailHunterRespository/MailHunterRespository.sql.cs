@@ -1,9 +1,9 @@
 ﻿using Dapper;
-using Models.Entities.Responses;
 using Models.Enums;
 using System.Text;
 using Utilities.Utilities;
 using static Models.Entities.Requests.MailHunterEntityRequest;
+using static Models.Entities.Responses.ProjectMailCountEntityResponse;
 
 namespace Repository.Implementations.MailHunterRespository
 {
@@ -113,7 +113,7 @@ WHERE 1=1
             #endregion
 
             #region  處理 FilterModel Grid (模糊查詢)
-            var validColumns = Reflection.GetValidColumns<ProjectMailCountEnyity>();
+            var validColumns = Reflection.GetValidColumns<ProjectMailCountEntity>();
 
             if (searchReq?.FilterModel != null)
             {

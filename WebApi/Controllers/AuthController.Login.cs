@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebAPi.Controllers;
 using Models.Dto.Responses;
-using static Models.Entities.Requests.AuthEntityRequest;
-using Models.Entities.Responses;
 using static Models.Dto.Requests.AuthRequest;
 
 namespace WebApi.Controllers

@@ -10,7 +10,6 @@ using Services.Interfaces;
 using static Models.Dto.Requests.WorkflowStepsRequest;
 using static Models.Dto.Responses.WorkflowStepsResponse;
 using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsKafkaResponse;
-using static Models.Entities.Requests.UserEntityRequest;
 using static Models.Entities.Requests.WorkflowStepsEntityRequest;
 
 namespace Services.Implementations
@@ -43,8 +42,10 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IWorkflowStepsRespository>(_scopeAccessor);
+            var entityRes = await repo.QueryWorkflowStepsSearchLastList(entityReq, cancellationToken);
+            var result = mapper.Map<WorkflowStepsSearchListResponse>(entityRes);
 
-            return await repo.QueryWorkflowStepsSearchLastList(entityReq, cancellationToken);
+            return result;
         }
 
         public async Task<WorkflowStepsSearchListResponse> QueryWorkflowStepsSearchList(
@@ -58,8 +59,10 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IWorkflowStepsRespository>(_scopeAccessor);
+            var entityRes = await repo.QueryWorkflowStepsSearchList(entityReq, cancellationToken);
+            var result = mapper.Map<WorkflowStepsSearchListResponse>(entityRes);
 
-            return await repo.QueryWorkflowStepsSearchList(entityReq, cancellationToken);
+            return result;
         }
 
 

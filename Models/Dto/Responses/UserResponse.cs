@@ -2,23 +2,27 @@
 
 namespace Models.Dto.Responses
 {
-    public class UserResponse : BaseModel
+    public class UserResponse
     {
-        #region Properties
-        /// <summary>  查詢結果[清單] </summary>
-        public List<UserSearchListResponse>? SearchItem { get; set; }
-        #endregion
-
-        public class UserSearchListResponse
+        public class UserSearchListResponse : BaseModel
         {
-            public int Id { get; set; } = 0;
-            public string Uuid { get; set; } = "";
-            public string UserName { get; set; } = "";
-            public int FeatureMask { get; set; } = 0;
-            public bool IsUse { get; set; }
-            public DateTime CreateAt { get; set; }
+            #region Properties
+            /// <summary>  查詢結果[清單] </summary>
+            public List<UserSearchResponse>? SearchItem { get; set; }
+            #endregion
 
-            public DateTime UpdateAt { get; set; }
+            public class UserSearchResponse
+            {
+                public int Id { get; set; } = 0;
+                public string Uuid { get; set; } = "";
+                public string UserName { get; set; } = "";
+                public int FeatureMask { get; set; } = 0;
+                public bool IsUse { get; set; }
+                public DateTime CreateAt { get; set; }
+
+                public DateTime UpdateAt { get; set; }
+            }
         }
+
     }
 }

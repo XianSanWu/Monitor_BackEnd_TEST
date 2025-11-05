@@ -1,19 +1,17 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Models.Dto.Responses;
 using Models.Enums;
 using Repository.Interfaces;
 using Repository.UnitOfWorkExtension;
 using Services.Interfaces;
 using static Models.Dto.Requests.PermissionRequest;
 using static Models.Dto.Requests.UserRequest;
-using static Models.Dto.Responses.PermissionResponse;
+using static Models.Dto.Responses.PermissionResponse.PermissionSearchListResponse;
 using static Models.Dto.Responses.UserResponse;
-using static Models.Entities.Requests.MailHunterEntityRequest;
+using static Models.Dto.Responses.UserResponse.UserSearchListResponse;
 using static Models.Entities.Requests.PermissionEntityRequest;
 using static Models.Entities.Requests.UserEntityRequest;
-using static Models.Entities.Requests.WorkflowStepsEntityRequest;
 
 namespace Services.Implementations
 {
@@ -81,7 +79,7 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
             result = await repo.CheckUpdateUserAsync(entityReq, cancellationToken).ConfigureAwait(false);
-            
+
             return result;
             #endregion
         }
@@ -151,13 +149,8 @@ namespace Services.Implementations
         /// </summary>
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<UserResponse> GetUserListAsync(UserSearchListRequest req, CancellationToken cancellationToken)
+        public async Task<UserSearchListResponse> GetUserListAsync(UserSearchListRequest req, CancellationToken cancellationToken)
         {
-            #region 參數宣告
-
-            var result = new UserResponse();
-            #endregion
-
             var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
 
             #region 流程
@@ -165,7 +158,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-            result = await repo.GetUserListAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var entityRes = await repo.GetUserListAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<UserSearchListResponse>(entityRes);
 
             return result;
             #endregion
@@ -198,13 +192,8 @@ namespace Services.Implementations
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<PermissionSearchListResponse>> GetUserPermissionsAsync(UserSearchListRequest req, CancellationToken cancellationToken)
+        public async Task<List<PermissionSearchResponse>> GetUserPermissionsAsync(UserSearchListRequest req, CancellationToken cancellationToken)
         {
-            #region 參數宣告
-
-            var result = new List<PermissionSearchListResponse>();
-            #endregion
-
             var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
 
             #region 流程
@@ -212,7 +201,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-            result = await repo.GetUserPermissionsAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var entityRes = await repo.GetUserPermissionsAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<List<PermissionSearchResponse>>(entityRes);
 
             return result;
             #endregion
@@ -224,13 +214,8 @@ namespace Services.Implementations
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<PermissionSearchListResponse>> GetUserPermissionsMenuAsync(UserSearchListRequest req, CancellationToken cancellationToken)
+        public async Task<List<PermissionSearchResponse>> GetUserPermissionsMenuAsync(UserSearchListRequest req, CancellationToken cancellationToken)
         {
-            #region 參數宣告
-
-            var result = new List<PermissionSearchListResponse>();
-            #endregion
-
             var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
 
             #region 流程
@@ -238,7 +223,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-            result = await repo.GetUserPermissionsMenuAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var entityRes = await repo.GetUserPermissionsMenuAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<List<PermissionSearchResponse>>(entityRes);
 
             return result;
             #endregion
@@ -249,13 +235,8 @@ namespace Services.Implementations
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<PermissionSearchListResponse>> GetPermissionListAsync(PermissionSearchListRequest req, CancellationToken cancellationToken)
+        public async Task<List<PermissionSearchResponse>> GetPermissionListAsync(PermissionSearchListRequest req, CancellationToken cancellationToken)
         {
-            #region 參數宣告
-
-            var result = new List<PermissionSearchListResponse>();
-            #endregion
-
             var entityReq = _mapper.Map<PermissionSearchListEntityRequest>(req);
 
             #region 流程
@@ -263,7 +244,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-            result = await repo.GetPermissionListAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var entityRes = await repo.GetPermissionListAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<List<PermissionSearchResponse>>(entityRes);
 
             return result;
             #endregion
@@ -275,19 +257,15 @@ namespace Services.Implementations
         /// <param name="userName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UserSearchListResponse> GetUserByUserNameAsync(string userName, CancellationToken cancellationToken)
+        public async Task<UserSearchResponse> GetUserByUserNameAsync(string userName, CancellationToken cancellationToken)
         {
-            #region 參數宣告
-
-            var result = new UserSearchListResponse();
-            #endregion
-
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-            result = await repo.GetUserByUserNameAsync(userName, cancellationToken).ConfigureAwait(false);
+            var entityRes = await repo.GetUserByUserNameAsync(userName, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<UserSearchResponse>(entityRes);
 
             return result;
             #endregion
@@ -299,19 +277,15 @@ namespace Services.Implementations
         /// <param name="userId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UserSearchListResponse> GetUserByUserIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<UserSearchResponse> GetUserByUserIdAsync(string userId, CancellationToken cancellationToken)
         {
-            #region 參數宣告
-
-            var result = new UserSearchListResponse();
-            #endregion
-
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-            result = await repo.GetUserByUserIdAsync(userId, cancellationToken).ConfigureAwait(false);
+            var entityRes = await repo.GetUserByUserIdAsync(userId, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<UserSearchResponse>(entityRes);
 
             return result;
             #endregion

@@ -1,6 +1,4 @@
-﻿
-using Models.Dto.Responses;
-using Models.Entities.Responses;
+﻿using static Models.Entities.Responses.UserTokenEntityResponse;
 
 namespace Repository.Interfaces
 {
@@ -13,7 +11,7 @@ namespace Repository.Interfaces
         /// <param name="refreshToken"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AuthResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
+        Task<UserTokenEntity> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 儲存User Token

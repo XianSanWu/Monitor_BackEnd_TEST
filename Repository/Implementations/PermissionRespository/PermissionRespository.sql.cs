@@ -1,12 +1,13 @@
 ﻿using Dapper;
 using Models.Common;
-using Models.Entities.Responses;
 using Models.Enums;
 using Repository.Interfaces;
 using System.Text;
 using Utilities.Utilities;
 using static Models.Entities.Requests.PermissionEntityRequest;
 using static Models.Entities.Requests.UserEntityRequest;
+using static Models.Entities.Responses.FeaturePermissionEntityResponse;
+using static Models.Entities.Responses.UserEntityResponse;
 
 namespace Repository.Implementations.PermissionRespository
 {

@@ -8,6 +8,7 @@ using Repository.Interfaces;
 using Services.Implementations;
 using static Models.Dto.Requests.WorkflowStepsRequest;
 using static Models.Entities.Requests.WorkflowStepsEntityRequest;
+using static Models.Entities.Responses.WorkflowEntityResponse;
 
 namespace UnitTest.Services
 {
@@ -57,9 +58,9 @@ namespace UnitTest.Services
                 }
             };
 
-            var expectedResponse = new WorkflowStepsResponse.WorkflowStepsSearchListResponse
+            var expectedResponse = new WorkflowStepsEntitySearchListResponse
             {
-                SearchItem = new List<WorkflowStepsResponse.WorkflowStepsSearchListResponse.WorkflowStepsSearchResponse>
+                SearchItem = new List<WorkflowEntity>
                 {
                     new() { SN = 1, WorkflowUuid = "UUID123", Channel = "Email" }
                 }
@@ -96,9 +97,9 @@ namespace UnitTest.Services
                 }
             };
 
-            var expectedResponse = new WorkflowStepsResponse.WorkflowStepsSearchListResponse
+            var expectedResponse = new WorkflowStepsEntitySearchListResponse
             {
-                SearchItem = new List<WorkflowStepsResponse.WorkflowStepsSearchListResponse.WorkflowStepsSearchResponse>
+                SearchItem = new List<WorkflowEntity>
                 {
                     new() { SN = 2, WorkflowUuid = "UUID456", Channel = "SMS" }
                 }

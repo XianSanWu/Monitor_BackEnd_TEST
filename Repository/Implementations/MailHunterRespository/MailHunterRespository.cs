@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Dapper;
-using Models.Entities.Responses;
 using Repository.Interfaces;
-using static Models.Dto.Responses.MailHunterResponse;
 using static Models.Entities.Requests.MailHunterEntityRequest;
+using static Models.Entities.Responses.ProjectMailCountEntityResponse;
+
 namespace Repository.Implementations.MailHunterRespository
 {
     public partial class MailHunterRespository(IUnitOfWork unitOfWork, IMapper mapper)
@@ -16,11 +16,11 @@ namespace Repository.Implementations.MailHunterRespository
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListEntityRequest searchReq, CancellationToken cancellationToken = default)
+        public async Task<ProjectMailCountEntitySearchListResponse> GetProjectMailCountList(MailHunterSearchListEntityRequest searchReq, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 
-            var result = new MailHunterSearchListResponse();
+            var result = new ProjectMailCountEntitySearchListResponse();
 
             #endregion
 
@@ -32,12 +32,9 @@ namespace Repository.Implementations.MailHunterRespository
             // 先組合 SQL 語句
             QueryProjectMailCountSql(searchReq);
 
-            result.Page = searchReq.Page;
-            result.SearchItem = new List<MailHunterSearchListDetailResponse>();
-
             var _pagingSql = await GetPagingSql(searchReq.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
-            var queryWorkflowEntity = (await _unitOfWork.Connection.QueryAsync<ProjectMailCountEnyity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
-            result.SearchItem = _mapper.Map<List<MailHunterSearchListDetailResponse>>(queryWorkflowEntity);
+            result.Page = searchReq.Page;
+            result.SearchItem = (await _unitOfWork.Connection.QueryAsync<ProjectMailCountEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
             result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
 
             return result;

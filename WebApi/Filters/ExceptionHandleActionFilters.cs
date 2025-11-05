@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Models.Enums;
 using Models.Dto.Responses;
-using Models.Entities.Responses;
 
 namespace WebAPi.Filters
 {

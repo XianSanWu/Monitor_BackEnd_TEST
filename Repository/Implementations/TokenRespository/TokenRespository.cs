@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using Dapper;
-using Models.Dto.Responses;
-using Models.Entities.Responses;
 using Repository.Interfaces;
+using static Models.Entities.Responses.UserTokenEntityResponse;
 
 namespace Repository.Implementations.TokenRespository
 {
@@ -16,11 +15,11 @@ namespace Repository.Implementations.TokenRespository
         /// <param name="refreshToken"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<AuthResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
+        public async Task<UserTokenEntity> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 
-            var result = new AuthResponse();
+            var result = new UserTokenEntity();
 
             #endregion
 
@@ -33,7 +32,7 @@ namespace Repository.Implementations.TokenRespository
             GetUserTokenByRefreshToken(refreshToken);
 
             // 執行 SQL 
-            result = await _unitOfWork.Connection.QueryFirstOrDefaultAsync<AuthResponse>(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
+            result = await _unitOfWork.Connection.QueryFirstOrDefaultAsync<UserTokenEntity>(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);
 
             return result;
             #endregion

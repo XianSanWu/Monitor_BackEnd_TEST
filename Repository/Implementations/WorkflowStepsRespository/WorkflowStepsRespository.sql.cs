@@ -1,9 +1,9 @@
 ﻿using Dapper;
-using Models.Entities.Responses;
 using Repository.Interfaces;
 using System.Text;
 using Utilities.Utilities;
 using static Models.Entities.Requests.WorkflowStepsEntityRequest;
+using static Models.Entities.Responses.WorkflowEntityResponse;
 
 namespace Repository.Implementations.WorkflowStepsRespository
 {

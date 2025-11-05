@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Models.Entities.Requests;
 using Models.Enums;
 using Repository.Interfaces;
 using Repository.UnitOfWorkExtension;
@@ -37,11 +36,6 @@ namespace Services.Implementations
         /// <exception cref="NotImplementedException"></exception>
         public async Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListRequest req, CancellationToken cancellationToken = default)
         {
-            #region 參數宣告
-            //Task allTasks = null; 
-            var result = new MailHunterSearchListResponse();
-            #endregion
-
             var entityReq = mapper.Map<MailHunterSearchListEntityRequest>(req);
 
             #region 流程
@@ -49,7 +43,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IMailHunterRespository>(_scopeAccessor);
-            result = await repo.GetProjectMailCountList(entityReq, cancellationToken).ConfigureAwait(false);
+            var entityRes = await repo.GetProjectMailCountList(entityReq, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<MailHunterSearchListResponse>(entityRes);
 
             return result;
             #endregion

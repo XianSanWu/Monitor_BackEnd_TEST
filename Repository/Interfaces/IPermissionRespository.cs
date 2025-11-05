@@ -1,8 +1,7 @@
-﻿using Models.Dto.Responses;
-using static Models.Dto.Responses.PermissionResponse;
-using static Models.Dto.Responses.UserResponse;
-using static Models.Entities.Requests.PermissionEntityRequest;
+﻿using static Models.Entities.Requests.PermissionEntityRequest;
 using static Models.Entities.Requests.UserEntityRequest;
+using static Models.Entities.Responses.FeaturePermissionEntityResponse;
+using static Models.Entities.Responses.UserEntityResponse;
 
 namespace Repository.Interfaces
 {
@@ -42,7 +41,7 @@ namespace Repository.Interfaces
         /// </summary>
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
-       Task<UserResponse> GetUserListAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken);
+       Task<UserEntitySearchListResponse> GetUserListAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken);
 
 
         // 權限資料存取介面定義
@@ -58,7 +57,7 @@ namespace Repository.Interfaces
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<PermissionSearchListResponse>> GetUserPermissionsAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken);
+        Task<List<FeaturePermissionEntity>> GetUserPermissionsAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken);
 
         /// <summary>
         /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action）Memu
@@ -66,14 +65,14 @@ namespace Repository.Interfaces
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<PermissionSearchListResponse>> GetUserPermissionsMenuAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken);
+        Task<List<FeaturePermissionEntity>> GetUserPermissionsMenuAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken);
         
         /// <summary>
         /// 取得所有權限清單列表
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<PermissionSearchListResponse>> GetPermissionListAsync(PermissionSearchListEntityRequest searchReq, CancellationToken cancellationToken);
+        Task<List<FeaturePermissionEntity>> GetPermissionListAsync(PermissionSearchListEntityRequest searchReq, CancellationToken cancellationToken);
 
         /// <summary>
         /// 取得單一使用者主檔資訊
@@ -81,7 +80,7 @@ namespace Repository.Interfaces
         /// <param name="userName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<UserSearchListResponse> GetUserByUserNameAsync(string userName, CancellationToken cancellationToken);
+        Task<UserEntity> GetUserByUserNameAsync(string userName, CancellationToken cancellationToken);
 
         /// <summary>
         /// 取得單一使用者主檔資訊
@@ -89,7 +88,7 @@ namespace Repository.Interfaces
         /// <param name="userId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<UserSearchListResponse> GetUserByUserIdAsync(string userId, CancellationToken cancellationToken);
+        Task<UserEntity> GetUserByUserIdAsync(string userId, CancellationToken cancellationToken);
         
     }
 }

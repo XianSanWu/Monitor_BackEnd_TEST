@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using k8s.KubeConfigModels;
 using System.Text;
 
 namespace Repository.Implementations.TokenRespository

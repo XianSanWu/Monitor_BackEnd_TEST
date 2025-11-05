@@ -1,10 +1,8 @@
-﻿using Models.Dto.Responses;
-using Models.Entities.Responses;
-using static Models.Dto.Requests.PermissionRequest;
+﻿using static Models.Dto.Requests.PermissionRequest;
 using static Models.Dto.Requests.UserRequest;
-using static Models.Dto.Responses.PermissionResponse;
+using static Models.Dto.Responses.PermissionResponse.PermissionSearchListResponse;
 using static Models.Dto.Responses.UserResponse;
-using static Models.Entities.Requests.PermissionEntityRequest;
+using static Models.Dto.Responses.UserResponse.UserSearchListResponse;
 
 namespace Services.Interfaces
 {
@@ -44,7 +42,7 @@ namespace Services.Interfaces
         /// </summary>
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
-        Task<UserResponse> GetUserListAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken);
+        Task<UserSearchListResponse> GetUserListAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken);
 
 
 
@@ -61,7 +59,7 @@ namespace Services.Interfaces
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<PermissionSearchListResponse>> GetUserPermissionsAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken);
+        Task<List<PermissionSearchResponse>> GetUserPermissionsAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken);
 
 
         /// <summary>
@@ -70,7 +68,7 @@ namespace Services.Interfaces
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<PermissionSearchListResponse>> GetUserPermissionsMenuAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken);
+        Task<List<PermissionSearchResponse>> GetUserPermissionsMenuAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken);
         
 
         /// <summary>
@@ -78,7 +76,7 @@ namespace Services.Interfaces
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<PermissionSearchListResponse>> GetPermissionListAsync(PermissionSearchListRequest searchReq, CancellationToken cancellationToken);
+        Task<List<PermissionSearchResponse>> GetPermissionListAsync(PermissionSearchListRequest searchReq, CancellationToken cancellationToken);
 
         /// <summary>
         /// 取得單一使用者主檔資訊
@@ -86,7 +84,7 @@ namespace Services.Interfaces
         /// <param name="userName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<UserSearchListResponse> GetUserByUserNameAsync(string userName, CancellationToken cancellationToken);
+        Task<UserSearchResponse> GetUserByUserNameAsync(string userName, CancellationToken cancellationToken);
 
         /// <summary>
         /// 取得單一使用者主檔資訊
@@ -94,6 +92,6 @@ namespace Services.Interfaces
         /// <param name="userId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<UserSearchListResponse> GetUserByUserIdAsync(string userId, CancellationToken cancellationToken);
+        Task<UserSearchResponse> GetUserByUserIdAsync(string userId, CancellationToken cancellationToken);
     }
 }

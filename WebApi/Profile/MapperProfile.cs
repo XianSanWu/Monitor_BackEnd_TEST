@@ -2,7 +2,6 @@
 using Models.Dto.Requests;
 using Models.Dto.Responses;
 using Models.Entities.Requests;
-using Models.Entities.Responses;
 using static Models.Dto.Requests.MailHunterRequest;
 using static Models.Dto.Requests.PermissionRequest;
 using static Models.Dto.Requests.UserRequest;
@@ -10,8 +9,10 @@ using static Models.Dto.Requests.WorkflowStepsRequest;
 using static Models.Dto.Responses.AuditResponse;
 using static Models.Dto.Responses.AuditResponse.AuditSearchListResponse;
 using static Models.Dto.Responses.MailHunterResponse;
-using static Models.Dto.Responses.PermissionResponse;
+using static Models.Dto.Responses.PermissionResponse.PermissionSearchListResponse;
 using static Models.Dto.Responses.UserResponse;
+using static Models.Dto.Responses.UserResponse.UserSearchListResponse;
+using static Models.Dto.Responses.WorkflowStepsResponse;
 using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsSearchListResponse;
 using static Models.Entities.Requests.AuthEntityRequest;
 using static Models.Entities.Requests.MailHunterEntityRequest;
@@ -19,6 +20,11 @@ using static Models.Entities.Requests.PermissionEntityRequest;
 using static Models.Entities.Requests.UserEntityRequest;
 using static Models.Entities.Requests.WorkflowStepsEntityRequest;
 using static Models.Entities.Responses.AuditEntityResponse;
+using static Models.Entities.Responses.FeaturePermissionEntityResponse;
+using static Models.Entities.Responses.ProjectMailCountEntityResponse;
+using static Models.Entities.Responses.UserEntityResponse;
+using static Models.Entities.Responses.UserTokenEntityResponse;
+using static Models.Entities.Responses.WorkflowEntityResponse;
 
 namespace WebAPi.Profile
 {
@@ -27,15 +33,6 @@ namespace WebAPi.Profile
         //.ReverseMap(); 不接受反向，故不使用
         public MapperProfile()
         {
-            #region Repository Entity → Service Response
-            // Repository Entity → Service Response
-            CreateMap<WorkflowEntity, WorkflowStepsSearchResponse>();
-            CreateMap<ProjectMailCountEnyity, MailHunterSearchListDetailResponse>();
-            CreateMap<FeaturePermissionEntity, PermissionSearchListResponse>();
-            CreateMap<UserEntity, UserSearchListResponse>();
-            CreateMap<AuditEntity, AuditSearchResponse>();
-            #endregion
-
             #region Service Request → Repository Request
             // Service Request → Repository Request
             // Audit
@@ -73,11 +70,37 @@ namespace WebAPi.Profile
             #region Repository Response → Service Response
             // Service Repository Response → Service Response
             // Audit
-            //CreateMap<AuditSearchListResponse, AuditEntitySearchListResponse>();
+            // AuditEntity
             CreateMap<AuditEntitySearchListResponse, AuditSearchListResponse>()
                 .ForMember(dest => dest.SearchItem, opt => opt.MapFrom(src => src.SearchItem));
-
             CreateMap<AuditEntity, AuditSearchResponse>();
+
+            // Auth
+            // UserEntity
+            CreateMap<UserEntity, UserSearchResponse>();
+            CreateMap<UserEntitySearchListResponse, UserSearchListResponse>()
+                .ForMember(dest => dest.SearchItem, opt => opt.MapFrom(src => src.SearchItem));
+
+
+            // PermissionEntity
+            CreateMap<FeaturePermissionEntity, PermissionSearchResponse>();
+
+            // MailHunter
+            // ProjectMailCountEntity
+            CreateMap<ProjectMailCountEntitySearchListResponse, MailHunterSearchListResponse>()
+                .ForMember(dest => dest.SearchItem, opt => opt.MapFrom(src => src.SearchItem));
+            CreateMap<ProjectMailCountEntity, MailHunterSearchListDetailResponse>();
+
+            // Token
+            // UserTokenEntity
+            CreateMap<UserTokenEntity, AuthResponse>();
+
+            // WorkflowSteps
+            // WorkflowStepsEntity
+            CreateMap<WorkflowStepsEntitySearchListResponse, WorkflowStepsSearchListResponse>()
+                .ForMember(dest => dest.SearchItem, opt => opt.MapFrom(src => src.SearchItem));
+            CreateMap<WorkflowEntity, WorkflowStepsSearchResponse>();
+
             #endregion
 
         }

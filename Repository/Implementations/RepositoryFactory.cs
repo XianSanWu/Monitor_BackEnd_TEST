@@ -2,16 +2,10 @@
 using AutoMapper;
 using Repository.Interfaces;
 
-public class RepositoryFactory : IRepositoryFactory
+public class RepositoryFactory(IMapper mapper, Assembly? assembly = null) : IRepositoryFactory
 {
-    private readonly IMapper _mapper;
-    private readonly Assembly _assembly; // 存放 Repository 類別的 assembly
-
-    public RepositoryFactory(IMapper mapper, Assembly? assembly = null)
-    {
-        _mapper = mapper;
-        _assembly = assembly ?? Assembly.GetExecutingAssembly();
-    }
+    private readonly IMapper _mapper = mapper;
+    private readonly Assembly _assembly = assembly ?? Assembly.GetExecutingAssembly(); // 存放 Repository 類別的 assembly
 
     public T Create<T>(IUnitOfWorkScopeAccessor accessor) where T : class, IRepository
     {

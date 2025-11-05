@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using Dapper;
-using Models.Dto.Responses;
-using Models.Entities.Responses;
 using Repository.Interfaces;
-using static Models.Dto.Responses.PermissionResponse;
-using static Models.Dto.Responses.UserResponse;
 using static Models.Entities.Requests.PermissionEntityRequest;
 using static Models.Entities.Requests.UserEntityRequest;
+using static Models.Entities.Responses.FeaturePermissionEntityResponse;
+using static Models.Entities.Responses.UserEntityResponse;
 
 namespace Repository.Implementations.PermissionRespository
 {
@@ -144,11 +142,11 @@ namespace Repository.Implementations.PermissionRespository
         /// </summary>
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<UserResponse> GetUserListAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken)
+        public async Task<UserEntitySearchListResponse> GetUserListAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
-            var result = new UserResponse();
+            var result = new UserEntitySearchListResponse();
 
             #endregion
 
@@ -160,12 +158,9 @@ namespace Repository.Implementations.PermissionRespository
             // 先組合 SQL 語句
             GetUserList(searchReq);
 
-            result.Page = searchReq.Page;
-            result.SearchItem = new List<UserSearchListResponse>();
-
             var _pagingSql = await GetPagingSql(searchReq.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
-            var queryEntity = (await _unitOfWork.Connection.QueryAsync<UserEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
-            result.SearchItem = _mapper.Map<List<UserSearchListResponse>>(queryEntity);
+            result.Page = searchReq.Page;
+            result.SearchItem = (await _unitOfWork.Connection.QueryAsync<UserEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
             result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
             return result;
             #endregion
@@ -202,11 +197,11 @@ namespace Repository.Implementations.PermissionRespository
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<PermissionSearchListResponse>> GetUserPermissionsAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken)
+        public async Task<List<FeaturePermissionEntity>> GetUserPermissionsAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
-            var result = new List<PermissionSearchListResponse>();
+            var result = new List<FeaturePermissionEntity>();
 
             #endregion
 
@@ -225,7 +220,7 @@ namespace Repository.Implementations.PermissionRespository
             GetUserPermissions(fieldModel.UserId, fieldModel.UserName, fieldModel.IsUse);
 
             var queryEntity = await _unitOfWork.Connection.QueryAsync<FeaturePermissionEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
-            result = _mapper.Map<List<PermissionSearchListResponse>>(queryEntity);
+            result = _mapper.Map<List<FeaturePermissionEntity>>(queryEntity);
             return result;
             #endregion
         }
@@ -236,11 +231,11 @@ namespace Repository.Implementations.PermissionRespository
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<PermissionSearchListResponse>> GetUserPermissionsMenuAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken)
+        public async Task<List<FeaturePermissionEntity>> GetUserPermissionsMenuAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
-            var result = new List<PermissionSearchListResponse>();
+            var result = new List<FeaturePermissionEntity>();
 
             #endregion
 
@@ -259,7 +254,7 @@ namespace Repository.Implementations.PermissionRespository
             GetUserPermissionsMenu(fieldModel.TokenUuid);
 
             var queryEntity = await _unitOfWork.Connection.QueryAsync<FeaturePermissionEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
-            result = _mapper.Map<List<PermissionSearchListResponse>>(queryEntity);
+            result = _mapper.Map<List<FeaturePermissionEntity>>(queryEntity);
             return result;
             #endregion
         }
@@ -269,11 +264,11 @@ namespace Repository.Implementations.PermissionRespository
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<PermissionSearchListResponse>> GetPermissionListAsync(PermissionSearchListEntityRequest searchReq, CancellationToken cancellationToken)
+        public async Task<List<FeaturePermissionEntity>> GetPermissionListAsync(PermissionSearchListEntityRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
-            var result = new List<PermissionSearchListResponse>();
+            var result = new List<FeaturePermissionEntity>();
 
             #endregion
 
@@ -286,7 +281,7 @@ namespace Repository.Implementations.PermissionRespository
             GetPermissions(searchReq);
 
             var queryEntity = await _unitOfWork.Connection.QueryAsync<FeaturePermissionEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
-            result = _mapper.Map<List<PermissionSearchListResponse>>(queryEntity);
+            result = _mapper.Map<List<FeaturePermissionEntity>>(queryEntity);
 
             return result;
             #endregion
@@ -298,11 +293,11 @@ namespace Repository.Implementations.PermissionRespository
         /// <param name="userName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UserSearchListResponse> GetUserByUserNameAsync(string userName, CancellationToken cancellationToken)
+        public async Task<UserEntity> GetUserByUserNameAsync(string userName, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
-            var result = new UserSearchListResponse();
+            var result = new UserEntity();
 
             #endregion
 
@@ -315,7 +310,7 @@ namespace Repository.Implementations.PermissionRespository
             GetUserByUserName(userName);
 
             var queryEntity = await _unitOfWork.Connection.QueryAsync<UserEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
-            var mapper = _mapper.Map<List<UserSearchListResponse>>(queryEntity);
+            var mapper = _mapper.Map<List<UserEntity>>(queryEntity);
             result = mapper.FirstOrDefault() ?? new();
 
             return result;
@@ -328,11 +323,11 @@ namespace Repository.Implementations.PermissionRespository
         /// <param name="userId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UserSearchListResponse> GetUserByUserIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<UserEntity> GetUserByUserIdAsync(string userId, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
-            var result = new UserSearchListResponse();
+            var result = new UserEntity();
 
             #endregion
 
@@ -345,7 +340,7 @@ namespace Repository.Implementations.PermissionRespository
             GetUserByUserId(userId);
 
             var queryEntity = await _unitOfWork.Connection.QueryAsync<UserEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
-            var mapper = _mapper.Map<List<UserSearchListResponse>>(queryEntity);
+            var mapper = _mapper.Map<List<UserEntity>>(queryEntity);
             result = mapper.FirstOrDefault() ?? new();
 
             return result;

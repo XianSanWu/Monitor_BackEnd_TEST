@@ -9,7 +9,6 @@ namespace Models.Entities.Responses
     public class AuditEntityResponse
     {
         #region 稽核紀錄表查詢List回傳
-
         public class AuditEntitySearchListResponse : BaseModel
         {
             #region Properties
@@ -18,6 +17,7 @@ namespace Models.Entities.Responses
             #endregion
 
         }
+        #endregion
 
         public class AuditEntity
         {
@@ -92,8 +92,6 @@ namespace Models.Entities.Responses
             /// </summary>
             public DateTime CreateAt { get; set; }
         }
-        #endregion
-
     }
 
 }
