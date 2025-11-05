@@ -43,8 +43,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IMailHunterRespository>(_scopeAccessor);
-            var entityRes = await repo.GetProjectMailCountList(entityReq, cancellationToken).ConfigureAwait(false);
-            var result = mapper.Map<MailHunterSearchListResponse>(entityRes);
+            var entityResp = await repo.GetProjectMailCountList(entityReq, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<MailHunterSearchListResponse>(entityResp);
 
             return result;
             #endregion

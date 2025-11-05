@@ -5,6 +5,7 @@ using Models.Dto.Responses;
 using Services.Interfaces;
 using Utilities.Utilities;
 using static Models.Dto.Requests.AuthRequest;
+using static Models.Dto.Responses.AuthResponse;
 
 namespace Services.Implementations
 {
@@ -36,9 +37,9 @@ namespace Services.Implementations
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<AuthResponse> Login(LoginRequest LoginReq, CancellationToken cancellationToken = default)
+        public async Task<AuthSearchResponse> Login(LoginRequest LoginReq, CancellationToken cancellationToken = default)
         {
-            var result = new AuthResponse();
+            var result = new AuthSearchResponse();
 
             //await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 
@@ -91,7 +92,7 @@ namespace Services.Implementations
         /// <param name="refreshToken"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<AuthResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
+        public async Task<AuthSearchResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
         {
             return await _tokenService.GetUserTokenByRefreshTokenAsync(refreshToken, cancellationToken).ConfigureAwait(false);
         }

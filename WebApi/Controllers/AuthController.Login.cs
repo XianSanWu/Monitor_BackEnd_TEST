@@ -2,6 +2,7 @@
 using WebAPi.Controllers;
 using Models.Dto.Responses;
 using static Models.Dto.Requests.AuthRequest;
+using static Models.Dto.Responses.AuthResponse;
 
 namespace WebApi.Controllers
 {
@@ -15,10 +16,10 @@ namespace WebApi.Controllers
         /// <returns></returns>
         [Tags("Auth")]  //分組(可多標籤)        
         [HttpPost("Login")]
-        public async Task<ResultResponse<AuthResponse>> Login(LoginRequest loginReq, CancellationToken cancellationToken)
+        public async Task<ResultResponse<AuthSearchResponse>> Login(LoginRequest loginReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
-            var result = new AuthResponse();
+            var result = new AuthSearchResponse();
             //ValidationResult loginValidationResult;
             #endregion
 

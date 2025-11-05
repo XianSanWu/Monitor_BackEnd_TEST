@@ -1,5 +1,6 @@
 ﻿using Models.Dto.Responses;
 using static Models.Dto.Requests.AuthRequest;
+using static Models.Dto.Responses.AuthResponse;
 
 namespace Services.Interfaces
 {
@@ -12,7 +13,7 @@ namespace Services.Interfaces
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AuthResponse> Login(LoginRequest LoginReq, CancellationToken cancellationToken = default);
+        Task<AuthSearchResponse> Login(LoginRequest LoginReq, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 取得 UserTokenByRefreshToken
@@ -20,7 +21,7 @@ namespace Services.Interfaces
         /// <param name="refreshToken"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AuthResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
+        Task<AuthSearchResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
 
     }
 }

@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Utilities.Utilities;
+using static Models.Dto.Responses.AuthResponse;
 
 namespace Services.Implementations
 {
@@ -40,15 +41,15 @@ namespace Services.Implementations
         /// <param name="refreshToken"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<AuthResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
+        public async Task<AuthSearchResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
         {
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<ITokenRespository>(_scopeAccessor);
-            var entityRes = await repo.GetUserTokenByRefreshTokenAsync(refreshToken, cancellationToken).ConfigureAwait(false);
-            var result = mapper.Map<AuthResponse>(entityRes);
+            var entityResp = await repo.GetUserTokenByRefreshTokenAsync(refreshToken, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<AuthSearchResponse>(entityResp);
 
             return result;
             #endregion

@@ -1,7 +1,6 @@
 ﻿
 
-using Models.Dto.Responses;
-using Models.Entities.Responses;
+using static Models.Dto.Responses.AuthResponse;
 
 namespace Services.Interfaces
 {
@@ -16,7 +15,7 @@ namespace Services.Interfaces
         /// <param name="refreshToken"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AuthResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
+        Task<AuthSearchResponse> GetUserTokenByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Token 產生服務，用於產生 

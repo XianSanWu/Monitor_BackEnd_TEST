@@ -1,11 +1,10 @@
-﻿
-using Models.Common;
+﻿using Models.Common;
 
 namespace Models.Dto.Responses
 {
-    public class PermissionResponse : BaseModel
+    public class PermissionResponse
     {
-        public class PermissionSearchListResponse
+        public class PermissionSearchListResponse : BaseModel
         {
 
             #region Properties

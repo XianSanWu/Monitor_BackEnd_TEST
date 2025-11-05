@@ -42,8 +42,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IWorkflowStepsRespository>(_scopeAccessor);
-            var entityRes = await repo.QueryWorkflowStepsSearchLastList(entityReq, cancellationToken);
-            var result = mapper.Map<WorkflowStepsSearchListResponse>(entityRes);
+            var entityResp = await repo.QueryWorkflowStepsSearchLastList(entityReq, cancellationToken);
+            var result = mapper.Map<WorkflowStepsSearchListResponse>(entityResp);
 
             return result;
         }
@@ -59,8 +59,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IWorkflowStepsRespository>(_scopeAccessor);
-            var entityRes = await repo.QueryWorkflowStepsSearchList(entityReq, cancellationToken);
-            var result = mapper.Map<WorkflowStepsSearchListResponse>(entityRes);
+            var entityResp = await repo.QueryWorkflowStepsSearchList(entityReq, cancellationToken);
+            var result = mapper.Map<WorkflowStepsSearchListResponse>(entityResp);
 
             return result;
         }

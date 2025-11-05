@@ -158,8 +158,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-            var entityRes = await repo.GetUserListAsync(entityReq, cancellationToken).ConfigureAwait(false);
-            var result = mapper.Map<UserSearchListResponse>(entityRes);
+            var entityResp = await repo.GetUserListAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<UserSearchListResponse>(entityResp);
 
             return result;
             #endregion
@@ -201,8 +201,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-            var entityRes = await repo.GetUserPermissionsAsync(entityReq, cancellationToken).ConfigureAwait(false);
-            var result = mapper.Map<List<PermissionSearchResponse>>(entityRes);
+            var entityResp = await repo.GetUserPermissionsAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<List<PermissionSearchResponse>>(entityResp);
 
             return result;
             #endregion
@@ -223,8 +223,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-            var entityRes = await repo.GetUserPermissionsMenuAsync(entityReq, cancellationToken).ConfigureAwait(false);
-            var result = mapper.Map<List<PermissionSearchResponse>>(entityRes);
+            var entityResp = await repo.GetUserPermissionsMenuAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<List<PermissionSearchResponse>>(entityResp);
 
             return result;
             #endregion
@@ -244,8 +244,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-            var entityRes = await repo.GetPermissionListAsync(entityReq, cancellationToken).ConfigureAwait(false);
-            var result = mapper.Map<List<PermissionSearchResponse>>(entityRes);
+            var entityResp = await repo.GetPermissionListAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<List<PermissionSearchResponse>>(entityResp);
 
             return result;
             #endregion
@@ -264,8 +264,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-            var entityRes = await repo.GetUserByUserNameAsync(userName, cancellationToken).ConfigureAwait(false);
-            var result = mapper.Map<UserSearchResponse>(entityRes);
+            var entityResp = await repo.GetUserByUserNameAsync(userName, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<UserSearchResponse>(entityResp);
 
             return result;
             #endregion
@@ -284,8 +284,8 @@ namespace Services.Implementations
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IPermissionRespository>(_scopeAccessor);
-            var entityRes = await repo.GetUserByUserIdAsync(userId, cancellationToken).ConfigureAwait(false);
-            var result = mapper.Map<UserSearchResponse>(entityRes);
+            var entityResp = await repo.GetUserByUserIdAsync(userId, cancellationToken).ConfigureAwait(false);
+            var result = mapper.Map<UserSearchResponse>(entityResp);
 
             return result;
             #endregion

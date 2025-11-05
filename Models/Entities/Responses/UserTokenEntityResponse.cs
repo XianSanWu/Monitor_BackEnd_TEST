@@ -27,7 +27,7 @@ namespace Models.Entities.Responses
             /// <summary>
             /// 對應的使用者 Id
             /// </summary>
-            public int UserId { get; set; }
+            public string UserId { get; set; } = string.Empty;
 
             /// <summary>
             /// JWT 唯一識別碼（jti）

@@ -1,6 +1,5 @@
 ﻿using IdentityModel.OidcClient;
 using Models.Dto.Requests;
-using Models.Dto.Responses;
 using Models.Entities.Requests;
 using static Models.Dto.Requests.MailHunterRequest;
 using static Models.Dto.Requests.PermissionRequest;
@@ -8,6 +7,7 @@ using static Models.Dto.Requests.UserRequest;
 using static Models.Dto.Requests.WorkflowStepsRequest;
 using static Models.Dto.Responses.AuditResponse;
 using static Models.Dto.Responses.AuditResponse.AuditSearchListResponse;
+using static Models.Dto.Responses.AuthResponse;
 using static Models.Dto.Responses.MailHunterResponse;
 using static Models.Dto.Responses.PermissionResponse.PermissionSearchListResponse;
 using static Models.Dto.Responses.UserResponse;
@@ -93,7 +93,7 @@ namespace WebAPi.Profile
 
             // Token
             // UserTokenEntity
-            CreateMap<UserTokenEntity, AuthResponse>();
+            CreateMap<UserTokenEntity, AuthSearchResponse>();
 
             // WorkflowSteps
             // WorkflowStepsEntity

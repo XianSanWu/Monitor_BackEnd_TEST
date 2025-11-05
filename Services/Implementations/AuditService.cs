@@ -59,9 +59,9 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             var repo = _repositoryFactory.Create<IAuditRespository>(_scopeAccessor);
-            var entityRes = await repo.QueryAuditLogAsync(entityReq, cancellationToken).ConfigureAwait(false);
+            var entityResp = await repo.QueryAuditLogAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
-            var result = mapper.Map<AuditSearchListResponse>(entityRes);
+            var result = mapper.Map<AuditSearchListResponse>(entityResp);
 
             return result;
         }
