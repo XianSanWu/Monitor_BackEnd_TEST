@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Configurations>Debug;Release;TEST</Configurations>
+    <Configurations>Debug;Release;</Configurations>
     <UserSecretsId>5228e63f-fcb6-49a0-9eba-d855d0ac4a26</UserSecretsId>
   </PropertyGroup>
 
