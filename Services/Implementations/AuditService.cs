@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Models.Dto.Requests;
-using Models.Entities.Requests;
 using Models.Enums;
 using Repository.Interfaces;
 using Repository.UnitOfWorkExtension;
 using Services.Interfaces;
+using static Models.Dto.Requests.AuditRequest;
 using static Models.Dto.Responses.AuditResponse;
+using static Models.Entities.Requests.AuditEntityRequest;
 
 namespace Services.Implementations
 {
@@ -32,9 +32,9 @@ namespace Services.Implementations
         /// <param name="log"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<bool> SaveAuditLogAsync(AuditRequest req, CancellationToken cancellationToken = default)
+        public async Task<bool> SaveAuditLogAsync(AuditCommomRequest req, CancellationToken cancellationToken = default)
         {
-            var entityReq = mapper.Map<AuditEntityRequest>(req);
+            var entityReq = mapper.Map<AuditEntityCommomRequest>(req);
 
             var dbType = DBConnectionEnum.Cdp;
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);

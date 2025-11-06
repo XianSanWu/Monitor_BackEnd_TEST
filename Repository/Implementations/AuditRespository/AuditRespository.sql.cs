@@ -1,7 +1,7 @@
 ﻿using Dapper;
-using Models.Entities.Requests;
 using System.Text;
 using Utilities.Utilities;
+using static Models.Entities.Requests.AuditEntityRequest;
 using static Models.Entities.Responses.AuditEntityResponse;
 
 namespace Repository.Implementations.AuditLogRespository
@@ -9,7 +9,7 @@ namespace Repository.Implementations.AuditLogRespository
     public partial class AuditRespository
     {
         private readonly string _Format = "yyyy-MM-dd HH:mm:ss";
-        private void SaveAudit(AuditEntityRequest log)
+        private void SaveAudit(AuditEntityCommomRequest log)
         {
             _sqlStr = new StringBuilder();
 

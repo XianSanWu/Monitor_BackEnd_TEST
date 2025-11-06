@@ -1,4 +1,4 @@
-﻿using Models.Entities.Requests;
+﻿using static Models.Entities.Requests.AuditEntityRequest;
 using static Models.Entities.Responses.AuditEntityResponse;
 
 namespace Repository.Interfaces
@@ -11,7 +11,7 @@ namespace Repository.Interfaces
         /// <param name="log"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<bool> SaveAuditLogAsync(AuditEntityRequest log, CancellationToken cancellationToken = default);
+        Task<bool> SaveAuditLogAsync(AuditEntityCommomRequest log, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 查詢稽核軌跡

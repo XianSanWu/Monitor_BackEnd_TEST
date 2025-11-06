@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Models.Dto.Requests;
 using Models.Dto.Responses;
 using WebAPi.Controllers;
+using static Models.Dto.Requests.AuditRequest;
 using static Models.Dto.Responses.AuditResponse;
 
 namespace WebApi.Controllers

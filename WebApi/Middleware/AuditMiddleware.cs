@@ -1,9 +1,9 @@
-﻿using Models.Dto.Requests;
-using Services.Interfaces;
+﻿using Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.RegularExpressions;
 using Utilities.IpHelper;
+using static Models.Dto.Requests.AuditRequest;
 
 namespace WebApi.Middleware
 {
@@ -138,7 +138,7 @@ namespace WebApi.Middleware
             var frontActionId = context.Request.Headers["X-ActionId"].FirstOrDefault() ?? string.Empty;
             var frontActionName = Uri.UnescapeDataString(context.Request.Headers["X-ActionName"].FirstOrDefault() ?? string.Empty);
 
-            var audit = new AuditRequest
+            var audit = new AuditCommomRequest
             {
                 UserId = userId,
                 BackActionName = $"{context.Request.Method} {context.Request.Path}",

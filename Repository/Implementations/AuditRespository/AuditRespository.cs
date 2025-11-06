@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Dapper;
-using Models.Entities.Requests;
 using Repository.Interfaces;
+using static Models.Entities.Requests.AuditEntityRequest;
 using static Models.Entities.Responses.AuditEntityResponse;
 
 namespace Repository.Implementations.AuditLogRespository
@@ -15,7 +15,7 @@ namespace Repository.Implementations.AuditLogRespository
         /// <param name="log"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<bool> SaveAuditLogAsync(AuditEntityRequest log, CancellationToken cancellationToken = default)
+        public async Task<bool> SaveAuditLogAsync(AuditEntityCommomRequest log, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 

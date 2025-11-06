@@ -1,4 +1,4 @@
-﻿using Models.Dto.Requests;
+﻿using static Models.Dto.Requests.AuditRequest;
 using static Models.Dto.Responses.AuditResponse;
 
 namespace Services.Interfaces
@@ -11,7 +11,7 @@ namespace Services.Interfaces
         /// <param name="log"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<bool> SaveAuditLogAsync(AuditRequest log, CancellationToken cancellationToken = default);
+        Task<bool> SaveAuditLogAsync(AuditCommomRequest log, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 查詢稽核軌跡

@@ -1,6 +1,5 @@
 ﻿using IdentityModel.OidcClient;
-using Models.Dto.Requests;
-using Models.Entities.Requests;
+using static Models.Dto.Requests.AuditRequest;
 using static Models.Dto.Requests.MailHunterRequest;
 using static Models.Dto.Requests.PermissionRequest;
 using static Models.Dto.Requests.UserRequest;
@@ -14,6 +13,7 @@ using static Models.Dto.Responses.UserResponse;
 using static Models.Dto.Responses.UserResponse.UserSearchListResponse;
 using static Models.Dto.Responses.WorkflowStepsResponse;
 using static Models.Dto.Responses.WorkflowStepsResponse.WorkflowStepsSearchListResponse;
+using static Models.Entities.Requests.AuditEntityRequest;
 using static Models.Entities.Requests.AuthEntityRequest;
 using static Models.Entities.Requests.MailHunterEntityRequest;
 using static Models.Entities.Requests.PermissionEntityRequest;
@@ -38,7 +38,7 @@ namespace WebAPi.Profile
             // Audit
             CreateMap<AuditSearchListRequest, AuditSearchListEntityRequest>();
             CreateMap<AuditSearchListFieldModelRequest, AuditSearchListFieldModelEntityRequest>();
-            CreateMap<AuditRequest, AuditEntityRequest>();
+            CreateMap<AuditCommomRequest, AuditEntityCommomRequest>();
 
             // Auth
             CreateMap<LoginRequest, LoginEntityRequest>();
