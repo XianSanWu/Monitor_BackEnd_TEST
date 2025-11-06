@@ -50,9 +50,9 @@ namespace UnitTest.Services
         [Fact]
         public async Task QueryWorkflowStepsSearchList_ReturnsExpectedData()
         {
-            var request = new WorkflowStepsSearchListEntityRequest
+            var request = new WorkflowStepsEntitySearchListRequest
             {
-                FieldModel = new WorkflowStepsSearchListFieldModelEntityRequest
+                FieldModel = new WorkflowStepsEntitySearchListFieldModelRequest
                 {
                     Channel = "Email"
                 }
@@ -89,9 +89,9 @@ namespace UnitTest.Services
         [Fact]
         public async Task QueryWorkflowStepsSearchLastList_ReturnsExpectedData()
         {
-            var request = new WorkflowStepsSearchListEntityRequest
+            var request = new WorkflowStepsEntitySearchListRequest
             {
-                FieldModel = new WorkflowStepsSearchListFieldModelEntityRequest
+                FieldModel = new WorkflowStepsEntitySearchListFieldModelRequest
                 {
                     Channel = "SMS"
                 }

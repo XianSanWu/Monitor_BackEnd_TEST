@@ -46,7 +46,7 @@ namespace Services.Implementations
             var result = false;
             #endregion
 
-            var entityReq = mapper.Map<PermissionUpdateEntityRequest>(req);
+            var entityReq = mapper.Map<PermissionEntityUpdateRequest>(req);
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
@@ -71,7 +71,7 @@ namespace Services.Implementations
             var result = false;
             #endregion
 
-            var entityReq = mapper.Map<UserUpdateEntityRequest>(req);
+            var entityReq = mapper.Map<UserEntityUpdateRequest>(req);
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
@@ -101,7 +101,7 @@ namespace Services.Implementations
                 req.FieldRequest.UpdateAt = DateTime.Now;
             }
 
-            var entityReq = mapper.Map<UserUpdateEntityRequest>(req);
+            var entityReq = mapper.Map<UserEntityUpdateRequest>(req);
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
@@ -131,7 +131,7 @@ namespace Services.Implementations
                 req.FieldRequest.UpdateAt = DateTime.Now;
             }
 
-            var entityReq = mapper.Map<UserUpdateEntityRequest>(req);
+            var entityReq = mapper.Map<UserEntityUpdateRequest>(req);
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
@@ -151,7 +151,7 @@ namespace Services.Implementations
         /// <param name="cancellationToken"></param>
         public async Task<UserSearchListResponse> GetUserListAsync(UserSearchListRequest req, CancellationToken cancellationToken)
         {
-            var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
+            var entityReq = mapper.Map<UserEntitySearchListRequest>(req);
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
@@ -194,7 +194,7 @@ namespace Services.Implementations
         /// <returns></returns>
         public async Task<List<PermissionSearchResponse>> GetUserPermissionsAsync(UserSearchListRequest req, CancellationToken cancellationToken)
         {
-            var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
+            var entityReq = mapper.Map<UserEntitySearchListRequest>(req);
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
@@ -216,7 +216,7 @@ namespace Services.Implementations
         /// <returns></returns>
         public async Task<List<PermissionSearchResponse>> GetUserPermissionsMenuAsync(UserSearchListRequest req, CancellationToken cancellationToken)
         {
-            var entityReq = mapper.Map<UserSearchListEntityRequest>(req);
+            var entityReq = mapper.Map<UserEntitySearchListRequest>(req);
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;
@@ -237,7 +237,7 @@ namespace Services.Implementations
         /// <returns></returns>
         public async Task<List<PermissionSearchResponse>> GetPermissionListAsync(PermissionSearchListRequest req, CancellationToken cancellationToken)
         {
-            var entityReq = _mapper.Map<PermissionSearchListEntityRequest>(req);
+            var entityReq = _mapper.Map<PermissionEntitySearchListRequest>(req);
 
             #region 流程
             var dbType = DBConnectionEnum.Cdp;

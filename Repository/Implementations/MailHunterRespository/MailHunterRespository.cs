@@ -16,7 +16,7 @@ namespace Repository.Implementations.MailHunterRespository
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<ProjectMailCountEntitySearchListResponse> GetProjectMailCountList(MailHunterSearchListEntityRequest searchReq, CancellationToken cancellationToken = default)
+        public async Task<ProjectMailCountEntitySearchListResponse> GetProjectMailCountList(MailHunterEntitySearchListRequest searchReq, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 

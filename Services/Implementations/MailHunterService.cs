@@ -36,7 +36,7 @@ namespace Services.Implementations
         /// <exception cref="NotImplementedException"></exception>
         public async Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListRequest req, CancellationToken cancellationToken = default)
         {
-            var entityReq = mapper.Map<MailHunterSearchListEntityRequest>(req);
+            var entityReq = mapper.Map<MailHunterEntitySearchListRequest>(req);
 
             #region 流程
             var dbType = DBConnectionEnum.Mail_hunter;

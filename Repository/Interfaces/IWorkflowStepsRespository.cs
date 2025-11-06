@@ -12,7 +12,7 @@ namespace Repository.Interfaces
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<WorkflowStepsEntitySearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsSearchListEntityRequest searchReq, CancellationToken cancellationToken = default);
+        Task<WorkflowStepsEntitySearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsEntitySearchListRequest searchReq, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 工作進度查詢DB
@@ -20,7 +20,7 @@ namespace Repository.Interfaces
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<WorkflowStepsEntitySearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsSearchListEntityRequest searchReq, CancellationToken cancellationToken = default);
+        Task<WorkflowStepsEntitySearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsEntitySearchListRequest searchReq, CancellationToken cancellationToken = default);
 
     }
 }

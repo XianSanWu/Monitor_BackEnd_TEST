@@ -18,7 +18,7 @@ namespace Repository.Implementations.PermissionRespository
         /// <param name="updateReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<bool> SaveFeaturePermissionsAsync(PermissionUpdateEntityRequest updateReq, CancellationToken cancellationToken)
+        public async Task<bool> SaveFeaturePermissionsAsync(PermissionEntityUpdateRequest updateReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -49,7 +49,7 @@ namespace Repository.Implementations.PermissionRespository
         /// </summary>
         /// <param name="updateReq"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<bool> CheckUpdateUserAsync(UserUpdateEntityRequest updateReq, CancellationToken cancellationToken)
+        public async Task<bool> CheckUpdateUserAsync(UserEntityUpdateRequest updateReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -80,7 +80,7 @@ namespace Repository.Implementations.PermissionRespository
         /// </summary>
         /// <param name="updateReq"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<bool> SaveUserAsync(UserUpdateEntityRequest updateReq, CancellationToken cancellationToken)
+        public async Task<bool> SaveUserAsync(UserEntityUpdateRequest updateReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -111,7 +111,7 @@ namespace Repository.Implementations.PermissionRespository
         /// </summary>
         /// <param name="updateReq"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<bool> IsUseUserAsync(UserUpdateEntityRequest updateReq, CancellationToken cancellationToken)
+        public async Task<bool> IsUseUserAsync(UserEntityUpdateRequest updateReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -142,7 +142,7 @@ namespace Repository.Implementations.PermissionRespository
         /// </summary>
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<UserEntitySearchListResponse> GetUserListAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken)
+        public async Task<UserEntitySearchListResponse> GetUserListAsync(UserEntitySearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -197,7 +197,7 @@ namespace Repository.Implementations.PermissionRespository
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<FeaturePermissionEntity>> GetUserPermissionsAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken)
+        public async Task<List<FeaturePermissionEntity>> GetUserPermissionsAsync(UserEntitySearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -210,7 +210,7 @@ namespace Repository.Implementations.PermissionRespository
             // 在執行前檢查是否有取消的需求
             cancellationToken.ThrowIfCancellationRequested();
 
-            var fieldModel = new UserSearchListFieldModelEntityRequest();
+            var fieldModel = new UserEntitySearchListFieldModelRequest();
             if (searchReq.FieldModel != null)
             {
                 fieldModel = searchReq.FieldModel;
@@ -231,7 +231,7 @@ namespace Repository.Implementations.PermissionRespository
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<FeaturePermissionEntity>> GetUserPermissionsMenuAsync(UserSearchListEntityRequest searchReq, CancellationToken cancellationToken)
+        public async Task<List<FeaturePermissionEntity>> GetUserPermissionsMenuAsync(UserEntitySearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -244,7 +244,7 @@ namespace Repository.Implementations.PermissionRespository
             // 在執行前檢查是否有取消的需求
             cancellationToken.ThrowIfCancellationRequested();
 
-            var fieldModel = new UserSearchListFieldModelEntityRequest();
+            var fieldModel = new UserEntitySearchListFieldModelRequest();
             if (searchReq.FieldModel != null)
             {
                 fieldModel = searchReq.FieldModel;
@@ -264,7 +264,7 @@ namespace Repository.Implementations.PermissionRespository
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<FeaturePermissionEntity>> GetPermissionListAsync(PermissionSearchListEntityRequest searchReq, CancellationToken cancellationToken)
+        public async Task<List<FeaturePermissionEntity>> GetPermissionListAsync(PermissionEntitySearchListRequest searchReq, CancellationToken cancellationToken)
         {
             #region 參數宣告
 

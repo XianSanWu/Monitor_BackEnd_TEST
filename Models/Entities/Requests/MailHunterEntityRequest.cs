@@ -4,13 +4,13 @@ namespace Models.Entities.Requests
 {
     public class MailHunterEntityRequest
     {
-        public class MailHunterSearchListEntityRequest : BaseSearchModel
+        public class MailHunterEntitySearchListRequest : BaseSearchModel
         {
-            public MailHunterSearchListFieldModelEntityRequest? FieldModel { get; set; }
+            public MailHunterEntitySearchListFieldModelRequest? FieldModel { get; set; }
 
         }
 
-        public class MailHunterSearchListFieldModelEntityRequest
+        public class MailHunterEntitySearchListFieldModelRequest
         {
             public string? Department { get; set; }
             public DateTime? StartDate { get; set; }

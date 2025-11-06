@@ -15,7 +15,7 @@ namespace Repository.Implementations.MailHunterRespository
         /// 查詢專案發送數量
         /// </summary>
         /// <param name="searchReq"></param>
-        private void QueryProjectMailCountSql(MailHunterSearchListEntityRequest searchReq)
+        private void QueryProjectMailCountSql(MailHunterEntitySearchListRequest searchReq)
         {
             _sqlStr = new StringBuilder();
             _sqlWithStr = new StringBuilder();

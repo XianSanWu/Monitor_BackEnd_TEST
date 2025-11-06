@@ -38,7 +38,7 @@ namespace Services.Implementations
          CancellationToken cancellationToken = default)
         {
             var dbType = DBConnectionEnum.Cdp;
-            var entityReq = _mapper.Map<WorkflowStepsSearchListEntityRequest>(req);
+            var entityReq = _mapper.Map<WorkflowStepsEntitySearchListRequest>(req);
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IWorkflowStepsRespository>(_scopeAccessor);
@@ -53,7 +53,7 @@ namespace Services.Implementations
             CancellationToken cancellationToken = default)
         {
             var dbType = DBConnectionEnum.Cdp;
-            var entityReq = _mapper.Map<WorkflowStepsSearchListEntityRequest>(req);
+            var entityReq = _mapper.Map<WorkflowStepsEntitySearchListRequest>(req);
             //using var uow = _uowFactory.Create(dbType, useTransaction: false);
             //_scopeAccessor.Current = uow;
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);

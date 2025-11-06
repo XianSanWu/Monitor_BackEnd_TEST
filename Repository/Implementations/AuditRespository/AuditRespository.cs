@@ -47,7 +47,7 @@ namespace Repository.Implementations.AuditLogRespository
         /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<AuditEntitySearchListResponse> QueryAuditLogAsync(AuditSearchListEntityRequest req, CancellationToken cancellationToken = default)
+        public async Task<AuditEntitySearchListResponse> QueryAuditLogAsync(AuditEntitySearchListRequest req, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 

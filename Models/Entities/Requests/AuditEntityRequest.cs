@@ -5,12 +5,12 @@ namespace Models.Entities.Requests
     public class AuditEntityRequest
     {
         #region 稽核紀錄表 (前端查詢使用)
-        public class AuditSearchListEntityRequest : BaseSearchModel
+        public class AuditEntitySearchListRequest : BaseSearchModel
         {
-            public AuditSearchListFieldModelEntityRequest? FieldModel { get; set; }
+            public AuditEntitySearchListFieldModelRequest? FieldModel { get; set; }
         }
 
-        public class AuditSearchListFieldModelEntityRequest
+        public class AuditEntitySearchListFieldModelRequest
         {
             //public List<string>? AuditName { get; set; }
             public List<string>? FrontActionName { get; set; }

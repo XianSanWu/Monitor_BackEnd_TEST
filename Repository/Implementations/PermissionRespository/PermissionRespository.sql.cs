@@ -13,7 +13,7 @@ namespace Repository.Implementations.PermissionRespository
 {
     public partial class PermissionRespository : BaseRepository, IPermissionRespository
     {
-        private void SaveFeaturePermissions(PermissionUpdateEntityRequest updateReq)
+        private void SaveFeaturePermissions(PermissionEntityUpdateRequest updateReq)
         {
             if (updateReq?.FieldRequest == null || !updateReq.FieldRequest.Any())
                 throw new ArgumentException("FieldRequest 不得為空");
@@ -98,7 +98,7 @@ WHEN NOT MATCHED BY TARGET THEN
         }
 
 
-        private void CheckUpdateUser(UserUpdateEntityRequest updateReq)
+        private void CheckUpdateUser(UserEntityUpdateRequest updateReq)
         {
             _sqlStr = new StringBuilder();
             _sqlStr.AppendLine(" SELECT * FROM Users WITH(NOLOCK) WHERE 1=1 AND UserName = @UserName ");
@@ -110,7 +110,7 @@ WHEN NOT MATCHED BY TARGET THEN
             _sqlParams.Add("@UserName", updateReq.FieldRequest.UserName);
         }
 
-        private void SaveUser(UserUpdateEntityRequest updateReq)
+        private void SaveUser(UserEntityUpdateRequest updateReq)
         {
             _sqlStr = new StringBuilder();
             _sqlParams = new DynamicParameters();
@@ -237,7 +237,7 @@ WHEN NOT MATCHED THEN
         }
 
 
-        private void IsUseUser(UserUpdateEntityRequest updateReq)
+        private void IsUseUser(UserEntityUpdateRequest updateReq)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@" UPDATE Users SET ");
@@ -433,7 +433,7 @@ WHEN NOT MATCHED THEN
 
         }
 
-        private void GetUserList(UserSearchListEntityRequest searchReq)
+        private void GetUserList(UserEntitySearchListRequest searchReq)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@" SELECT * FROM Users WITH(NOLOCK) WHERE 1=1 ");
@@ -560,7 +560,7 @@ WHEN NOT MATCHED THEN
             _sqlParams?.Add($"@Action", action);
         }
 
-        private void GetPermissions(PermissionSearchListEntityRequest searchReq)
+        private void GetPermissions(PermissionEntitySearchListRequest searchReq)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@"

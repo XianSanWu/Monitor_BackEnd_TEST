@@ -19,7 +19,7 @@ namespace Repository.Interfaces
         /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AuditEntitySearchListResponse> QueryAuditLogAsync(AuditSearchListEntityRequest req, CancellationToken cancellationToken = default);
+        Task<AuditEntitySearchListResponse> QueryAuditLogAsync(AuditEntitySearchListRequest req, CancellationToken cancellationToken = default);
 
     }
 }

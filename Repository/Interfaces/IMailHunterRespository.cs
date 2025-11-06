@@ -11,7 +11,7 @@ namespace Repository.Interfaces
         /// <param name="searchReq"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ProjectMailCountEntitySearchListResponse> GetProjectMailCountList(MailHunterSearchListEntityRequest searchReq, CancellationToken cancellationToken = default);
+        Task<ProjectMailCountEntitySearchListResponse> GetProjectMailCountList(MailHunterEntitySearchListRequest searchReq, CancellationToken cancellationToken = default);
 
     }
 }

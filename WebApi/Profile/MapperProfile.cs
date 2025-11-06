@@ -36,35 +36,35 @@ namespace WebAPi.Profile
             #region Service Request → Repository Request
             // Service Request → Repository Request
             // Audit
-            CreateMap<AuditSearchListRequest, AuditSearchListEntityRequest>();
-            CreateMap<AuditSearchListFieldModelRequest, AuditSearchListFieldModelEntityRequest>();
+            CreateMap<AuditSearchListRequest, AuditEntitySearchListRequest>();
+            CreateMap<AuditSearchListFieldModelRequest, AuditEntitySearchListFieldModelRequest>();
             CreateMap<AuditCommomRequest, AuditEntityCommomRequest>();
 
             // Auth
             CreateMap<LoginRequest, LoginEntityRequest>();
 
             // User
-            CreateMap<UserSearchListRequest, UserSearchListEntityRequest>();
-            CreateMap<UserSearchListFieldModelRequest, UserSearchListFieldModelEntityRequest>();
-            CreateMap<UserUpdateRequest, UserUpdateEntityRequest>();
-            CreateMap<UserUpdateFieldRequest, UserUpdateFieldEntityRequest>();
-            CreateMap<UserUpdateConditionRequest, UserUpdateConditionEntityRequest>();
+            CreateMap<UserSearchListRequest, UserEntitySearchListRequest>();
+            CreateMap<UserSearchListFieldModelRequest, UserEntitySearchListFieldModelRequest>();
+            CreateMap<UserUpdateRequest, UserEntityUpdateRequest>();
+            CreateMap<UserUpdateFieldRequest, UserEntityUpdateFieldRequest>();
+            CreateMap<UserUpdateConditionRequest, UserEntityUpdateConditionRequest>();
 
             // Permission
-            CreateMap<PermissionSearchListRequest, PermissionSearchListEntityRequest>();
-            CreateMap<PermissionSearchListFieldModelRequest, PermissionSearchListFieldModelEntityRequest>();
-            CreateMap<PermissionUpdateRequest, PermissionUpdateEntityRequest>();
-            CreateMap<PermissionUpdateFieldRequest, PermissionUpdateFieldEntityRequest>();
-            CreateMap<PermissionUpdateConditionRequest, PermissionUpdateConditionEntityRequest>();
+            CreateMap<PermissionSearchListRequest, PermissionEntitySearchListRequest>();
+            CreateMap<PermissionSearchListFieldModelRequest, PermissionEntitySearchListFieldModelRequest>();
+            CreateMap<PermissionUpdateRequest, PermissionEntityUpdateRequest>();
+            CreateMap<PermissionUpdateFieldRequest, PermissionEntityUpdateFieldRequest>();
+            CreateMap<PermissionUpdateConditionRequest, PermissionEntityUpdateConditionRequest>();
 
             // WorkflowSteps
-            CreateMap<WorkflowStepsSearchListRequest, WorkflowStepsSearchListEntityRequest>();
-            CreateMap<WorkflowStepsSearchListFieldModelRequest, WorkflowStepsSearchListFieldModelEntityRequest>();
-            CreateMap<WorkflowStepsKafkaRequest, WorkflowStepsKafkaEntityRequest>();
+            CreateMap<WorkflowStepsSearchListRequest, WorkflowStepsEntitySearchListRequest>();
+            CreateMap<WorkflowStepsSearchListFieldModelRequest, WorkflowStepsEntitySearchListFieldModelRequest>();
+            CreateMap<WorkflowStepsKafkaRequest, WorkflowStepsEntityKafkaRequest>();
 
             // MailHunter
-            CreateMap<MailHunterSearchListRequest, MailHunterSearchListEntityRequest>();
-            CreateMap<MailHunterSearchListFieldModelRequest, MailHunterSearchListFieldModelEntityRequest>();
+            CreateMap<MailHunterSearchListRequest, MailHunterEntitySearchListRequest>();
+            CreateMap<MailHunterSearchListFieldModelRequest, MailHunterEntitySearchListFieldModelRequest>();
             #endregion
 
             #region Repository Response → Service Response

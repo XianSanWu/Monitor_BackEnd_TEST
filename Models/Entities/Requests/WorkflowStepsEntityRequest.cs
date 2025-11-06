@@ -5,12 +5,12 @@ namespace Models.Entities.Requests
     public class WorkflowStepsEntityRequest
     {
 
-        public class WorkflowStepsSearchListEntityRequest : BaseSearchModel
+        public class WorkflowStepsEntitySearchListRequest : BaseSearchModel
         {
-            public WorkflowStepsSearchListFieldModelEntityRequest? FieldModel { get; set; }
+            public WorkflowStepsEntitySearchListFieldModelRequest? FieldModel { get; set; }
         }
 
-        public class WorkflowStepsSearchListFieldModelEntityRequest
+        public class WorkflowStepsEntitySearchListFieldModelRequest
         {
             public string? Channel { get; set; }
             public string? SendUuid { get; set; }
@@ -18,7 +18,7 @@ namespace Models.Entities.Requests
             public string? SendUuidSort { get; set; }
         }
 
-        public class WorkflowStepsKafkaEntityRequest
+        public class WorkflowStepsEntityKafkaRequest
         {
             public string? Channel { get; set; }
         }

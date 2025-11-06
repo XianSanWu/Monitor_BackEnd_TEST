@@ -5,12 +5,12 @@ namespace Models.Entities.Requests
     public class UserEntityRequest
     {
         #region 查詢用
-        public class UserSearchListEntityRequest : BaseSearchModel
+        public class UserEntitySearchListRequest : BaseSearchModel
         {
-            public UserSearchListFieldModelEntityRequest? FieldModel { get; set; }
+            public UserEntitySearchListFieldModelRequest? FieldModel { get; set; }
 
         }
-        public class UserSearchListFieldModelEntityRequest
+        public class UserEntitySearchListFieldModelRequest
         {
             public string? UserId { get; set; }
             public string? TokenUuid { get; set; }
@@ -21,17 +21,17 @@ namespace Models.Entities.Requests
         #endregion
 
         #region 更新
-        public class UserUpdateEntityRequest
+        public class UserEntityUpdateRequest
         {
-            public UserUpdateFieldEntityRequest? FieldRequest { get; set; }
-            public List<UserUpdateConditionEntityRequest>? ConditionRequest { get; set; }
+            public UserEntityUpdateFieldRequest? FieldRequest { get; set; }
+            public List<UserEntityUpdateConditionRequest>? ConditionRequest { get; set; }
         }
         #endregion
 
 
         #region 更新[欄位]
         /// <summary> User更新[欄位] </summary>
-        public class UserUpdateFieldEntityRequest
+        public class UserEntityUpdateFieldRequest
         {
             public string? UserName { get; set; }
             public bool? IsUse { get; set; }
@@ -42,7 +42,7 @@ namespace Models.Entities.Requests
 
         #region 更新[條件]
         /// <summary>User更新[條件]</summary>
-        public class UserUpdateConditionEntityRequest : BaseConditionModel
+        public class UserEntityUpdateConditionRequest : BaseConditionModel
         {
             public FieldWithMetadataModel? UserName { get; set; } = new();
             public FieldWithMetadataModel? Uuid { get; set; } = new();

@@ -53,7 +53,7 @@ namespace Services.Implementations
         /// <returns></returns>
         public async Task<AuditSearchListResponse> QueryAuditLogAsync(AuditSearchListRequest req, CancellationToken cancellationToken = default)
         {
-            var entityReq = mapper.Map<AuditSearchListEntityRequest>(req);
+            var entityReq = mapper.Map<AuditEntitySearchListRequest>(req);
 
             var dbType = DBConnectionEnum.Cdp;
             // 改成通用 Factory 呼叫

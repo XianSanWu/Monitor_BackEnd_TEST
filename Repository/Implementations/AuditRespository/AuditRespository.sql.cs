@@ -34,7 +34,7 @@ namespace Repository.Implementations.AuditLogRespository
             _sqlParams.Add("@CreateAt", log.CreateAt);
         }
 
-        private void QueryAuditLog(AuditSearchListEntityRequest req)
+        private void QueryAuditLog(AuditEntitySearchListRequest req)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@" 
