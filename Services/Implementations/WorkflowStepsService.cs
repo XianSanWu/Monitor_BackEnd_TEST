@@ -43,7 +43,7 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IWorkflowStepsRespository>(_scopeAccessor);
             var entityResp = await repo.QueryWorkflowStepsSearchLastList(entityReq, cancellationToken);
-            var result = mapper.Map<WorkflowStepsSearchListResponse>(entityResp);
+            var result = _mapper.Map<WorkflowStepsSearchListResponse>(entityResp);
 
             return result;
         }
@@ -60,7 +60,7 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IWorkflowStepsRespository>(_scopeAccessor);
             var entityResp = await repo.QueryWorkflowStepsSearchList(entityReq, cancellationToken);
-            var result = mapper.Map<WorkflowStepsSearchListResponse>(entityResp);
+            var result = _mapper.Map<WorkflowStepsSearchListResponse>(entityResp);
 
             return result;
         }

@@ -22,6 +22,7 @@ namespace Services.Implementations
     {
         private readonly ILogger<AuditService> _logger = logger;
         private readonly IConfiguration _config = config;
+        private readonly IMapper _mapper = mapper;
         private readonly IUnitOfWorkFactory _uowFactory = uowFactory;
         private readonly IRepositoryFactory _repositoryFactory = repositoryFactory;
         private readonly IUnitOfWorkScopeAccessor _scopeAccessor = scopeAccessor;
@@ -34,7 +35,7 @@ namespace Services.Implementations
         /// <returns></returns>
         public async Task<bool> SaveAuditLogAsync(AuditCommomRequest req, CancellationToken cancellationToken = default)
         {
-            var entityReq = mapper.Map<AuditEntityCommomRequest>(req);
+            var entityReq = _mapper.Map<AuditEntityCommomRequest>(req);
 
             var dbType = DBConnectionEnum.Cdp;
             using var uow = _uowFactory.UseUnitOfWork(_scopeAccessor, dbType);
@@ -53,7 +54,7 @@ namespace Services.Implementations
         /// <returns></returns>
         public async Task<AuditSearchListResponse> QueryAuditLogAsync(AuditSearchListRequest req, CancellationToken cancellationToken = default)
         {
-            var entityReq = mapper.Map<AuditEntitySearchListRequest>(req);
+            var entityReq = _mapper.Map<AuditEntitySearchListRequest>(req);
 
             var dbType = DBConnectionEnum.Cdp;
             // 改成通用 Factory 呼叫
@@ -61,7 +62,7 @@ namespace Services.Implementations
             var repo = _repositoryFactory.Create<IAuditRespository>(_scopeAccessor);
             var entityResp = await repo.QueryAuditLogAsync(entityReq, cancellationToken).ConfigureAwait(false);
 
-            var result = mapper.Map<AuditSearchListResponse>(entityResp);
+            var result = _mapper.Map<AuditSearchListResponse>(entityResp);
 
             return result;
         }

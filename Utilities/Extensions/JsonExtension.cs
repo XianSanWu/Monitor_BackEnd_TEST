@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Globalization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Utilities.Extensions
 {

@@ -310,8 +310,7 @@ namespace Repository.Implementations.PermissionRespository
             GetUserByUserName(userName);
 
             var queryEntity = await _unitOfWork.Connection.QueryAsync<UserEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
-            var mapper = _mapper.Map<List<UserEntity>>(queryEntity);
-            result = mapper.FirstOrDefault() ?? new();
+            result = _mapper.Map<List<UserEntity>>(queryEntity).FirstOrDefault() ?? new();
 
             return result;
             #endregion
@@ -340,8 +339,7 @@ namespace Repository.Implementations.PermissionRespository
             GetUserByUserId(userId);
 
             var queryEntity = await _unitOfWork.Connection.QueryAsync<UserEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
-            var mapper = _mapper.Map<List<UserEntity>>(queryEntity);
-            result = mapper.FirstOrDefault() ?? new();
+            result = _mapper.Map<List<UserEntity>>(queryEntity).FirstOrDefault() ?? new();
 
             return result;
             #endregion

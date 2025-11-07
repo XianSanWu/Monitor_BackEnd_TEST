@@ -22,8 +22,9 @@ namespace Services.Implementations
     {
         private readonly ILogger<MailHunterService> _logger = logger;
         private readonly IConfiguration _config = config;
+        private readonly IMapper _mapper = mapper;
         private readonly IUnitOfWorkFactory _uowFactory = uowFactory;
-        private readonly IRepositoryFactory _repositoryFactory = repositoryFactory;
+		private readonly IRepositoryFactory _repositoryFactory = repositoryFactory;
         private readonly IUnitOfWorkScopeAccessor _scopeAccessor = scopeAccessor;
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace Services.Implementations
         /// <exception cref="NotImplementedException"></exception>
         public async Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListRequest req, CancellationToken cancellationToken = default)
         {
-            var entityReq = mapper.Map<MailHunterEntitySearchListRequest>(req);
+            var entityReq = _mapper.Map<MailHunterEntitySearchListRequest>(req);
 
             #region 流程
             var dbType = DBConnectionEnum.Mail_hunter;
@@ -44,7 +45,7 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<IMailHunterRespository>(_scopeAccessor);
             var entityResp = await repo.GetProjectMailCountList(entityReq, cancellationToken).ConfigureAwait(false);
-            var result = mapper.Map<MailHunterSearchListResponse>(entityResp);
+            var result = _mapper.Map<MailHunterSearchListResponse>(entityResp);
 
             return result;
             #endregion

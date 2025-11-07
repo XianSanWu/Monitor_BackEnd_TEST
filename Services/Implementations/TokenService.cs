@@ -49,7 +49,7 @@ namespace Services.Implementations
             // 改成通用 Factory 呼叫
             var repo = _repositoryFactory.Create<ITokenRespository>(_scopeAccessor);
             var entityResp = await repo.GetUserTokenByRefreshTokenAsync(refreshToken, cancellationToken).ConfigureAwait(false);
-            var result = mapper.Map<AuthSearchResponse>(entityResp);
+            var result = _mapper.Map<AuthSearchResponse>(entityResp);
 
             return result;
             #endregion
