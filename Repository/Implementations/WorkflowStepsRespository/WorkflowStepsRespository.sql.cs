@@ -14,8 +14,8 @@ namespace Repository.Implementations.WorkflowStepsRespository
         /// <summary>
         /// 工作進度查詢DB (最後一筆)
         /// </summary>
-        /// <param name="searchReq"></param>
-        private void QueryWorkflowLastSql(WorkflowStepsEntitySearchListRequest searchReq)
+        /// <param name="req"></param>
+        private void QueryWorkflowLastSql(WorkflowStepsEntitySearchListRequest req)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@"
@@ -33,7 +33,7 @@ JOIN (
             _sqlParams = new DynamicParameters();
 
             #region  處理 FieldModel 輸入框 (模糊查詢)
-            var columnsWithValues = Reflection.GetValidColumnsWithValues(searchReq.FieldModel);
+            var columnsWithValues = Reflection.GetValidColumnsWithValues(req.FieldModel);
 
             foreach (var column in columnsWithValues)
             {
@@ -50,9 +50,9 @@ JOIN (
             #region  處理 FilterModel Grid (模糊查詢)
             var validColumns = Reflection.GetValidColumns<WorkflowEntity>();
 
-            if (searchReq.FilterModel != null)
+            if (req.FilterModel != null)
             {
-                foreach (var filter in searchReq.FilterModel)
+                foreach (var filter in req.FilterModel)
                 {
                     var filter_key = filter.Key;
                     if (sourceArray.Any(item => item.Equals(filter.Key, StringComparison.OrdinalIgnoreCase)))
@@ -66,19 +66,19 @@ JOIN (
 
 
             #region  設定SQL排序
-            if (searchReq.SortModel != null &&
-                !string.IsNullOrWhiteSpace(searchReq.SortModel.Key) &&
-                !string.IsNullOrWhiteSpace(searchReq.SortModel.Value) &&
-                validColumns.Contains(searchReq.SortModel.Key, StringComparer.OrdinalIgnoreCase)
+            if (req.SortModel != null &&
+                !string.IsNullOrWhiteSpace(req.SortModel.Key) &&
+                !string.IsNullOrWhiteSpace(req.SortModel.Value) &&
+                validColumns.Contains(req.SortModel.Key, StringComparer.OrdinalIgnoreCase)
                 )
             {
-                var SortKey = searchReq.SortModel.Key;
-                if (sourceArray.Any(item => item.Equals(searchReq.SortModel.Key, StringComparison.OrdinalIgnoreCase)))
+                var SortKey = req.SortModel.Key;
+                if (sourceArray.Any(item => item.Equals(req.SortModel.Key, StringComparison.OrdinalIgnoreCase)))
                 {
-                    SortKey = $"wf.{searchReq.SortModel.Key}";
+                    SortKey = $"wf.{req.SortModel.Key}";
                 }
 
-                _sqlOrderByStr = $" ORDER BY {SortKey} {searchReq.SortModel.Value} ";
+                _sqlOrderByStr = $" ORDER BY {SortKey} {req.SortModel.Value} ";
             }
             else
             {
@@ -92,8 +92,8 @@ JOIN (
         /// <summary>
         /// 工作進度查詢DB
         /// </summary>
-        /// <param name="searchReq"></param>
-        private void QueryWorkflowSql(WorkflowStepsEntitySearchListRequest searchReq)
+        /// <param name="req"></param>
+        private void QueryWorkflowSql(WorkflowStepsEntitySearchListRequest req)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@" SELECT * FROM Workflow WITH (NOLOCK) WHERE 1=1 ");
@@ -101,7 +101,7 @@ JOIN (
             _sqlParams = new DynamicParameters();
 
             #region  處理 FieldModel 輸入框 (模糊查詢)
-            var columnsWithValues = Reflection.GetValidColumnsWithValues(searchReq.FieldModel);
+            var columnsWithValues = Reflection.GetValidColumnsWithValues(req.FieldModel);
 
             foreach (var column in columnsWithValues)
             {
@@ -112,9 +112,9 @@ JOIN (
             #region  處理 FilterModel Grid (模糊查詢)
             var validColumns = Reflection.GetValidColumns<WorkflowEntity>();
 
-            if (searchReq.FilterModel != null)
+            if (req.FilterModel != null)
             {
-                foreach (var filter in searchReq.FilterModel)
+                foreach (var filter in req.FilterModel)
                 {
                     AppendFilterCondition(filter.Key, filter.Value, validColumns);
                 }
@@ -123,7 +123,7 @@ JOIN (
 
             #region  初版模糊查詢
             //// 獲取模型的有效欄位（使用反射）//輸入框
-            //var columnsWithValues = Reflection.GetValidColumnsWithValues(searchReq.FieldModel);
+            //var columnsWithValues = Reflection.GetValidColumnsWithValues(req.FieldModel);
 
             //foreach (var column in columnsWithValues)
             //{
@@ -150,9 +150,9 @@ JOIN (
             //var validColumns = Reflection.GetValidColumns<WorkflowEntity>();
 
             ////設定grid欄位模糊查詢
-            //if (searchReq.FilterModel != null)
+            //if (req.FilterModel != null)
             //{
-            //    foreach (var filter in searchReq.FilterModel)
+            //    foreach (var filter in req.FilterModel)
             //    {
             //        if (string.IsNullOrWhiteSpace(filter.Key) || string.IsNullOrWhiteSpace(filter.Value) || !validColumns.Contains(filter.Key, StringComparer.OrdinalIgnoreCase))
             //        {
@@ -177,13 +177,13 @@ JOIN (
             #endregion
 
             #region  設定SQL排序
-            if (searchReq.SortModel != null &&
-                !string.IsNullOrWhiteSpace(searchReq.SortModel.Key) &&
-                !string.IsNullOrWhiteSpace(searchReq.SortModel.Value) &&
-                validColumns.Contains(searchReq.SortModel.Key, StringComparer.OrdinalIgnoreCase)
+            if (req.SortModel != null &&
+                !string.IsNullOrWhiteSpace(req.SortModel.Key) &&
+                !string.IsNullOrWhiteSpace(req.SortModel.Value) &&
+                validColumns.Contains(req.SortModel.Key, StringComparer.OrdinalIgnoreCase)
                 )
             {
-                _sqlOrderByStr = $" ORDER BY {searchReq.SortModel.Key} {searchReq.SortModel.Value} ";
+                _sqlOrderByStr = $" ORDER BY {req.SortModel.Key} {req.SortModel.Value} ";
             }
             else
             {

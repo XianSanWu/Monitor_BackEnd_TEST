@@ -9,18 +9,18 @@ namespace Repository.Interfaces
         /// <summary>
         /// 工作進度查詢DB (最後一筆)
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<WorkflowStepsEntitySearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsEntitySearchListRequest searchReq, CancellationToken cancellationToken = default);
+        Task<WorkflowStepsEntitySearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsEntitySearchListRequest req, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 工作進度查詢DB
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<WorkflowStepsEntitySearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsEntitySearchListRequest searchReq, CancellationToken cancellationToken = default);
+        Task<WorkflowStepsEntitySearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsEntitySearchListRequest req, CancellationToken cancellationToken = default);
 
     }
 }

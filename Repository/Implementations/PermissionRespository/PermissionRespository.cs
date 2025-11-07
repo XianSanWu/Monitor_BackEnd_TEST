@@ -140,9 +140,9 @@ namespace Repository.Implementations.PermissionRespository
         /// <summary>
         /// 取得所有使用者清單列表
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
-        public async Task<UserEntitySearchListResponse> GetUserListAsync(UserEntitySearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<UserEntitySearchListResponse> GetUserListAsync(UserEntitySearchListRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -156,10 +156,10 @@ namespace Repository.Implementations.PermissionRespository
             cancellationToken.ThrowIfCancellationRequested();
 
             // 先組合 SQL 語句
-            GetUserList(searchReq);
+            GetUserList(req);
 
-            var _pagingSql = await GetPagingSql(searchReq.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
-            result.Page = searchReq.Page;
+            var _pagingSql = await GetPagingSql(req.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
+            result.Page = req.Page;
             result.SearchItem = (await _unitOfWork.Connection.QueryAsync<UserEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
             result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
             return result;
@@ -194,10 +194,10 @@ namespace Repository.Implementations.PermissionRespository
         /// <summary>
         /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action）
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<FeaturePermissionEntity>> GetUserPermissionsAsync(UserEntitySearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<List<FeaturePermissionEntity>> GetUserPermissionsAsync(UserEntitySearchListRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -211,9 +211,9 @@ namespace Repository.Implementations.PermissionRespository
             cancellationToken.ThrowIfCancellationRequested();
 
             var fieldModel = new UserEntitySearchListFieldModelRequest();
-            if (searchReq.FieldModel != null)
+            if (req.FieldModel != null)
             {
-                fieldModel = searchReq.FieldModel;
+                fieldModel = req.FieldModel;
             }
 
             // 先組合 SQL 語句
@@ -228,10 +228,10 @@ namespace Repository.Implementations.PermissionRespository
         /// <summary>
         /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action）
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<FeaturePermissionEntity>> GetUserPermissionsMenuAsync(UserEntitySearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<List<FeaturePermissionEntity>> GetUserPermissionsMenuAsync(UserEntitySearchListRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -245,9 +245,9 @@ namespace Repository.Implementations.PermissionRespository
             cancellationToken.ThrowIfCancellationRequested();
 
             var fieldModel = new UserEntitySearchListFieldModelRequest();
-            if (searchReq.FieldModel != null)
+            if (req.FieldModel != null)
             {
-                fieldModel = searchReq.FieldModel;
+                fieldModel = req.FieldModel;
             }
 
             // 先組合 SQL 語句
@@ -264,7 +264,7 @@ namespace Repository.Implementations.PermissionRespository
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<FeaturePermissionEntity>> GetPermissionListAsync(PermissionEntitySearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<List<FeaturePermissionEntity>> GetPermissionListAsync(PermissionEntitySearchListRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
 
@@ -278,7 +278,7 @@ namespace Repository.Implementations.PermissionRespository
             cancellationToken.ThrowIfCancellationRequested();
 
             // 先組合 SQL 語句
-            GetPermissions(searchReq);
+            GetPermissions(req);
 
             var queryEntity = await _unitOfWork.Connection.QueryAsync<FeaturePermissionEntity>((_sqlStr?.ToString() ?? ""), _sqlParams).ConfigureAwait(false);
             result = _mapper.Map<List<FeaturePermissionEntity>>(queryEntity);

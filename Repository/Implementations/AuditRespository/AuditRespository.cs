@@ -12,10 +12,10 @@ namespace Repository.Implementations.AuditLogRespository
         /// <summary>
         /// 存取稽核軌跡
         /// </summary>
-        /// <param name="log"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<bool> SaveAuditLogAsync(AuditEntityCommomRequest log, CancellationToken cancellationToken = default)
+        public async Task<bool> SaveAuditLogAsync(AuditEntityCommomRequest req, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 
@@ -29,7 +29,7 @@ namespace Repository.Implementations.AuditLogRespository
             cancellationToken.ThrowIfCancellationRequested();
 
             // 先組合 SQL 語句
-            SaveAudit(log);
+            SaveAudit(req);
 
             // 使用 ExecuteAsync 來執行 SQL 更新，並傳入 cancellationToken
             var affectedRows = await _unitOfWork.Connection.ExecuteAsync(_sqlStr?.ToString() ?? string.Empty, _sqlParams).ConfigureAwait(false);

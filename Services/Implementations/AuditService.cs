@@ -30,7 +30,7 @@ namespace Services.Implementations
         /// <summary>
         /// 存取稽核軌跡
         /// </summary>
-        /// <param name="log"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<bool> SaveAuditLogAsync(AuditCommomRequest req, CancellationToken cancellationToken = default)

@@ -9,11 +9,11 @@ namespace Services.Interfaces
         /// <summary>
         /// 查詢專案發送數量
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListRequest searchReq, CancellationToken cancellationToken = default);
+        Task<MailHunterSearchListResponse> GetProjectMailCountList(MailHunterSearchListRequest req, CancellationToken cancellationToken = default);
 
     }
 }

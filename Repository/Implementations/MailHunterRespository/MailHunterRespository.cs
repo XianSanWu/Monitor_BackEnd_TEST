@@ -13,10 +13,10 @@ namespace Repository.Implementations.MailHunterRespository
         /// <summary>
         /// 查詢專案發送數量
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<ProjectMailCountEntitySearchListResponse> GetProjectMailCountList(MailHunterEntitySearchListRequest searchReq, CancellationToken cancellationToken = default)
+        public async Task<ProjectMailCountEntitySearchListResponse> GetProjectMailCountList(MailHunterEntitySearchListRequest req, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 
@@ -30,10 +30,10 @@ namespace Repository.Implementations.MailHunterRespository
             cancellationToken.ThrowIfCancellationRequested();
 
             // 先組合 SQL 語句
-            QueryProjectMailCountSql(searchReq);
+            QueryProjectMailCountSql(req);
 
-            var _pagingSql = await GetPagingSql(searchReq.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
-            result.Page = searchReq.Page;
+            var _pagingSql = await GetPagingSql(req.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
+            result.Page = req.Page;
             result.SearchItem = (await _unitOfWork.Connection.QueryAsync<ProjectMailCountEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
             result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
 

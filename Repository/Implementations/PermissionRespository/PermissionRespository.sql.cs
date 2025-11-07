@@ -433,7 +433,7 @@ WHEN NOT MATCHED THEN
 
         }
 
-        private void GetUserList(UserEntitySearchListRequest searchReq)
+        private void GetUserList(UserEntitySearchListRequest req)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@" SELECT * FROM Users WITH(NOLOCK) WHERE 1=1 ");
@@ -441,7 +441,7 @@ WHEN NOT MATCHED THEN
             _sqlParams = new DynamicParameters();
 
             #region  處理 FieldModel 輸入框 (模糊查詢)
-            var columnsWithValues = Reflection.GetValidColumnsWithValues(searchReq.FieldModel);
+            var columnsWithValues = Reflection.GetValidColumnsWithValues(req.FieldModel);
 
             foreach (var column in columnsWithValues)
             {
@@ -464,9 +464,9 @@ WHEN NOT MATCHED THEN
             #region  處理 FilterModel Grid (模糊查詢)
             var validColumns = Reflection.GetValidColumns<UserEntity>();
 
-            if (searchReq.FilterModel != null)
+            if (req.FilterModel != null)
             {
-                foreach (var filter in searchReq.FilterModel)
+                foreach (var filter in req.FilterModel)
                 {
                     var filter_key = filter.Key;
 
@@ -477,15 +477,15 @@ WHEN NOT MATCHED THEN
 
 
             #region  設定SQL排序
-            if (searchReq.SortModel != null &&
-                !string.IsNullOrWhiteSpace(searchReq.SortModel.Key) &&
-                !string.IsNullOrWhiteSpace(searchReq.SortModel.Value) &&
-                validColumns.Contains(searchReq.SortModel.Key, StringComparer.OrdinalIgnoreCase)
+            if (req.SortModel != null &&
+                !string.IsNullOrWhiteSpace(req.SortModel.Key) &&
+                !string.IsNullOrWhiteSpace(req.SortModel.Value) &&
+                validColumns.Contains(req.SortModel.Key, StringComparer.OrdinalIgnoreCase)
                 )
             {
-                var SortKey = searchReq.SortModel.Key;
+                var SortKey = req.SortModel.Key;
 
-                _sqlOrderByStr = $" ORDER BY {SortKey} {searchReq.SortModel.Value} ";
+                _sqlOrderByStr = $" ORDER BY {SortKey} {req.SortModel.Value} ";
             }
             else
             {
@@ -495,7 +495,7 @@ WHEN NOT MATCHED THEN
 
         }
 
-        //        private void QueryAllPermissionSql(PermissionSearchListRequest searchReq)
+        //        private void QueryAllPermissionSql(PermissionSearchListRequest req)
         //        {
         //            _sqlStr = new StringBuilder();
         //            _sqlStr?.Append(@"
@@ -511,9 +511,9 @@ WHEN NOT MATCHED THEN
         //            #region  處理 FilterModel Grid (模糊查詢)
         //            var validColumns = Reflection.GetValidColumns<WorkflowEntity>();
 
-        //            if (searchReq.FilterModel != null)
+        //            if (req.FilterModel != null)
         //            {
-        //                foreach (var filter in searchReq.FilterModel)
+        //                foreach (var filter in req.FilterModel)
         //                {
         //                    var filter_key = filter.Key;
 
@@ -524,15 +524,15 @@ WHEN NOT MATCHED THEN
 
 
         //            #region  設定SQL排序
-        //            if (searchReq.SortModel != null &&
-        //                !string.IsNullOrWhiteSpace(searchReq.SortModel.Key) &&
-        //                !string.IsNullOrWhiteSpace(searchReq.SortModel.Value) &&
-        //                validColumns.Contains(searchReq.SortModel.Key, StringComparer.OrdinalIgnoreCase)
+        //            if (req.SortModel != null &&
+        //                !string.IsNullOrWhiteSpace(req.SortModel.Key) &&
+        //                !string.IsNullOrWhiteSpace(req.SortModel.Value) &&
+        //                validColumns.Contains(req.SortModel.Key, StringComparer.OrdinalIgnoreCase)
         //                )
         //            {
-        //                var SortKey = searchReq.SortModel.Key;
+        //                var SortKey = req.SortModel.Key;
 
-        //                _sqlOrderByStr = $" ORDER BY {SortKey} {searchReq.SortModel.Value} ";
+        //                _sqlOrderByStr = $" ORDER BY {SortKey} {req.SortModel.Value} ";
         //            }
         //            else
         //            {
@@ -560,7 +560,7 @@ WHEN NOT MATCHED THEN
             _sqlParams?.Add($"@Action", action);
         }
 
-        private void GetPermissions(PermissionEntitySearchListRequest searchReq)
+        private void GetPermissions(PermissionEntitySearchListRequest req)
         {
             _sqlStr = new StringBuilder();
             _sqlStr?.Append(@"
@@ -572,9 +572,9 @@ WHEN NOT MATCHED THEN
             _sqlParams = new DynamicParameters();
 
             #region  處理 FieldModel 輸入框 (模糊查詢)
-            if (searchReq.FieldModel != null)
+            if (req.FieldModel != null)
             {
-                var columnsWithValues = Reflection.GetValidColumnsWithValues(searchReq.FieldModel);
+                var columnsWithValues = Reflection.GetValidColumnsWithValues(req.FieldModel);
 
                 foreach (var column in columnsWithValues)
                 {
@@ -598,9 +598,9 @@ WHEN NOT MATCHED THEN
             #region  處理 FilterModel Grid (模糊查詢)
             var validColumns = Reflection.GetValidColumns<FeaturePermissionEntity>();
 
-            if (searchReq.FilterModel != null)
+            if (req.FilterModel != null)
             {
-                foreach (var filter in searchReq.FilterModel)
+                foreach (var filter in req.FilterModel)
                 {
                     var filter_key = filter.Key;
 
@@ -610,15 +610,15 @@ WHEN NOT MATCHED THEN
             #endregion
 
             #region  設定SQL排序
-            if (searchReq.SortModel != null &&
-                !string.IsNullOrWhiteSpace(searchReq.SortModel.Key) &&
-                !string.IsNullOrWhiteSpace(searchReq.SortModel.Value) &&
-                validColumns.Contains(searchReq.SortModel.Key, StringComparer.OrdinalIgnoreCase)
+            if (req.SortModel != null &&
+                !string.IsNullOrWhiteSpace(req.SortModel.Key) &&
+                !string.IsNullOrWhiteSpace(req.SortModel.Value) &&
+                validColumns.Contains(req.SortModel.Key, StringComparer.OrdinalIgnoreCase)
                 )
             {
-                var SortKey = searchReq.SortModel.Key;
+                var SortKey = req.SortModel.Key;
 
-                _sqlOrderByStr = $" ORDER BY {SortKey} {searchReq.SortModel.Value} ";
+                _sqlOrderByStr = $" ORDER BY {SortKey} {req.SortModel.Value} ";
             }
             else
             {

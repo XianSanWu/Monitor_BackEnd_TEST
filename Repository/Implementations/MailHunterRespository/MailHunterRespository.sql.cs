@@ -14,8 +14,8 @@ namespace Repository.Implementations.MailHunterRespository
         /// <summary>
         /// 查詢專案發送數量
         /// </summary>
-        /// <param name="searchReq"></param>
-        private void QueryProjectMailCountSql(MailHunterEntitySearchListRequest searchReq)
+        /// <param name="req"></param>
+        private void QueryProjectMailCountSql(MailHunterEntitySearchListRequest req)
         {
             _sqlStr = new StringBuilder();
             _sqlWithStr = new StringBuilder();
@@ -37,7 +37,7 @@ WITH Months AS (
 ");
 
             var departmentCondition =
-                DepartmentEnum.CDP01.ToString().Equals(searchReq?.FieldModel?.Department, StringComparison.OrdinalIgnoreCase) ?
+                DepartmentEnum.CDP01.ToString().Equals(req?.FieldModel?.Department, StringComparison.OrdinalIgnoreCase) ?
         " AND p.project_category_code = @Department " :
         " AND p.project_category_code <> @Department ";
         _sqlStr = new StringBuilder();
@@ -84,7 +84,7 @@ WHERE 1=1
             _sqlParams = new DynamicParameters();
 
             #region  處理 FieldModel 輸入框 (寫死查詢)
-            var columnsWithValues = Reflection.GetValidColumnsWithValues(searchReq?.FieldModel);
+            var columnsWithValues = Reflection.GetValidColumnsWithValues(req?.FieldModel);
 
             foreach (var column in columnsWithValues)
             {
@@ -115,9 +115,9 @@ WHERE 1=1
             #region  處理 FilterModel Grid (模糊查詢)
             var validColumns = Reflection.GetValidColumns<ProjectMailCountEntity>();
 
-            if (searchReq?.FilterModel != null)
+            if (req?.FilterModel != null)
             {
-                foreach (var filter in searchReq.FilterModel)
+                foreach (var filter in req.FilterModel)
                 {
                     AppendFilterCondition($"amp.{filter.Key}", filter.Value, validColumns);
                 }
@@ -125,18 +125,18 @@ WHERE 1=1
             #endregion
 
             #region  設定SQL排序
-            if (searchReq?.SortModel != null &&
-                !string.IsNullOrWhiteSpace(searchReq.SortModel.Key) &&
-                !string.IsNullOrWhiteSpace(searchReq.SortModel.Value) &&
-                validColumns.Contains(searchReq.SortModel.Key, StringComparer.OrdinalIgnoreCase)
+            if (req?.SortModel != null &&
+                !string.IsNullOrWhiteSpace(req.SortModel.Key) &&
+                !string.IsNullOrWhiteSpace(req.SortModel.Value) &&
+                validColumns.Contains(req.SortModel.Key, StringComparer.OrdinalIgnoreCase)
                 )
             {
-                if ("month".Equals(searchReq.SortModel.Key, StringComparison.OrdinalIgnoreCase))
+                if ("month".Equals(req.SortModel.Key, StringComparison.OrdinalIgnoreCase))
                 {
-                    searchReq.SortModel.Key = "MonthSort";
+                    req.SortModel.Key = "MonthSort";
                 }
 
-                _sqlOrderByStr = $" ORDER BY amp.{searchReq.SortModel.Key} {searchReq.SortModel.Value} ";
+                _sqlOrderByStr = $" ORDER BY amp.{req.SortModel.Key} {req.SortModel.Value} ";
             }
             else
             {

@@ -40,9 +40,9 @@ namespace Services.Interfaces
         /// <summary>
         /// 取得所有使用者清單列表
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
-        Task<UserSearchListResponse> GetUserListAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken);
+        Task<UserSearchListResponse> GetUserListAsync(UserSearchListRequest req, CancellationToken cancellationToken);
 
 
 
@@ -56,19 +56,19 @@ namespace Services.Interfaces
         /// <summary>
         /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action）
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<PermissionSearchResponse>> GetUserPermissionsAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken);
+        Task<List<PermissionSearchResponse>> GetUserPermissionsAsync(UserSearchListRequest req, CancellationToken cancellationToken);
 
 
         /// <summary>
         /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action） Menu
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<PermissionSearchResponse>> GetUserPermissionsMenuAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken);
+        Task<List<PermissionSearchResponse>> GetUserPermissionsMenuAsync(UserSearchListRequest req, CancellationToken cancellationToken);
         
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Services.Interfaces
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<PermissionSearchResponse>> GetPermissionListAsync(PermissionSearchListRequest searchReq, CancellationToken cancellationToken);
+        Task<List<PermissionSearchResponse>> GetPermissionListAsync(PermissionSearchListRequest req, CancellationToken cancellationToken);
 
         /// <summary>
         /// 取得單一使用者主檔資訊

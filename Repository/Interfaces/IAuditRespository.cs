@@ -8,10 +8,10 @@ namespace Repository.Interfaces
         /// <summary>
         /// 存取稽核軌跡
         /// </summary>
-        /// <param name="log"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<bool> SaveAuditLogAsync(AuditEntityCommomRequest log, CancellationToken cancellationToken = default);
+        Task<bool> SaveAuditLogAsync(AuditEntityCommomRequest req, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 查詢稽核軌跡

@@ -12,7 +12,7 @@ namespace WebAPi.Controllers
         /// <summary>
         /// 查詢結果集合(多筆)最後一筆
         /// </summary>
-        /// <param name="searchReq">前端傳入的查詢條件</param>
+        /// <param name="req">前端傳入的查詢條件</param>
         /// <param name="cancellationToken">取消非同步</param>
         /// <returns name="result">查詢結果 </returns>
         [Tags("WorkflowSteps")]  //分組(可多標籤)        
@@ -23,7 +23,7 @@ namespace WebAPi.Controllers
             "Module=CDP;Feature=APP_PUSH_Main;Action=Read",
             "Module=CDP;Feature=SMS_Main;Action=Read"
         )]
-        public async Task<ResultResponse<WorkflowStepsSearchListResponse>> QuerySearchLastList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<ResultResponse<WorkflowStepsSearchListResponse>> QuerySearchLastList(WorkflowStepsSearchListRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
             var result = new WorkflowStepsSearchListResponse();
@@ -31,7 +31,7 @@ namespace WebAPi.Controllers
 
             #region 流程
 
-            result = await _workflowStepsService.QueryWorkflowStepsSearchLastList(searchReq, cancellationToken).ConfigureAwait(false);
+            result = await _workflowStepsService.QueryWorkflowStepsSearchLastList(req, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
 
@@ -43,7 +43,7 @@ namespace WebAPi.Controllers
         /// <summary>
         /// 查詢結果集合(多筆)
         /// </summary>
-        /// <param name="searchReq">前端傳入的查詢條件</param>
+        /// <param name="req">前端傳入的查詢條件</param>
         /// <param name="cancellationToken">取消非同步</param>
         /// <returns name="result">查詢結果 </returns>
         [Tags("WorkflowSteps")]  //分組(可多標籤)        
@@ -55,7 +55,7 @@ namespace WebAPi.Controllers
             "Module=CDP;Feature=SMS_Detail;Action=Read"
         )]
 
-        public async Task<ResultResponse<WorkflowStepsSearchListResponse>> QuerySearchList(WorkflowStepsSearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<ResultResponse<WorkflowStepsSearchListResponse>> QuerySearchList(WorkflowStepsSearchListRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
             var result = new WorkflowStepsSearchListResponse();
@@ -63,9 +63,9 @@ namespace WebAPi.Controllers
             #endregion
 
             #region 參數驗證
-            //searchRequestValidationResult = await _searchListRequestValidator.ValidateAsync(searchReq, cancellationToken).ConfigureAwait(false);
+            //searchRequestValidationResult = await _searchListRequestValidator.ValidateAsync(req, cancellationToken).ConfigureAwait(false);
 
-            //_logger.LogInformation("WorkflowStepsSearchListRequest 參數：{@WorkflowStepsSearchListRequest}", searchReq);
+            //_logger.LogInformation("WorkflowStepsSearchListRequest 參數：{@WorkflowStepsSearchListRequest}", req);
             //_logger.LogInformation("WorkflowStepsSearchListRequest 驗證：{ValidationResult}", searchRequestValidationResult);
 
             //if (!string.IsNullOrWhiteSpace(searchRequestValidationResult.ToString()))
@@ -76,7 +76,7 @@ namespace WebAPi.Controllers
 
             #region 流程
 
-            result = await _workflowStepsService.QueryWorkflowStepsSearchList(searchReq, cancellationToken).ConfigureAwait(false);
+            result = await _workflowStepsService.QueryWorkflowStepsSearchList(req, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
 

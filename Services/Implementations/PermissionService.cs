@@ -147,7 +147,7 @@ namespace Services.Implementations
         /// <summary>
         /// 取得所有使用者清單列表
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         public async Task<UserSearchListResponse> GetUserListAsync(UserSearchListRequest req, CancellationToken cancellationToken)
         {
@@ -189,7 +189,7 @@ namespace Services.Implementations
         /// <summary>
         /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action）
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<List<PermissionSearchResponse>> GetUserPermissionsAsync(UserSearchListRequest req, CancellationToken cancellationToken)
@@ -211,7 +211,7 @@ namespace Services.Implementations
         /// <summary>
         /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action）Menu
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<List<PermissionSearchResponse>> GetUserPermissionsMenuAsync(UserSearchListRequest req, CancellationToken cancellationToken)

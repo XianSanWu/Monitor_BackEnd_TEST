@@ -19,11 +19,11 @@ namespace Services.Implementations
         /// <summary>
         /// 取得全部MSMQ佇列訊息
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<MsmqQueueDetailsResponse> GetAllQueueInfo(MsmqQueueInfoRequest searchReq, CancellationToken cancellationToken = default)
+        public async Task<MsmqQueueDetailsResponse> GetAllQueueInfo(MsmqQueueInfoRequest req, CancellationToken cancellationToken = default)
         {
             var result = new MsmqQueueDetailsResponse();
 
@@ -93,9 +93,9 @@ $result | ConvertTo-Json -Depth 5
 
             if (queues != null && queues.Count > 0)
             {
-                if (!string.IsNullOrWhiteSpace(searchReq.QueueName))
+                if (!string.IsNullOrWhiteSpace(req.QueueName))
                 {
-                    queues.Value = [.. queues.Value.Select(s => s).Where(w => (w.QueueName).Contains(searchReq.QueueName ?? string.Empty))];
+                    queues.Value = [.. queues.Value.Select(s => s).Where(w => (w.QueueName).Contains(req.QueueName ?? string.Empty))];
                     queues.Count = queues.Value.Count();
                 }
             }

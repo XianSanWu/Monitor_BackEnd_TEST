@@ -10,12 +10,12 @@ namespace WebAPi.Controllers
         /// <summary>
         /// 查詢專案發送數量
         /// </summary>
-        /// <param name="searchReq">前端傳入的查詢條件</param>
+        /// <param name="req">前端傳入的查詢條件</param>
         /// <param name="cancellationToken">取消非同步</param>
         /// <returns name="result">查詢結果 </returns>
         [Tags("MailHunter")]  //分組(可多標籤)        
         [HttpPost("ProjectMailCountSearchList")]
-        public async Task<ResultResponse<MailHunterSearchListResponse>> GetProjectMailCountList(MailHunterSearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<ResultResponse<MailHunterSearchListResponse>> GetProjectMailCountList(MailHunterSearchListRequest req, CancellationToken cancellationToken)
         {
             #region 參數宣告
             var result = new MailHunterSearchListResponse();
@@ -23,7 +23,7 @@ namespace WebAPi.Controllers
 
             #region 流程
 
-            result = await _mailHunterService.GetProjectMailCountList(searchReq, cancellationToken).ConfigureAwait(false);
+            result = await _mailHunterService.GetProjectMailCountList(req, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
 

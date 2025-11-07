@@ -8,11 +8,11 @@ namespace Services.Interfaces
         /// <summary>
         /// 取得全部MSMQ佇列訊息
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="_config"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<MsmqQueueDetailsResponse> GetAllQueueInfo(MsmqQueueInfoRequest searchReq, CancellationToken cancellationToken = default);
+        Task<MsmqQueueDetailsResponse> GetAllQueueInfo(MsmqQueueInfoRequest req, CancellationToken cancellationToken = default);
 
     }
 }

@@ -13,12 +13,12 @@ namespace WebApi.Controllers
         /// <summary>
         /// 取得所有使用者清單列表
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [Tags("Permission.SearchList")]   //分組(可多標籤)        
         [HttpPost("GetUserListAsync")]
-        public async Task<ResultResponse<UserSearchListResponse>> GetUserListAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<ResultResponse<UserSearchListResponse>> GetUserListAsync(UserSearchListRequest req, CancellationToken cancellationToken)
         {
 
             #region 參數宣告
@@ -26,7 +26,7 @@ namespace WebApi.Controllers
             #endregion
 
             #region 流程
-            result = await _permissionService.GetUserListAsync(searchReq, cancellationToken).ConfigureAwait(false);
+            result = await _permissionService.GetUserListAsync(req, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
             #endregion
@@ -40,7 +40,7 @@ namespace WebApi.Controllers
         /// <returns></returns>
         [Tags("Permission.SearchList")]   //分組(可多標籤)        
         [HttpPost("GetPermissionListAsync")]
-        public async Task<ResultResponse<List<PermissionSearchResponse>>> GetPermissionListAsync(PermissionSearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<ResultResponse<List<PermissionSearchResponse>>> GetPermissionListAsync(PermissionSearchListRequest req, CancellationToken cancellationToken)
         {
 
             #region 參數宣告
@@ -48,7 +48,7 @@ namespace WebApi.Controllers
             #endregion
 
             #region 流程
-            result = await _permissionService.GetPermissionListAsync(searchReq, cancellationToken).ConfigureAwait(false);
+            result = await _permissionService.GetPermissionListAsync(req, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
             #endregion
@@ -61,7 +61,7 @@ namespace WebApi.Controllers
         /// <returns></returns>
         [Tags("Permission.SearchList")]  //分組(可多標籤)        
         [HttpPost("GetUserPermissionsAsync")]
-        public async Task<ResultResponse<List<PermissionSearchResponse>>> GetUserPermissionsAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<ResultResponse<List<PermissionSearchResponse>>> GetUserPermissionsAsync(UserSearchListRequest req, CancellationToken cancellationToken)
         {
 
             #region 參數宣告
@@ -70,7 +70,7 @@ namespace WebApi.Controllers
 
             #region 流程
 
-            result = await _permissionService.GetUserPermissionsAsync(searchReq, cancellationToken).ConfigureAwait(false);
+            result = await _permissionService.GetUserPermissionsAsync(req, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
             #endregion
@@ -83,7 +83,7 @@ namespace WebApi.Controllers
         /// <returns></returns>
         [Tags("Permission.SearchList")]  //分組(可多標籤)        
         [HttpPost("GetUserPermissionsMenuAsync")]
-        public async Task<ResultResponse<List<PermissionSearchResponse>>> GetUserPermissionsMenuAsync(UserSearchListRequest searchReq, CancellationToken cancellationToken)
+        public async Task<ResultResponse<List<PermissionSearchResponse>>> GetUserPermissionsMenuAsync(UserSearchListRequest req, CancellationToken cancellationToken)
         {
 
             #region 參數宣告
@@ -92,7 +92,7 @@ namespace WebApi.Controllers
 
             #region 流程
 
-            result = await _permissionService.GetUserPermissionsMenuAsync(searchReq, cancellationToken).ConfigureAwait(false);
+            result = await _permissionService.GetUserPermissionsMenuAsync(req, cancellationToken).ConfigureAwait(false);
 
             return SuccessResult(result);
             #endregion

@@ -39,9 +39,9 @@ namespace Repository.Interfaces
         /// <summary>
         /// 取得所有使用者清單列表
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
-       Task<UserEntitySearchListResponse> GetUserListAsync(UserEntitySearchListRequest searchReq, CancellationToken cancellationToken);
+       Task<UserEntitySearchListResponse> GetUserListAsync(UserEntitySearchListRequest req, CancellationToken cancellationToken);
 
 
         // 權限資料存取介面定義
@@ -54,25 +54,25 @@ namespace Repository.Interfaces
         /// <summary>
         /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action）
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<FeaturePermissionEntity>> GetUserPermissionsAsync(UserEntitySearchListRequest searchReq, CancellationToken cancellationToken);
+        Task<List<FeaturePermissionEntity>> GetUserPermissionsAsync(UserEntitySearchListRequest req, CancellationToken cancellationToken);
 
         /// <summary>
         /// 讓前端登入後依據 JWT 中的 UserId 拉取完整權限清單（module, feature, action）Memu
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<FeaturePermissionEntity>> GetUserPermissionsMenuAsync(UserEntitySearchListRequest searchReq, CancellationToken cancellationToken);
+        Task<List<FeaturePermissionEntity>> GetUserPermissionsMenuAsync(UserEntitySearchListRequest req, CancellationToken cancellationToken);
         
         /// <summary>
         /// 取得所有權限清單列表
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<FeaturePermissionEntity>> GetPermissionListAsync(PermissionEntitySearchListRequest searchReq, CancellationToken cancellationToken);
+        Task<List<FeaturePermissionEntity>> GetPermissionListAsync(PermissionEntitySearchListRequest req, CancellationToken cancellationToken);
 
         /// <summary>
         /// 取得單一使用者主檔資訊

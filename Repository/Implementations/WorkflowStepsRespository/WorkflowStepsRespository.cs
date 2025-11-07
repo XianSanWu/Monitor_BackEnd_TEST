@@ -13,10 +13,10 @@ namespace Repository.Implementations.WorkflowStepsRespository
         /// <summary>
         /// 工作進度查詢DB (最後一筆)
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<WorkflowStepsEntitySearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsEntitySearchListRequest searchReq, CancellationToken cancellationToken = default)
+        public async Task<WorkflowStepsEntitySearchListResponse> QueryWorkflowStepsSearchLastList(WorkflowStepsEntitySearchListRequest req, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 
@@ -30,12 +30,12 @@ namespace Repository.Implementations.WorkflowStepsRespository
             cancellationToken.ThrowIfCancellationRequested();
 
             // 先組合 SQL 語句
-            QueryWorkflowLastSql(searchReq);
+            QueryWorkflowLastSql(req);
 
-            result.Page = searchReq.Page;
+            result.Page = req.Page;
             result.SearchItem = new List<WorkflowEntity>();
 
-            var _pagingSql = await GetPagingSql(searchReq.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
+            var _pagingSql = await GetPagingSql(req.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
             var queryWorkflowEntity = (await _unitOfWork.Connection.QueryAsync<WorkflowEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
             result.SearchItem = _mapper.Map<List<WorkflowEntity>>(queryWorkflowEntity);
             result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
@@ -49,10 +49,10 @@ namespace Repository.Implementations.WorkflowStepsRespository
         /// <summary>
         /// 工作進度查詢DB
         /// </summary>
-        /// <param name="searchReq"></param>
+        /// <param name="req"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<WorkflowStepsEntitySearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsEntitySearchListRequest searchReq, CancellationToken cancellationToken = default)
+        public async Task<WorkflowStepsEntitySearchListResponse> QueryWorkflowStepsSearchList(WorkflowStepsEntitySearchListRequest req, CancellationToken cancellationToken = default)
         {
             #region 參數宣告
 
@@ -66,12 +66,12 @@ namespace Repository.Implementations.WorkflowStepsRespository
             cancellationToken.ThrowIfCancellationRequested();
 
             // 先組合 SQL 語句
-            QueryWorkflowSql(searchReq);
+            QueryWorkflowSql(req);
 
-            result.Page = searchReq.Page;
+            result.Page = req.Page;
             result.SearchItem = new List<WorkflowEntity>();
 
-            var _pagingSql = await GetPagingSql(searchReq.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
+            var _pagingSql = await GetPagingSql(req.Page, _unitOfWork, _sqlParams).ConfigureAwait(false);
             var queryWorkflowEntity = (await _unitOfWork.Connection.QueryAsync<WorkflowEntity>(_pagingSql, _sqlParams).ConfigureAwait(false)).ToList();
             result.SearchItem = _mapper.Map<List<WorkflowEntity>>(queryWorkflowEntity);
             result.Page.TotalCount = (await _unitOfWork.Connection.QueryAsync<int?>(GetTotalCountSql(), _sqlParams).ConfigureAwait(false)).FirstOrDefault() ?? 0;
