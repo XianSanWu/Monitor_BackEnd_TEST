@@ -201,7 +201,7 @@ namespace Repository.Implementations
                 return;
 
             // 若有限制欄位清單，也必須符合
-            if (validColumns != null && !validColumns.Contains(keyToCompare, StringComparer.OrdinalIgnoreCase))
+            if (validColumns != null && validColumns.Count != 0 && !validColumns.Contains(keyToCompare, StringComparer.OrdinalIgnoreCase))
                 return;
 
             var queryKey = key.Replace(".", "_");
@@ -275,7 +275,7 @@ namespace Repository.Implementations
                 return;
 
             // 若有限制欄位清單，也必須符合
-            if (validColumns != null && !validColumns.Contains(keyToCompare, StringComparer.OrdinalIgnoreCase))
+            if (validColumns != null && validColumns.Count != 0 && !validColumns.Contains(keyToCompare, StringComparer.OrdinalIgnoreCase))
                 return;
 
             var queryKey = key.Replace(".", "_");
